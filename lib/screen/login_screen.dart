@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 constraints: BoxConstraints(
                   // 예: 디자인 기준으로 최소 90pt, 최대 120pt (여기서 pt는 baseWidth 기준)
                   minHeight: 90 * scale,
-                  maxHeight: 230 * scale, 
+                  maxHeight: 230 * scale,
                 ),
                 child: Container(
                   padding: EdgeInsets.only(
@@ -259,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         '게스트',
                         style: TextStyle(
-                          fontSize: scale * 14,
+                          fontSize: scale * 13,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
