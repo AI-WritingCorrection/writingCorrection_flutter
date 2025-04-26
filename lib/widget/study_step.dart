@@ -4,24 +4,33 @@ import 'package:flutter/material.dart';
 class StudyStep extends StatelessWidget {
   final double diameter;
   final VoidCallback? onTap;
-  final int i;
+  final int label;
 
   const StudyStep({
     super.key,
     this.diameter = 100,
     this.onTap,
-    required this.i,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    double baseWidth = 390.0;
-    final double scale = screenSize.width / baseWidth;
+    final bool isLandscape = screenSize.width > screenSize.height;
+    // Use width-based scaling in portrait, height-based in landscape
+    final double basePortrait = 390.0;
+    final double baseLandscape = 844.0; // e.g. typical device height
+    final double scale =
+        isLandscape
+            ? screenSize.height / baseLandscape
+            : screenSize.width / basePortrait;
+
+    // increase step size by 20% in landscape
+    final double actualDiameter = diameter * (isLandscape ? 1.3 : 1.0) * scale;
 
     return Container(
-      width: diameter,
-      height: diameter,
+      width: actualDiameter,
+      height: actualDiameter,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
@@ -53,10 +62,10 @@ class StudyStep extends StatelessWidget {
           onTap: onTap,
           child: Center(
             child: Text(
-              '${i + 1}',
+              '${label + 1}',
               style: TextStyle(
                 color: Colors.black87,
-                fontSize: 22 * scale,
+                fontSize: 22 * scale * (isLandscape ? 1.3 : 1.0),
                 fontWeight: FontWeight.bold,
               ),
             ),
