@@ -5,20 +5,29 @@ class PracticeCard extends StatelessWidget {
   final String subtitle;
   final String imagePath;
   final VoidCallback onTap;
-  final double baseWidth;
-
+  final double basePortrait;
+  final double baseLandscape;
   const PracticeCard({
     super.key,
     required this.title,
     required this.subtitle,
     required this.imagePath,
     required this.onTap,
-    this.baseWidth = 390.0,
+    this.basePortrait = 390.0,
+    this.baseLandscape = 844.0,
   });
 
   double scaled(BuildContext context, double value) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return value * (screenWidth / baseWidth);
+    final Size screenSize = MediaQuery.of(context).size;
+    final bool isLandscape = screenSize.width > screenSize.height;
+    // Use width-based scaling in portrait, height-based in landscape
+    final double basePortrait = 390.0;
+    final double baseLandscape = 844.0; // e.g. typical device height
+    final double scale =
+        isLandscape
+            ? screenSize.height / baseLandscape
+            : screenSize.width / basePortrait;    
+    return value * scale;
   }
 
   @override
@@ -26,6 +35,15 @@ class PracticeCard extends StatelessWidget {
     final double paddingH = scaled(context, 16);
     final double spacing = scaled(context, 8);
     final double imageSize = scaled(context, 70);
+
+    final Size screenSize = MediaQuery.of(context).size;
+    final bool isLandscape = screenSize.width > screenSize.height;
+    final double titleFontSize =
+        isLandscape ? scaled(context, 24) : scaled(context, 16);
+    final double subtitleFontSize =
+        isLandscape ? scaled(context, 20) : scaled(context, 13);
+    final double imageSizeAdjusted =
+        isLandscape ? scaled(context, 110) : imageSize;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -51,15 +69,17 @@ class PracticeCard extends StatelessWidget {
             ],
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: scaled(context, 16),
+                        fontSize: titleFontSize,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -68,7 +88,7 @@ class PracticeCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: scaled(context, 13),
+                        fontSize: subtitleFontSize,
                         color: Colors.grey[600],
                       ),
                     ),
@@ -77,8 +97,8 @@ class PracticeCard extends StatelessWidget {
               ),
               Image.asset(
                 imagePath,
-                width: imageSize,
-                height: imageSize,
+                width: imageSizeAdjusted,
+                height: imageSizeAdjusted,
               ),
             ],
           ),
