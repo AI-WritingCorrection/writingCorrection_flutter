@@ -9,19 +9,34 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    const double baseWidth = 390.0;
-    final double scale = screenSize.width / baseWidth;
-    // 나선형 중심점
-    final double centerY = 200 * scale;
+    // Use width-based scaling in portrait, height-based in landscape
+    final double basePortrait = 390.0;
+    final double baseLandscape = 844.0; // e.g. typical device height
 
-    // 나선형 전체 높이 (기본 120pt 간격에 따라 조정)
-    double stepGap = 140 * scale;
-    const int count = 10;
-    final double contentHeight = centerY + count * stepGap + 100 * scale;
+    //가로모드인지 체크 후 ui세팅값 변경
+    final orientation = MediaQuery.of(context).orientation;
+    final bool isLandscape = orientation == Orientation.landscape;
+    final double scale =
+        isLandscape
+            ? screenSize.height / baseLandscape
+            : screenSize.width / basePortrait;
+
+    // 첫스텝 시작 y좌표
+    final double startY = (isLandscape ? 240 : 220) * scale;
 
     // S-curve 좌표 생성
-    final double diameter = 80 * scale;
-    final double marginX = 40 * scale;
+    final double diameter = (isLandscape ? 100 : 80) * scale; //지름
+
+    //이미지 버튼 크기
+    final double separatorSize = diameter * (isLandscape ? 1.7 * 1.3 : 1.7);
+
+    final double marginX =
+        isLandscape ? screenSize.width * 0.2 : 40 * scale; //가로 여백
+    final double stepGap = (isLandscape ? 200 : 140) * scale; //스텝들간의 수직 간격
+
+    //이후에 데이터베이스에 저장되어 있는 만큼 불러오도록 변경
+    const int count = 23;
+
     final List<Offset> positions = [];
     for (int i = 0; i < count; i++) {
       double x;
@@ -37,69 +52,72 @@ class HomeScreen extends StatelessWidget {
         default:
           x = screenSize.width - marginX - diameter; // right
       }
-      double y = centerY + i * stepGap;
+      double y = startY + i * stepGap;
       positions.add(Offset(x, y));
     }
 
+    // 스크롤 가능한 최대길이
+    final double maxDy = positions
+        .map((p) => p.dy)
+        .reduce((a, b) => a > b ? a : b);
+    // 안 잘리도록 패딩 추가
+    final double contentHeight = maxDy + diameter + 100 * scale;
+
     // 스텝과 캐릭터 버튼을 위치에 따라 배치
     final widgets = <Widget>[];
-    for (int i = 0; i < positions.length; i++) {
-      // 스텝
-      widgets.add(
-        Positioned(
-          left: positions[i].dx,
-          top: positions[i].dy,
-          child: StudyStep(i: i),
+
+    // 처음 이미지 버튼은 중간에 배치
+    widgets.add(
+      Positioned(
+        left: (screenSize.width - separatorSize * 0.9) / 2,
+        top: 100 * scale,
+        child: CharacterButton(
+          assetPath: 'assets/rabbitTeacher.png',
+          size: separatorSize,
+          onTap: () {},
         ),
-      );
+      ),
+    );
 
-      // 빈 공간에 캐릭터 이미지 버튼 추가
-      double imgX;
-      switch (i % 4) {
-        case 0: // step at left => place image on right
-          imgX = screenSize.width - marginX - diameter * 1.6;
-          break;
-        case 1: // step at center => place image on left
-          imgX = marginX;
-          break;
-        case 2: // step at right => place image on left
-          imgX = marginX * 0.9;
-          break;
-        case 3: // step at center => place image on right
-          imgX = screenSize.width - marginX - diameter;
-          break;
-        default:
-          imgX = marginX;
-      }
+    //스텝5개 쌓이면 break걸고 이미지버튼추가
+    bool insertedChapterBreak = false;
+    int stepCounter = 0; // next step number to show
 
-      if ((i % 4) == 0) {
+    for (int i = 0; i < positions.length; i++) {
+      final pos = positions[i];
+      // After the 5th step, show an image once
+      if (!insertedChapterBreak && stepCounter > 1 && stepCounter % 5 == 0) {
+        final double sepX = pos.dx - (separatorSize - diameter) / 2;
         widgets.add(
           Positioned(
-            left: imgX,
-            top: positions[i].dy,
+            left: sepX,
+            top: pos.dy,
             child: CharacterButton(
-              assetPath: 'assets/bearTeacher.png', // 실제 이미지 경로 사용
-              size: diameter * 1.7,
-              onTap: () {
-                // TODO: 캐릭터 버튼 탭 액션
-              },
+              assetPath: 'assets/bearTeacher.png',
+              size: separatorSize,
+              onTap: () {},
             ),
           ),
         );
-      } else if ((i % 4) == 2) {
+        insertedChapterBreak = true;
+        // do not increment stepCounter, so next iteration uses same stepCounter
+      } else {
+        // Normal step button
         widgets.add(
           Positioned(
-            left: imgX,
-            top: positions[i].dy,
-            child: CharacterButton(
-              assetPath: 'assets/rabbitTeacher.png', // 실제 이미지 경로 사용
-              size: diameter * 1.7,
-              onTap: () {
-                // TODO: 캐릭터 버튼 탭 액션
-              },
+            left: pos.dx,
+            top: pos.dy,
+            child: StudyStep(
+              label: stepCounter,
+              diameter: diameter,
+              onTap: () {},
             ),
           ),
         );
+        stepCounter++;
+        if (stepCounter % 5 == 0) {
+          insertedChapterBreak = false; // reset for next chapter break
+        }
       }
     }
 
