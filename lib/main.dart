@@ -1,10 +1,10 @@
 import 'package:aiwriting_collection/screen/home_screen.dart';
 import 'package:aiwriting_collection/screen/login_screen.dart';
+import 'package:aiwriting_collection/screen/record_screen.dart';
 import 'package:aiwriting_collection/screen/study_screen.dart';
 import 'package:aiwriting_collection/widget/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:ui';
 import 'package:provider/provider.dart';
 import 'model/login_status.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
                     children: [
                       HomeScreen(),
                       StudyScreen(),
-                      Center(child: Text('calendar')),
+                      RecordScreen(),
                       Center(
                         child: TextButton(
                           onPressed: () {

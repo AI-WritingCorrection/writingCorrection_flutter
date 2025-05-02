@@ -1,8 +1,9 @@
 import 'package:aiwriting_collection/widget/practice_card.dart';
+import 'package:aiwriting_collection/widget/waitdevelop_dialog.dart';
 import 'package:flutter/material.dart';
 
-class StudyScreen extends StatelessWidget {
-  const StudyScreen({super.key});
+class RecordScreen extends StatelessWidget {
+  const RecordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class StudyScreen extends StatelessWidget {
                   height: 180 * scale, // 상단 높이를 적절히 조정
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/letter.png'),
+                      image: AssetImage('assets/calendar.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -53,7 +54,7 @@ class StudyScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '손글씨 연습',
+                        '나의 기록',
                         style: TextStyle(
                           fontSize: 22 * scale,
                           fontWeight: FontWeight.bold,
@@ -73,7 +74,7 @@ class StudyScreen extends StatelessWidget {
                 vertical: 16 * scale,
               ),
               child: Text(
-                '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을\n차근차근 알려드립니다.',
+                '나의 연습 기록들을 다양한 방법으로 확인해보세요!',
                 style: TextStyle(
                   fontSize: 15 * scale,
                   color: Colors.black87,
@@ -85,42 +86,44 @@ class StudyScreen extends StatelessWidget {
 
             // 기능 목록 (카드 형태)
             PracticeCard(
-              title: '손글씨 자세',
-              subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
-              imagePath: 'assets/bearTeacher.png',
+              title: '글씨 점수 통계',
+              subtitle: '내가 연습한 글씨 점수를 통계로 확인해볼까요?',
+              imagePath: 'assets/graph.png',
               onTap: () {
                 // 해당 페이지로 이동하는 로직
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WaitdevelopDialog(scale: scale);
+                  },
+                );
               },
             ),
             PracticeCard(
-              title: '자음과 모음 쓰기',
-              subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
-              imagePath: 'assets/rabbitTeacher.png',
-              onTap: () {},
+              title: '나만의 글씨 달력',
+              subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
+              imagePath: 'assets/dailyCalendar.png',
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WaitdevelopDialog(scale: scale);
+                  },
+                );
+              },
             ),
             PracticeCard(
-              title: '받침 있는 글자 쓰기',
-              subtitle: '쌍자음, 겹받침 등 조금 더 복잡한 글자 연습',
-              imagePath: 'assets/hamster.png',
-              onTap: () {},
-            ),
-            PracticeCard(
-              title: '문장 쓰기',
-              subtitle: '문장 단위로 글씨를 또박또박 쓰는 연습',
-              imagePath: 'assets/bearTeacher.png',
-              onTap: () {},
-            ),
-            PracticeCard(
-              title: '캘리그라피 연습',
-              subtitle: '간단한 캘리그라피 연습을 통해 글씨체를 살려봐요',
-              imagePath: 'assets/bearTeacher.png',
-              onTap: () {},
-            ),
-            PracticeCard(
-              title: '무한 글씨 연습',
-              subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-              imagePath: 'assets/bearTeacher.png',
-              onTap: () {},
+              title: '글씨 포토카트 만들기',
+              subtitle: '오늘을 기념하는 사진과 함께 문장 하나를 남겨보세요',
+              imagePath: 'assets/photocard.png',
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WaitdevelopDialog(scale: scale);
+                  },
+                );
+              },
             ),
 
             SizedBox(height: 80 * scale), // 하단 버튼 영역을 위해 여백
@@ -156,7 +159,7 @@ class StudyScreen extends StatelessWidget {
                   height: 180 * scale,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/letter.png'),
+                      image: AssetImage('assets/calendar.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -165,7 +168,7 @@ class StudyScreen extends StatelessWidget {
                   top: 80 * scale,
                   left: 50 * scale,
                   child: Text(
-                    '손글씨 연습',
+                    '나의 기록',
                     style: TextStyle(
                       fontSize: 30 * scale,
                       fontWeight: FontWeight.bold,
@@ -184,7 +187,7 @@ class StudyScreen extends StatelessWidget {
                 8 * scale,
               ),
               child: Text(
-                '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을 차근차근 알려드립니다.',
+                '나의 연습 기록들을 다양한 방법으로 확인해보세요!',
                 style: TextStyle(
                   fontSize: 20 * scale,
                   color: Colors.black87,
@@ -208,40 +211,44 @@ class StudyScreen extends StatelessWidget {
                 childAspectRatio: 3, // width:height 비율 조정
                 children: [
                   PracticeCard(
-                    title: '손글씨 자세',
-                    subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
+                    title: '글씨 점수 통계',
+                    subtitle: '내가 연습한 글씨 점수를 통계로 확인해볼까요?',
+                    imagePath: 'assets/graph.png',
+                    onTap: () {
+                      // 개발진행중이라는 다이얼로그
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return WaitdevelopDialog(scale: scale);
+                        },
+                      );
+                    },
                   ),
                   PracticeCard(
-                    title: '자음과 모음 쓰기',
-                    subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
-                    imagePath: 'assets/rabbitTeacher.png',
-                    onTap: () {},
+                    title: '나만의 글씨 달력',
+                    subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
+                    imagePath: 'assets/dailyCalendar.png',
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return WaitdevelopDialog(scale: scale);
+                        },
+                      );
+                    },
                   ),
                   PracticeCard(
-                    title: '받침 있는 글자 쓰기',
-                    subtitle: '쌍자음, 겹받침 등 복잡한 글자 연습',
-                    imagePath: 'assets/hamster.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '문장 쓰기',
-                    subtitle: '문장 단위로 또박또박 쓰는 연습',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '캘리그라피 연습',
-                    subtitle: '캘리그라피 연습을 통해 글씨체를 살려봐요',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '무한 글씨 연습',
-                    subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
+                    title: '글씨 포토카트 만들기',
+                    subtitle: '오늘을 기념하는 사진과 함께 문장 하나를 남겨보세요',
+                    imagePath: 'assets/photocard.png',
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return WaitdevelopDialog(scale: scale);
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
