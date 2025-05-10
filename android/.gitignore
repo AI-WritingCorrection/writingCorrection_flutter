@@ -12,3 +12,12 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# ----------------------------
+#  반드시 커밋해야 할 Gradle Wrapper
+# ----------------------------
+# Unix/Windows용 실행 스크립트
+!gradlew
+!gradlew.bat
+# Wrapper JAR (버전 고정용)
+!gradle-wrapper.jar
