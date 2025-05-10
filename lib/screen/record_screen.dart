@@ -41,7 +41,7 @@ class RecordScreen extends StatelessWidget {
                   height: 180 * scale, // 상단 높이를 적절히 조정
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/calendar.png'),
+                      image: AssetImage('assets/image/calendar.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -88,7 +88,7 @@ class RecordScreen extends StatelessWidget {
             PracticeCard(
               title: '글씨 점수 통계',
               subtitle: '내가 연습한 글씨 점수를 통계로 확인해볼까요?',
-              imagePath: 'assets/graph.png',
+              imagePath: 'assets/image/graph.png',
               onTap: () {
                 // 해당 페이지로 이동하는 로직
                 showDialog(
@@ -102,7 +102,7 @@ class RecordScreen extends StatelessWidget {
             PracticeCard(
               title: '나만의 글씨 달력',
               subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
-              imagePath: 'assets/dailyCalendar.png',
+              imagePath: 'assets/image/dailyCalendar.png',
               onTap: () {
                 showDialog(
                   context: context,
@@ -115,7 +115,7 @@ class RecordScreen extends StatelessWidget {
             PracticeCard(
               title: '글씨 포토카트 만들기',
               subtitle: '오늘을 기념하는 사진과 함께 문장 하나를 남겨보세요',
-              imagePath: 'assets/photocard.png',
+              imagePath: 'assets/image/photocard.png',
               onTap: () {
                 showDialog(
                   context: context,
@@ -159,7 +159,7 @@ class RecordScreen extends StatelessWidget {
                   height: 180 * scale,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/calendar.png'),
+                      image: AssetImage('assets/image/calendar.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -213,7 +213,7 @@ class RecordScreen extends StatelessWidget {
                   PracticeCard(
                     title: '글씨 점수 통계',
                     subtitle: '내가 연습한 글씨 점수를 통계로 확인해볼까요?',
-                    imagePath: 'assets/graph.png',
+                    imagePath: 'assets/image/graph.png',
                     onTap: () {
                       // 개발진행중이라는 다이얼로그
                       showDialog(
@@ -227,7 +227,7 @@ class RecordScreen extends StatelessWidget {
                   PracticeCard(
                     title: '나만의 글씨 달력',
                     subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
-                    imagePath: 'assets/dailyCalendar.png',
+                    imagePath: 'assets/image/dailyCalendar.png',
                     onTap: () {
                       showDialog(
                         context: context,
@@ -240,7 +240,7 @@ class RecordScreen extends StatelessWidget {
                   PracticeCard(
                     title: '글씨 포토카트 만들기',
                     subtitle: '오늘을 기념하는 사진과 함께 문장 하나를 남겨보세요',
-                    imagePath: 'assets/photocard.png',
+                    imagePath: 'assets/image/photocard.png',
                     onTap: () {
                       showDialog(
                         context: context,
