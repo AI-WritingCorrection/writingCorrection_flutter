@@ -1,7 +1,7 @@
 flutter_native_splash:
   color: "#CEEF91"
   #background_image: "assets/background.png"
-  image: assets/bearTeacher_text.png
+  image: assets/character/bearTeacher_text.png
   #branding: assets/dart.png
   #branding_mode: bottom
 
