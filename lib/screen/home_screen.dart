@@ -1,3 +1,4 @@
+import 'package:aiwriting_collection/screen/detail_studyPage.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class HomeScreen extends StatelessWidget {
         left: (screenSize.width - separatorSize * 0.9) / 2,
         top: 100 * scale,
         child: CharacterButton(
-          assetPath: 'assets/rabbitTeacher.png',
+          assetPath: 'assets/character/rabbitTeacher.png',
           size: separatorSize,
           onTap: () {},
         ),
@@ -93,7 +94,7 @@ class HomeScreen extends StatelessWidget {
             left: sepX,
             top: pos.dy,
             child: CharacterButton(
-              assetPath: 'assets/bearTeacher.png',
+              assetPath: 'assets/character/bearTeacher.png',
               size: separatorSize,
               onTap: () {},
             ),
@@ -110,7 +111,12 @@ class HomeScreen extends StatelessWidget {
             child: StudyStep(
               label: stepCounter,
               diameter: diameter,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailStudypage()),
+                );
+              },
             ),
           ),
         );
