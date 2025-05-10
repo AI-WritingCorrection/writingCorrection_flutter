@@ -1,8 +1,13 @@
-# Miscellaneous
+# ----------------------------
+#  공통 무시 항목
+# ----------------------------
+# 컴파일 산출물 등
 *.class
 *.log
 *.pyc
 *.swp
+
+# macOS, 에디터별
 .DS_Store
 .atom/
 .build/
@@ -12,18 +17,14 @@
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# IDE 설정
 *.iml
 *.ipr
 *.iws
 .idea/
+# .vscode/   ← 필요 시에만 언급
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# Flutter/Dart/Pub 관련
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -33,13 +34,19 @@ migrate_working_dir/
 .pub/
 /build/
 
-# Symbolication related
+# Android 스크린샷·심볼·맵
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
+# Android Studio 로컬 빌드 캐시
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android 로컬 설정 파일·캐시
+/android/.gradle/
+/android/captures/
+/android/local.properties
+
+# 루트 레벨 Gradle 캐시
+/.gradle/
