@@ -2,6 +2,7 @@ import 'package:aiwriting_collection/screen/home_screen.dart';
 import 'package:aiwriting_collection/screen/login_screen.dart';
 import 'package:aiwriting_collection/screen/record_screen.dart';
 import 'package:aiwriting_collection/screen/study_screen.dart';
+import 'package:aiwriting_collection/screen/mypage_screen.dart';
 import 'package:aiwriting_collection/widget/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,10 +27,7 @@ Future<void> main() async {
     ]);
   }
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => LoginStatus(),
-      child: const MyApp(),
-    ),
+    ChangeNotifierProvider(create: (_) => LoginStatus(), child: const MyApp()),
   );
 }
 
@@ -79,25 +77,7 @@ class _MyAppState extends State<MyApp> {
                       HomeScreen(),
                       StudyScreen(),
                       RecordScreen(),
-                      Center(
-                        child: TextButton(
-                          onPressed: () {
-                            // 로그아웃 버튼 클릭 시 로그인 상태를 false로 변경
-                            Provider.of<LoginStatus>(
-                              context,
-                              listen: false,
-                            ).setLoggedIn(false);
-                          },
-                          child: Text(
-                            "로그아웃",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+                      MypageScreen(),
                     ],
                   ),
                   bottomNavigationBar: Bottom(),
