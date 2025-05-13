@@ -40,7 +40,7 @@ class StudyScreen extends StatelessWidget {
                   height: 180 * scale, // 상단 높이를 적절히 조정
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/letter.png'),
+                      image: AssetImage('assets/image/letter.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -75,7 +75,7 @@ class StudyScreen extends StatelessWidget {
               child: Text(
                 '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을\n차근차근 알려드립니다.',
                 style: TextStyle(
-                  fontSize: 15 * scale,
+                  fontSize: 17 * scale,
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
                 ),
@@ -87,7 +87,7 @@ class StudyScreen extends StatelessWidget {
             PracticeCard(
               title: '손글씨 자세',
               subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
-              imagePath: 'assets/bearTeacher.png',
+              imagePath: 'assets/character/bearTeacher.png',
               onTap: () {
                 // 해당 페이지로 이동하는 로직
               },
@@ -95,31 +95,31 @@ class StudyScreen extends StatelessWidget {
             PracticeCard(
               title: '자음과 모음 쓰기',
               subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
-              imagePath: 'assets/rabbitTeacher.png',
+              imagePath: 'assets/character/rabbitTeacher.png',
               onTap: () {},
             ),
             PracticeCard(
               title: '받침 있는 글자 쓰기',
               subtitle: '쌍자음, 겹받침 등 조금 더 복잡한 글자 연습',
-              imagePath: 'assets/hamster.png',
+              imagePath: 'assets/character/hamster.png',
               onTap: () {},
             ),
             PracticeCard(
               title: '문장 쓰기',
               subtitle: '문장 단위로 글씨를 또박또박 쓰는 연습',
-              imagePath: 'assets/bearTeacher.png',
+              imagePath: 'assets/character/bearTeacher.png',
               onTap: () {},
             ),
             PracticeCard(
               title: '캘리그라피 연습',
               subtitle: '간단한 캘리그라피 연습을 통해 글씨체를 살려봐요',
-              imagePath: 'assets/bearTeacher.png',
+              imagePath: 'assets/character/bearTeacher.png',
               onTap: () {},
             ),
             PracticeCard(
               title: '무한 글씨 연습',
               subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-              imagePath: 'assets/bearTeacher.png',
+              imagePath: 'assets/character/bearTeacher.png',
               onTap: () {},
             ),
 
@@ -156,7 +156,7 @@ class StudyScreen extends StatelessWidget {
                   height: 180 * scale,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/letter.png'),
+                      image: AssetImage('assets/image/letter.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -186,7 +186,7 @@ class StudyScreen extends StatelessWidget {
               child: Text(
                 '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을 차근차근 알려드립니다.',
                 style: TextStyle(
-                  fontSize: 20 * scale,
+                  fontSize: 23 * scale,
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
                 ),
@@ -210,37 +210,37 @@ class StudyScreen extends StatelessWidget {
                   PracticeCard(
                     title: '손글씨 자세',
                     subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
-                    imagePath: 'assets/bearTeacher.png',
+                    imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {},
                   ),
                   PracticeCard(
                     title: '자음과 모음 쓰기',
                     subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
-                    imagePath: 'assets/rabbitTeacher.png',
+                    imagePath: 'assets/character/rabbitTeacher.png',
                     onTap: () {},
                   ),
                   PracticeCard(
                     title: '받침 있는 글자 쓰기',
                     subtitle: '쌍자음, 겹받침 등 복잡한 글자 연습',
-                    imagePath: 'assets/hamster.png',
+                    imagePath: 'assets/character/hamster.png',
                     onTap: () {},
                   ),
                   PracticeCard(
                     title: '문장 쓰기',
                     subtitle: '문장 단위로 또박또박 쓰는 연습',
-                    imagePath: 'assets/bearTeacher.png',
+                    imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {},
                   ),
                   PracticeCard(
                     title: '캘리그라피 연습',
                     subtitle: '캘리그라피 연습을 통해 글씨체를 살려봐요',
-                    imagePath: 'assets/bearTeacher.png',
+                    imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {},
                   ),
                   PracticeCard(
                     title: '무한 글씨 연습',
                     subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-                    imagePath: 'assets/bearTeacher.png',
+                    imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {},
                   ),
                 ],

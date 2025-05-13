@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'MyPen',
       theme: ThemeData(
+        fontFamily: 'Bazzi',
         brightness: Brightness.light,
         primaryColor: const Color(0xFFFFFBF3),
         colorScheme: const ColorScheme.light(
