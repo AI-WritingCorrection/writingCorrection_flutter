@@ -68,34 +68,31 @@ class DetailStudyPage extends StatelessWidget {
                       Positioned(
                         left: horizontalInset + 50 * scale,
                         right: 40 * scale,
-                        child: SimpleShadow(
-                          opacity: 0.3,
-                          sigma: 6 * scale,
-                          offset: Offset(0, 4 * scale),
-                          child: ClipRRect(
+                        child: Container(
+                          height: 140 * scale,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(50 * scale),
-                            child: Container(
-                              height: 140 * scale,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: const Color(0xFFCEEF91),
-                                  width: 6 * scale,
-                                ),
-                                borderRadius: BorderRadius.circular(50 * scale),
+                            border: Border.all(
+                              color: const Color(0xFFCEEF91),
+                              width: 6 * scale,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 6 * scale,
+                                offset: Offset(0, 4 * scale),
                               ),
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16 * scale,
-                              ),
-                              child: Text(
-                                '오늘은 토요일이라 맘껏 놀자!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 40 * scale,
-                                ),
-                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                          child: Text(
+                            '오늘은 토요일이라 맘껏 놀자!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 40 * scale,
                             ),
                           ),
                         ),
@@ -104,35 +101,35 @@ class DetailStudyPage extends StatelessWidget {
                       Positioned(
                         left: horizontalInset,
                         top: -30 * scale,
-                        child: SimpleShadow(
-                          opacity: 0.3,
-                          sigma: 6 * scale,
-                          offset: Offset(0, 4 * scale),
-                          child: ClipRRect(
+                        child: Container(
+                          width: 250 * scale,
+                          height: 90 * scale,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFE5F2),
                             borderRadius: BorderRadius.circular(30 * scale),
-                            child: Container(
-                              width: 250 * scale,
-                              height: 90 * scale,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFE5F2),
-                                borderRadius: BorderRadius.circular(30 * scale),
-                                border: Border.all(
-                                  color: Colors.pink.shade200,
-                                  width: 6 * scale,
-                                ),
+                            border: Border.all(
+                              color: Colors.pink.shade200,
+                              width: 6 * scale,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 6 * scale,
+                                offset: Offset(0, 4 * scale),
                               ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12 * scale,
-                                vertical: 12 * scale,
-                              ),
-                              child: Text(
-                                '연습 과제',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: const Color(0xFF151514),
-                                  fontSize: 40 * scale,
-                                ),
-                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12 * scale,
+                            vertical: 12 * scale,
+                          ),
+                          child: Text(
+                            '연습 과제',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: const Color(0xFF151514),
+                              fontSize: 40 * scale,
                             ),
                           ),
                         ),
@@ -142,37 +139,32 @@ class DetailStudyPage extends StatelessWidget {
                 ),
                 SizedBox(height: 50 * scale),
                 // 시작 버튼
-                Center(
-                  child: SimpleShadow(
-                    opacity: 0.3,
-                    sigma: 4 * scale,
-                    offset: Offset(0, 4 * scale),
-                    child: ClipRRect(
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFCEEF91),
                       borderRadius: BorderRadius.circular(40 * scale),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFCEEF91),
-                          borderRadius: BorderRadius.circular(40 * scale),
-                          border: Border.all(
-                            color: Colors.green.shade400,
-                            width: 6 * scale,
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 36 * scale,
-                          vertical: 24 * scale,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '연습 시작!',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 35 * scale),
-                            ),
-                          ],
-                        ),
+                      border: Border.all(
+                        color: Colors.green.shade400,
+                        width: 6 * scale,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4 * scale,
+                          offset: Offset(0, 4 * scale),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 36 * scale,
+                      vertical: 24 * scale,
+                    ),
+                    child: Text(
+                      '연습 시작!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 35 * scale),
                     ),
                   ),
                 ),
