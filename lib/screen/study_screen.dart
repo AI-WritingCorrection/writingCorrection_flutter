@@ -75,7 +75,7 @@ class StudyScreen extends StatelessWidget {
               child: Text(
                 '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을\n차근차근 알려드립니다.',
                 style: TextStyle(
-                  fontSize: 15 * scale,
+                  fontSize: 17 * scale,
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
                 ),
@@ -186,7 +186,7 @@ class StudyScreen extends StatelessWidget {
               child: Text(
                 '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을 차근차근 알려드립니다.',
                 style: TextStyle(
-                  fontSize: 20 * scale,
+                  fontSize: 23 * scale,
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
                 ),

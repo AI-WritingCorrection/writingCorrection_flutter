@@ -65,7 +65,7 @@ class StudyStep extends StatelessWidget {
               '${label + 1}',
               style: TextStyle(
                 color: Colors.black87,
-                fontSize: 22 * scale * (isLandscape ? 1.3 : 1.0),
+                fontSize: 24 * scale * (isLandscape ? 1.3 : 1.0),
                 fontWeight: FontWeight.bold,
               ),
             ),
