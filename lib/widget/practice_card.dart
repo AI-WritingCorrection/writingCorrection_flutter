@@ -26,7 +26,7 @@ class PracticeCard extends StatelessWidget {
     final double scale =
         isLandscape
             ? screenSize.height / baseLandscape
-            : screenSize.width / basePortrait;    
+            : screenSize.width / basePortrait;
     return value * scale;
   }
 
@@ -74,6 +74,7 @@ class PracticeCard extends StatelessWidget {
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -83,13 +84,19 @@ class PracticeCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                     SizedBox(height: spacing),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: subtitleFontSize,
-                        color: Colors.grey[600],
+                    Flexible(
+                      child: Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: subtitleFontSize,
+                          color: Colors.grey[600],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
                       ),
                     ),
                   ],

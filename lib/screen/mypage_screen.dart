@@ -83,7 +83,7 @@ class _MypageScreenState extends State<MypageScreen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         image: DecorationImage(
-                          image: AssetImage('assets/bearTeacher.png'),
+                          image: AssetImage('assets/character/bearTeacher.png'),
                           fit: BoxFit.cover,
                           alignment: Alignment(0, -2),
                         ),
@@ -255,7 +255,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     title: '곰곰',
                     subtitle:
                         '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
-                    imagePath: 'assets/bearTeacher.png',
+                    imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {
                       // 해당 페이지로 이동하는 로직
                     },
@@ -265,7 +265,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     title: '토토',
                     subtitle:
                         '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요. 지루할 틈 없이 신나게 따라와 보세요!',
-                    imagePath: 'assets/rabbitTeacher.png',
+                    imagePath: 'assets/character/rabbitTeacher.png',
                     onTap: () {},
                   ),
                   SizedBox(height: 20 * scale),
@@ -273,7 +273,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     title: '다람',
                     subtitle:
                         '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다. 섬세한 한 획까지 믿고 맡겨 보세요!',
-                    imagePath: 'assets/hamster.png',
+                    imagePath: 'assets/character/hamster.png',
                     onTap: () {},
                   ),
                 ],
@@ -331,7 +331,7 @@ class _MypageScreenState extends State<MypageScreen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         image: DecorationImage(
-                          image: AssetImage('assets/bearTeacher.png'),
+                          image: AssetImage('assets/character/bearTeacher.png'),
                         ),
                       ),
                     ),
@@ -518,44 +518,52 @@ class _MypageScreenState extends State<MypageScreen> {
                   ),
                   Divider(),
                   SizedBox(height: 40 * scale),
-                  GridView.count(
-                    shrinkWrap: true, // 부모 ScrollView 안에서 높이를 콘텐츠에 맞춤
-                    physics:
-                        const NeverScrollableScrollPhysics(), // 그리드 자체 스크롤 해제
-                    crossAxisCount: 2, // 2열 배치
-                    crossAxisSpacing: 16 * scale, // 카드 간 가로 간격
-                    mainAxisSpacing: 16 * scale, // 카드 간 세로 간격
-                    childAspectRatio: 3, // 카드 가로:세로 비율 (필요시 조정)
-                    children: [
-                      PracticeCard(
-                        title: '곰곰',
-                        subtitle: '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요.',
-                        imagePath: 'assets/bearTeacher.png',
-                        onTap: () {
-                          // 곰곰 카드 탭 로직
-                        },
-                      ),
-                      PracticeCard(
-                        title: '토토',
-                        subtitle: '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요.',
-                        imagePath: 'assets/rabbitTeacher.png',
-                        onTap: () {
-                          // 토토 카드 탭 로직
-                        },
-                      ),
-                      PracticeCard(
-                        title: '다람',
-                        subtitle: '다람이는 작은 손으로 꼼꼼하게 글씨를 완성시켜 준답니다.',
-                        imagePath: 'assets/hamster.png',
-                        onTap: () {
-                          // 다람 카드 탭 로직
-                        },
-                      ),
-                    ],
+                  PracticeCard(
+                    title: '캐릭터 소개',
+                    subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                    imagePath: 'assets/character/bearTeacher.png',
+                    onTap: () {
+                      // 곰곰 카드 탭 로직
+                    },
                   ),
-                  SizedBox(height: 80 * scale),
+
+                  SizedBox(height: 40 * scale),
                 ],
               ),
+            ),
+            GridView.count(
+              shrinkWrap: true, // 부모 ScrollView 안에서 높이를 콘텐츠에 맞춤
+              physics: const NeverScrollableScrollPhysics(), // 그리드 자체 스크롤 해제
+              crossAxisCount: 2, // 2열 배치
+              crossAxisSpacing: 16 * scale, // 카드 간 가로 간격
+              mainAxisSpacing: 16 * scale, // 카드 간 세로 간격
+              childAspectRatio: 3, // 카드 가로:세로 비율 (필요시 조정)
+              children: [
+                PracticeCard(
+                  title: '곰곰',
+                  subtitle: '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요.',
+                  imagePath: 'assets/character/bearTeacher.png',
+                  onTap: () {
+                    // 곰곰 카드 탭 로직
+                  },
+                ),
+                PracticeCard(
+                  title: '토토',
+                  subtitle: '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요.',
+                  imagePath: 'assets/character/rabbitTeacher.png',
+                  onTap: () {
+                    // 토토 카드 탭 로직
+                  },
+                ),
+                PracticeCard(
+                  title: '다람',
+                  subtitle: '다람이는 작은 손으로 꼼꼼하게 글씨를 완성시켜 준답니다.',
+                  imagePath: 'assets/character/hamster.png',
+                  onTap: () {
+                    // 다람 카드 탭 로직
+                  },
+                ),
+              ],
             ), // 토글 아래 구분선
           ],
         ),
