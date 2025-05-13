@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Center(
                   child: Image.asset(
-                    'assets/bearTeacher.png',
+                    'assets/character/bearTeacher.png',
                     height: 300 * scale,
                     fit: BoxFit.contain,
                   ),
@@ -327,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Center(
                   child: Image.asset(
-                    'assets/bearTeacher.png',
+                    'assets/character/bearTeacher.png',
                     height: 300 * scale,
                     fit: BoxFit.contain,
                   ),
