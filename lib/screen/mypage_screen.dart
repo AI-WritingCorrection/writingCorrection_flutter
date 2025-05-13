@@ -299,110 +299,264 @@ class _MypageScreenState extends State<MypageScreen> {
             : screenSize.width / basePortrait;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF3),
+      backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 상단 영역 (동일하게 재사용)
-            Stack(
-              children: [
-                Container(
-                  width: screenSize.width,
-                  height: 180 * scale,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/letter.png'),
-                      fit: BoxFit.cover,
+            SizedBox(
+              height: 180 * scale,
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ClipPath(
+                      clipper: DiagonalClipper(),
+                      child: Container(
+                        color: Theme.of(context).colorScheme.secondary,
+                        child: Center(
+                          child: Text(
+                            '마이 페이지',
+                            style: TextStyle(
+                              fontSize: 38 * scale,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 80 * scale,
-                  left: 50 * scale,
-                  child: Text(
-                    '손글씨 연습',
-                    style: TextStyle(
-                      fontSize: 30 * scale,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        image: DecorationImage(
+                          image: AssetImage('assets/bearTeacher.png'),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            // 설명 텍스트
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                20 * scale,
-                40 * scale,
-                20 * scale,
-                8 * scale,
-              ),
-              child: Text(
-                '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을 차근차근 알려드립니다.',
-                style: TextStyle(
-                  fontSize: 20 * scale,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
+                ],
               ),
             ),
-            // 2열 Grid of cards
+            SizedBox(height: 16 * scale),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 16 * scale,
                 vertical: 8 * scale,
               ),
-              child: GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 16 * scale,
-                mainAxisSpacing: 16 * scale,
-                childAspectRatio: 3, // width:height 비율 조정
+              child: Column(
                 children: [
-                  PracticeCard(
-                    title: '손글씨 자세',
-                    subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.grey.shade300,
+                        radius: 70 * scale,
+                        child: Icon(
+                          Icons.person,
+                          size: 60 * scale,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: -4 * scale,
+                        right: -4 * scale,
+                        child: CircleAvatar(
+                          radius: 26,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.edit,
+                            size: 30 * scale,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  PracticeCard(
-                    title: '자음과 모음 쓰기',
-                    subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
-                    imagePath: 'assets/rabbitTeacher.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '받침 있는 글자 쓰기',
-                    subtitle: '쌍자음, 겹받침 등 복잡한 글자 연습',
-                    imagePath: 'assets/hamster.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '문장 쓰기',
-                    subtitle: '문장 단위로 또박또박 쓰는 연습',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '캘리그라피 연습',
-                    subtitle: '캘리그라피 연습을 통해 글씨체를 살려봐요',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
-                  ),
-                  PracticeCard(
-                    title: '무한 글씨 연습',
-                    subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-                    imagePath: 'assets/bearTeacher.png',
-                    onTap: () {},
+                  SizedBox(height: 20 * scale),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 35 * scale, // 좌우 여백
+                      vertical: 10 * scale, // 상하 여백
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white, // 배경색
+                      border: Border.all(
+                        color: Colors.grey.shade400, // 테두리 색
+                        width: 1 * scale, // 테두리 두께
+                      ),
+                      borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
+                    ),
+                    child: Text(
+                      '게스트', // 사용자 이름 또는 '게스트'
+                      style: TextStyle(
+                        fontSize: 18 * scale,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 80 * scale),
+            SizedBox(height: 40 * scale),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // ── 로그아웃 버튼 ──
+                GestureDetector(
+                  onTap: () {
+                    // 로그인 상태를 false 로 변경하면 main.dart 에서 자동으로 LoginScreen 으로 돌아갑니다.
+                    Provider.of<LoginStatus>(
+                      context,
+                      listen: false,
+                    ).setLoggedIn(false);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12 * scale,
+                      horizontal: 35 * scale,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(45 * scale),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '로그아웃',
+                        style: TextStyle(
+                          fontSize: 16 * scale,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(width: 100 * scale),
+
+                // ── 회원탈퇴 버튼 ──
+                GestureDetector(
+                  onTap: () {
+                    // TODO: 회원탈퇴 다이얼로그 및 로직 구현
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12 * scale,
+                      horizontal: 35 * scale,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(45 * scale),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '회원탈퇴',
+                        style: TextStyle(
+                          fontSize: 16 * scale,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.redAccent, // 탈퇴는 위험 표시 색상
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 40 * scale),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 200 * scale),
+              child: Column(
+                children: [
+                  // 1) 토글 Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '일일 학습 알림',
+                        style: TextStyle(
+                          fontSize: 20 * scale,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      Switch(
+                        value: isDailyAlarmOn,
+                        onChanged: (v) => setState(() => isDailyAlarmOn = v),
+                        activeColor: Colors.green,
+                        activeTrackColor: Colors.grey.shade300,
+                        inactiveThumbColor: Colors.grey.shade700,
+                        inactiveTrackColor: Colors.grey.shade300,
+                      ),
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '다크 모드',
+                        style: TextStyle(
+                          fontSize: 20 * scale,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      Switch(
+                        value: isDailyAlarmOn,
+                        onChanged: (v) => setState(() => isDailyAlarmOn = v),
+                        activeColor: Colors.green,
+                        activeTrackColor: Colors.grey.shade300,
+                        inactiveThumbColor: Colors.grey.shade700,
+                        inactiveTrackColor: Colors.grey.shade300,
+                      ),
+                    ],
+                  ),
+                  Divider(),
+                  SizedBox(height: 40 * scale),
+                  GridView.count(
+                    shrinkWrap: true, // 부모 ScrollView 안에서 높이를 콘텐츠에 맞춤
+                    physics:
+                        const NeverScrollableScrollPhysics(), // 그리드 자체 스크롤 해제
+                    crossAxisCount: 2, // 2열 배치
+                    crossAxisSpacing: 16 * scale, // 카드 간 가로 간격
+                    mainAxisSpacing: 16 * scale, // 카드 간 세로 간격
+                    childAspectRatio: 3, // 카드 가로:세로 비율 (필요시 조정)
+                    children: [
+                      PracticeCard(
+                        title: '곰곰',
+                        subtitle: '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요.',
+                        imagePath: 'assets/bearTeacher.png',
+                        onTap: () {
+                          // 곰곰 카드 탭 로직
+                        },
+                      ),
+                      PracticeCard(
+                        title: '토토',
+                        subtitle: '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요.',
+                        imagePath: 'assets/rabbitTeacher.png',
+                        onTap: () {
+                          // 토토 카드 탭 로직
+                        },
+                      ),
+                      PracticeCard(
+                        title: '다람',
+                        subtitle: '다람이는 작은 손으로 꼼꼼하게 글씨를 완성시켜 준답니다.',
+                        imagePath: 'assets/hamster.png',
+                        onTap: () {
+                          // 다람 카드 탭 로직
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 80 * scale),
+                ],
+              ),
+            ), // 토글 아래 구분선
           ],
         ),
       ),
