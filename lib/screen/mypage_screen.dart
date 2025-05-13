@@ -252,6 +252,15 @@ class _MypageScreenState extends State<MypageScreen> {
                   Divider(), // 토글 아래 구분선
                   SizedBox(height: 40 * scale),
                   PracticeCard(
+                    title: '캐릭터 소개',
+                    subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                    imagePath: 'assets/character/bearTeacher.png',
+                    onTap: () {
+                      // 곰곰 카드 탭 로직
+                    },
+                  ),
+                  SizedBox(height: 20 * scale),
+                  PracticeCard(
                     title: '곰곰',
                     subtitle:
                         '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
