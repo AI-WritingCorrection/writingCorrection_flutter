@@ -1,3 +1,4 @@
+import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/screen/detail_studyPage.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 /// 홈 탭용 나선형 레이아웃 페이지
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+    //연습 과제 더미 데이터
 
   @override
   Widget build(BuildContext context) {
@@ -103,18 +105,24 @@ class HomeScreen extends StatelessWidget {
         insertedChapterBreak = true;
         // do not increment stepCounter, so next iteration uses same stepCounter
       } else {
-        // Normal step button
+        // 현재 스텝 번호를 고정된 값으로 캡처
+        final currentStep = stepCounter;
         widgets.add(
           Positioned(
             left: pos.dx,
             top: pos.dy,
             child: StudyStep(
-              label: stepCounter,
+              label: currentStep,
               diameter: diameter,
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DetailStudyPage()),
+                  MaterialPageRoute(
+                    builder: (context) => DetailStudyPage(
+                      pageNum: currentStep
+
+                    ),
+                  ),
                 );
               },
             ),
