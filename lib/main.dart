@@ -49,8 +49,10 @@ class _MyAppState extends State<MyApp> {
         brightness: Brightness.light,
         primaryColor: const Color(0xFFFFFBF3),
         colorScheme: const ColorScheme.light(
-          primary: Color(0xFFFFFBF3),
-          secondary: Color(0xFFCEEF91),
+          primary: Color(0xFFCEEF91),
+          secondary: Color(0xFFFFE5F2),
+          tertiary:Color(0xFFFFCEEF),
+          surface: Color(0xFFFFFBF3),
         ),
       ),
       builder:
