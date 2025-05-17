@@ -290,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: scale * 16,
-                            color: Colors.black,
+                            color: Colors.black, 
                           ),
                         ),
                       ),
