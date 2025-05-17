@@ -1,10 +1,26 @@
+import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_shadow/simple_shadow.dart';
 
 class DetailStudyPage extends StatelessWidget {
-  const DetailStudyPage({super.key});
+  final int pageNum;
+  DetailStudyPage({super.key, required this.pageNum});
+  final List<Practice> practiceList = [
+    Practice(
+      missionText: '30초 안에 밑의 문장을 정확히 써보자',
+      imageAddress: 'assets/character/bearTeacher.png',
+      missionType: 'sentence',
+      practiceText: '오늘은 토요일이라 맘껏 놀자!',
+    ),
+    Practice(
+      missionText: '밑의 단어을 정확히 써보자',
+      imageAddress: 'assets/character/rabbitTeacher.png',
+      missionType: 'word',
+      practiceText: '감자',
+    ),
+  ]; 
+  Practice get practice => practiceList[pageNum];
 
   //오직 태블릿 가로 화면
   @override
@@ -47,8 +63,8 @@ class DetailStudyPage extends StatelessWidget {
 
                 // 말풍선 + 캐릭터 이미지
                 SpeechBubble(
-                  text: '30초 안에 밑의 문장을 정확히 써보자',
-                  imageAsset: 'assets/character/bearTeacher.png',
+                  text: practice.missionText,
+                  imageAsset: practice.imageAddress,
                   scale: scale,
                   horizontalInset: horizontalInset,
                 ),
@@ -79,7 +95,7 @@ class DetailStudyPage extends StatelessWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
+                                color: Colors.black26,
                                 blurRadius: 6 * scale,
                                 offset: Offset(0, 4 * scale),
                               ),
@@ -88,7 +104,7 @@ class DetailStudyPage extends StatelessWidget {
                           alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(horizontal: 16 * scale),
                           child: Text(
-                            '오늘은 토요일이라 맘껏 놀자!',
+                            practice.practiceText,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black,
@@ -113,7 +129,7 @@ class DetailStudyPage extends StatelessWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
+                                color: Colors.black26,
                                 blurRadius: 6 * scale,
                                 offset: Offset(0, 4 * scale),
                               ),
