@@ -1,4 +1,5 @@
 import 'package:aiwriting_collection/model/practice.dart';
+import 'package:aiwriting_collection/screen/writing_page.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +12,47 @@ class DetailStudyPage extends StatelessWidget {
       missionText: '30초 안에 밑의 문장을 정확히 써보자',
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
-      practiceText: '오늘은 토요일이라 맘껏 놀자!',
+      practiceText: '오늘은 토요일이니까 맘껏 놀자',
+      time: 30,
+      essentialStrokeCounts: [3, 5, 3, 0, 5, 4, 5, 2, 2, 4, 0, 8, 6, 0, 6, 5],
     ),
     Practice(
-      missionText: '밑의 단어을 정확히 써보자',
+      missionText: '밑의 단어를 정확히 써보자',
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '감자',
+      essentialStrokeCounts: [6, 5],
     ),
-  ]; 
+    Practice(
+      missionText: '밑의 문장을 정확히 써보자',
+      imageAddress: 'assets/character/hamster.png',
+      missionType: 'sentence',
+      practiceText: '내일도 잘부탁해요요',
+      essentialStrokeCounts: [4, 5, 4, 0, 8, 6, 6, 6, 4, 4],
+    ),
+    Practice(
+      missionText: '밑의 글자을 정확히 써보자',
+      imageAddress: 'assets/character/hamster.png',
+      missionType: 'letter',
+      practiceText: '환',
+      essentialStrokeCounts: [8],
+    ),
+    Practice(
+      missionText: '밑의 한글을 정확히 써보자',
+      imageAddress: 'assets/character/hamster.png',
+      missionType: 'phoneme',
+      practiceText: 'ㄱ',
+      essentialStrokeCounts: [1],
+    ),
+    Practice(
+      missionText: '60초 안에 밑의 한글을 정확히 써보자',
+      imageAddress: 'assets/character/hamster.png',
+      missionType: 'phoneme',
+      practiceText: 'ㅎ',
+      time: 60,
+      essentialStrokeCounts: [3],
+    ),
+  ];
   Practice get practice => practiceList[pageNum];
 
   //오직 태블릿 가로 화면
@@ -37,7 +70,7 @@ class DetailStudyPage extends StatelessWidget {
 
     //말풍선 왼쪽 여백
     final double horizontalInset = 40 * scale;
-
+    final isHamster = practice.imageAddress.contains('hamster');
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
       body: SafeArea(
@@ -67,9 +100,15 @@ class DetailStudyPage extends StatelessWidget {
                   imageAsset: practice.imageAddress,
                   scale: scale,
                   horizontalInset: horizontalInset,
+                  imageRight: isHamster ? -30 : -50,
+                  imageBottom: isHamster ? -90 : -130,
+                  imageHeight:
+                      isHamster
+                          ? 250 // smaller for hamster
+                          : 312,
                 ),
                 // 캐릭터 이미지 아래 여백
-                SizedBox(height: 90 * scale),
+                SizedBox(height: 120 * scale),
 
                 // 연습과제 박스
                 SizedBox(
@@ -153,34 +192,44 @@ class DetailStudyPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 50 * scale),
+                SizedBox(height: 30 * scale),
                 // 시작 버튼
                 Align(
                   alignment: Alignment.center,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFCEEF91),
-                      borderRadius: BorderRadius.circular(40 * scale),
-                      border: Border.all(
-                        color: Colors.green.shade400,
-                        width: 6 * scale,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4 * scale,
-                          offset: Offset(0, 4 * scale),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WritingPage(pageNum: pageNum),
                         ),
-                      ],
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 36 * scale,
-                      vertical: 24 * scale,
-                    ),
-                    child: Text(
-                      '연습 시작!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 35 * scale),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFCEEF91),
+                        borderRadius: BorderRadius.circular(40 * scale),
+                        border: Border.all(
+                          color: Colors.green.shade400,
+                          width: 6 * scale,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4 * scale,
+                            offset: Offset(0, 4 * scale),
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 36 * scale,
+                        vertical: 24 * scale,
+                      ),
+                      child: Text(
+                        '연습 시작!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 35 * scale),
+                      ),
                     ),
                   ),
                 ),
