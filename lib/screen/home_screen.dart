@@ -1,4 +1,3 @@
-import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/screen/detail_studyPage.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
