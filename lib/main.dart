@@ -47,12 +47,12 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         fontFamily: 'Bazzi',
         brightness: Brightness.light,
-        primaryColor: const Color(0xFFFFFBF3),
+        primaryColor: Color(0xFFCEEF91),
+        canvasColor: Color(0xFFFFFBF3),
         colorScheme: const ColorScheme.light(
           primary: Color(0xFFCEEF91),
           secondary: Color(0xFFFFE5F2),
-          tertiary:Color(0xFFFFCEEF),
-          surface: Color(0xFFFFFBF3),
+          tertiary: Color(0xFFFFCEEF),
         ),
       ),
       builder:
