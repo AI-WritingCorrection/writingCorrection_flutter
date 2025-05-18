@@ -6,6 +6,9 @@ class SpeechBubble extends StatelessWidget {
   final String imageAsset;
   final double scale;
   final double horizontalInset;
+  final double imageRight;
+  final double imageBottom;
+  final double imageHeight;
 
   const SpeechBubble({
     super.key,
@@ -13,7 +16,22 @@ class SpeechBubble extends StatelessWidget {
     required this.imageAsset,
     required this.scale,
     required this.horizontalInset,
+    this.imageRight = -50,
+    this.imageBottom = -140,
+    this.imageHeight = 312,
   });
+
+  double calculateImageBottom(String imageAsset) {
+    // 이미지 주소에 따라 크기를 조정하는 로직을 추가합니다.
+    if (imageAsset.contains('hamster')) {
+      return -100; // hamster 이미지의 경우
+    } else if (imageAsset.contains('rabbit')) {
+      return -120; // rabbit 이미지의 경우
+    } else {
+      return -140; // 기본 크기
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -48,11 +66,11 @@ class SpeechBubble extends StatelessWidget {
           ),
         ),
         Positioned(
-          right: -50 * scale,
-          bottom: -140 * scale,
+          right: imageRight * scale,
+          bottom: calculateImageBottom(imageAsset) * scale,
           child: Image.asset(
             imageAsset,
-            height: 312 * scale,
+            height: imageHeight * scale,
             fit: BoxFit.contain,
           ),
         ),
