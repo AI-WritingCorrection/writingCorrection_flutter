@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/model/result.dart';
@@ -10,8 +11,8 @@ import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart
 import 'package:flutter/material.dart';
 
 class WritingPage extends StatefulWidget {
-  final int pageNum;
-  const WritingPage({super.key, required this.pageNum});
+  final Practice practice;
+  const WritingPage({super.key, required this.practice});
 
   @override
   State<WritingPage> createState() => _WritingPageState();
@@ -21,53 +22,6 @@ class _WritingPageState extends State<WritingPage> {
   //GlobalKey를 이용해 GridHandwritingCanvas의 내부 상태에 직접 접근할 수 있도록
   final GlobalKey<GridHandwritingCanvasState> _canvasKey =
       GlobalKey<GridHandwritingCanvasState>();
-  final List<Practice> practiceList = [
-    Practice(
-      missionText: '30초 안에 밑의 문장을 정확히 써보자',
-      imageAddress: 'assets/character/bearTeacher.png',
-      missionType: 'sentence',
-      practiceText: '오늘은 토요일이니까 맘껏 놀자',
-      time: 30,
-      essentialStrokeCounts: [3, 5, 3, 0, 5, 4, 5, 2, 2, 4, 0, 8, 6, 0, 6, 5],
-    ),
-    Practice(
-      missionText: '밑의 단어를 정확히 써보자',
-      imageAddress: 'assets/character/rabbitTeacher.png',
-      missionType: 'word',
-      practiceText: '감자',
-      essentialStrokeCounts: [6, 5],
-    ),
-    Practice(
-      missionText: '밑의 문장을 정확히 써보자',
-      imageAddress: 'assets/character/hamster.png',
-      missionType: 'sentence',
-      practiceText: '내일도 잘부탁해요요',
-      essentialStrokeCounts: [4, 5, 4, 0, 8, 6, 6, 6, 4, 4],
-    ),
-    Practice(
-      missionText: '밑의 글자을 정확히 써보자',
-      imageAddress: 'assets/character/hamster.png',
-      missionType: 'letter',
-      practiceText: '환',
-      essentialStrokeCounts: [8],
-    ),
-    Practice(
-      missionText: '밑의 한글을 정확히 써보자',
-      imageAddress: 'assets/character/hamster.png',
-      missionType: 'phoneme',
-      practiceText: 'ㄱ',
-      essentialStrokeCounts: [1],
-    ),
-    Practice(
-      missionText: '60초 안에 밑의 한글을 정확히 써보자',
-      imageAddress: 'assets/character/hamster.png',
-      missionType: 'phoneme',
-      practiceText: 'ㅎ',
-      time: 60,
-      essentialStrokeCounts: [3],
-    ),
-  ];
-  Practice get practice => practiceList[widget.pageNum];
 
   Timer? _timer;
   late int _remainingTime;
@@ -75,18 +29,37 @@ class _WritingPageState extends State<WritingPage> {
   @override
   void initState() {
     super.initState();
-    _remainingTime = practice.time; // use practice.time
+    _remainingTime = widget.practice.time; // use practice.time
     _startTimer();
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      //mounted는 state객체가 현재화면에 장착되어있는지를 나타내는 속성
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       if (_remainingTime > 0) {
         setState(() {
           _remainingTime--;
         });
       } else {
         timer.cancel();
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            final double dialogScale = scaled(context, 3);
+            return MiniDialog(
+              scale: dialogScale,
+              title: '시간 초과',
+              content: '제한 시간이 초과되었습니다.',
+            );
+          },
+        ).then((_) {
+          if (!mounted) return;
+          Navigator.of(context).pop();
+        });
       }
     });
   }
@@ -130,7 +103,7 @@ class _WritingPageState extends State<WritingPage> {
     // 3.Result 모델 생성
     final result = Result(
       userId: 'user123',
-      practiceText: practice.practiceText,
+      practiceText: widget.practice.practiceText,
       streakCount: strokeCount,
       cellImages: cellImages,
       score: 0.0, // 서버 응답 후 업데이트
@@ -172,7 +145,7 @@ class _WritingPageState extends State<WritingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double cellSize = switch (practice.missionType) {
+    final double cellSize = switch (widget.practice.missionType) {
       'sentence' => 103.5,
       'word' => 200,
       'letter' => 200,
@@ -233,8 +206,8 @@ class _WritingPageState extends State<WritingPage> {
                 SizedBox(height: scaled(context, 20)),
 
                 SpeechBubble(
-                  text: practice.missionText,
-                  imageAsset: practice.imageAddress,
+                  text: widget.practice.missionText,
+                  imageAsset: widget.practice.imageAddress,
                   scale: scaled(context, 0.65),
                   horizontalInset: scaled(context, 80),
                   imageRight: -30,
@@ -260,7 +233,7 @@ class _WritingPageState extends State<WritingPage> {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    practice.practiceText,
+                    widget.practice.practiceText,
                     style: TextStyle(
                       fontSize: scaled(context, 50),
                       fontWeight: FontWeight.bold,
@@ -273,8 +246,9 @@ class _WritingPageState extends State<WritingPage> {
                   alignment: Alignment.center,
                   child: GridHandwritingCanvas(
                     key: _canvasKey,
-                    essentialStrokeCounts: practice.essentialStrokeCounts,
-                    charCount: practice.practiceText.length,
+                    essentialStrokeCounts:
+                        widget.practice.essentialStrokeCounts,
+                    charCount: widget.practice.practiceText.length,
                     gridColor: Color(0xFFFFCEEF),
                     gridWidth: scaled(context, 3),
                     cellSize: scaled(context, cellSize),
