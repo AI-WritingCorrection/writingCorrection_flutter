@@ -1,3 +1,5 @@
+import 'package:aiwriting_collection/repository/practice_repository.dart';
+import 'package:aiwriting_collection/repository/practice_repository_impl.dart';
 import 'package:aiwriting_collection/screen/home_screen.dart';
 import 'package:aiwriting_collection/screen/login_screen.dart';
 import 'package:aiwriting_collection/screen/record_screen.dart';
@@ -8,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'model/login_status.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,13 @@ Future<void> main() async {
     ]);
   }
   runApp(
-    ChangeNotifierProvider(create: (_) => LoginStatus(), child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginStatus()),
+        Provider<PracticeRepository>(create: (_) => DummyPracticeRepository()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -55,19 +62,7 @@ class _MyAppState extends State<MyApp> {
           tertiary: Color(0xFFFFCEEF),
         ),
       ),
-      builder:
-          (context, widget) => ResponsiveBreakpoints.builder(
-            child: widget!,
-            breakpoints: [
-              const Breakpoint(start: 0, end: 450, name: MOBILE),
-              const Breakpoint(start: 451, end: 1200, name: TABLET),
-              const Breakpoint(
-                start: 1201,
-                end: double.infinity,
-                name: DESKTOP,
-              ),
-            ],
-          ),
+
       home: Consumer<LoginStatus>(
         builder: (context, loginStatus, child) {
           return loginStatus.isLoggedIn
