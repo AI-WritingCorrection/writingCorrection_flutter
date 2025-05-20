@@ -1,5 +1,5 @@
 import 'package:aiwriting_collection/widget/practice_card.dart';
-import 'package:aiwriting_collection/widget/waitdevelop_dialog.dart';
+import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:flutter/material.dart';
 
 class RecordScreen extends StatelessWidget {
@@ -94,7 +94,11 @@ class RecordScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return WaitdevelopDialog(scale: scale);
+                    return MiniDialog(
+                      scale: scale,
+                      title: '개발 진행중',
+                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                    );
                   },
                 );
               },
@@ -107,7 +111,11 @@ class RecordScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return WaitdevelopDialog(scale: scale);
+                    return MiniDialog(
+                      scale: scale,
+                      title: '개발 진행중',
+                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                    );
                   },
                 );
               },
@@ -120,7 +128,11 @@ class RecordScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return WaitdevelopDialog(scale: scale);
+                    return MiniDialog(
+                      scale: scale,
+                      title: '개발 진행중',
+                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                    );
                   },
                 );
               },
@@ -219,7 +231,11 @@ class RecordScreen extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return WaitdevelopDialog(scale: scale);
+                          return MiniDialog(
+                            scale: scale,
+                            title: '개발 진행중',
+                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                          );
                         },
                       );
                     },
@@ -232,7 +248,11 @@ class RecordScreen extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return WaitdevelopDialog(scale: scale);
+                          return MiniDialog(
+                            scale: scale,
+                            title: '개발 진행중',
+                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                          );
                         },
                       );
                     },
@@ -245,7 +265,11 @@ class RecordScreen extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return WaitdevelopDialog(scale: scale);
+                          return MiniDialog(
+                            scale: scale,
+                            title: '개발 진행중',
+                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                          );
                         },
                       );
                     },

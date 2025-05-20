@@ -308,7 +308,7 @@ class _MypageScreenState extends State<MypageScreen> {
             : screenSize.width / basePortrait;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).canvasColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
