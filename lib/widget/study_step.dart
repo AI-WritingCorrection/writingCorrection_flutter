@@ -26,7 +26,7 @@ class StudyStep extends StatelessWidget {
             : screenSize.width / basePortrait;
 
     // increase step size by 20% in landscape
-    final double actualDiameter = diameter * (isLandscape ? 1.3 : 1.0) * scale;
+    final double actualDiameter = diameter * (isLandscape ? 1.5 : 1.0) * scale;
 
     return Container(
       width: actualDiameter,
@@ -65,7 +65,7 @@ class StudyStep extends StatelessWidget {
               '${label + 1}',
               style: TextStyle(
                 color: Colors.black87,
-                fontSize: 24 * scale * (isLandscape ? 1.3 : 1.0),
+                fontSize: 26 * scale * (isLandscape ? 1.3 : 1.0),
                 fontWeight: FontWeight.bold,
               ),
             ),

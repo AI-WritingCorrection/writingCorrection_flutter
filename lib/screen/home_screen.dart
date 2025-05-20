@@ -1,4 +1,4 @@
-import 'package:aiwriting_collection/model/practice.dart';
+import 'package:aiwriting_collection/repository/practice_repository_impl.dart';
 import 'package:aiwriting_collection/screen/detail_studyPage.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// 홈 탭용 나선형 레이아웃 페이지
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-    //연습 과제 더미 데이터
+  //연습 과제 더미 데이터
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +33,17 @@ class HomeScreen extends StatelessWidget {
     //이미지 버튼 크기
     final double separatorSize = diameter * (isLandscape ? 1.7 * 1.3 : 1.7);
 
-    final double marginX =
-        isLandscape ? screenSize.width * 0.2 : 40 * scale; //가로 여백
+    final double marginX = isLandscape ? (130 * scale) : 40 * scale; //가로 여백
     final double stepGap = (isLandscape ? 200 : 140) * scale; //스텝들간의 수직 간격
 
     //이후에 데이터베이스에 저장되어 있는 만큼 불러오도록 변경
-    const int count = 23;
+    final practiceRepository = DummyPracticeRepository();
+    int count = practiceRepository.getPracticeNum(); //스텝 개수
+    int numBreaks = (count - 1) ~/ 5; // one break after every 5 steps
+    int totalSlots = count + numBreaks;
 
     final List<Offset> positions = [];
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < totalSlots; i++) {
       double x;
       switch (i % 4) {
         case 0:
@@ -88,8 +90,9 @@ class HomeScreen extends StatelessWidget {
 
     for (int i = 0; i < positions.length; i++) {
       final pos = positions[i];
-      // After the 5th step, show an image once
-      if (!insertedChapterBreak && stepCounter > 1 && stepCounter % 5 == 0) {
+
+      // Insert chapter break after every 5 steps (once)
+      if (!insertedChapterBreak && stepCounter > 0 && stepCounter % 5 == 0) {
         final double sepX = pos.dx - (separatorSize - diameter) / 2;
         widgets.add(
           Positioned(
@@ -103,35 +106,34 @@ class HomeScreen extends StatelessWidget {
           ),
         );
         insertedChapterBreak = true;
-        // do not increment stepCounter, so next iteration uses same stepCounter
-      } else {
-        // 현재 스텝 번호를 고정된 값으로 캡처
-        final currentStep = stepCounter;
-        widgets.add(
-          Positioned(
-            left: pos.dx,
-            top: pos.dy,
-            child: StudyStep(
-              label: currentStep,
-              diameter: diameter,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailStudyPage(
-                      pageNum: currentStep
+        continue;
+      }
 
-                    ),
-                  ),
-                );
-              },
-            ),
+      // Always add the study step
+      final currentStep = stepCounter;
+      widgets.add(
+        Positioned(
+          left: pos.dx,
+          top: pos.dy,
+          child: StudyStep(
+            label: currentStep,
+            diameter: diameter,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailStudyPage(pageNum: currentStep),
+                ),
+              );
+            },
           ),
-        );
-        stepCounter++;
-        if (stepCounter % 5 == 0) {
-          insertedChapterBreak = false; // reset for next chapter break
-        }
+        ),
+      );
+      stepCounter++;
+
+      // Allow next image break after another 5 steps
+      if (stepCounter % 5 == 0) {
+        insertedChapterBreak = false;
       }
     }
 
