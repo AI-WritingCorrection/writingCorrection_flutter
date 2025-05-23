@@ -69,7 +69,8 @@ class _MypageScreenState extends State<MypageScreen> {
                           child: Text(
                             '마이 페이지',
                             style: TextStyle(
-                              fontSize: 24 * scale,
+                              fontSize: 25 * scale,
+                              fontFamily: 'MaruBuri',
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
@@ -326,7 +327,8 @@ class _MypageScreenState extends State<MypageScreen> {
                           child: Text(
                             '마이 페이지',
                             style: TextStyle(
-                              fontSize: 38 * scale,
+                              fontFamily: 'MaruBuri',
+                              fontSize: 33 * scale,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),

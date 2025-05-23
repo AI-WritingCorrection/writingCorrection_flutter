@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_shadow/simple_shadow.dart';
 
 class SpeechBubble extends StatelessWidget {
   final String text;
@@ -65,7 +64,7 @@ class SpeechBubble extends StatelessWidget {
             child: Text(
               text,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black, fontSize: 55 * scale),
+              style: TextStyle(color: Colors.black, fontSize: 63 * scale),
             ),
           ),
         ),
