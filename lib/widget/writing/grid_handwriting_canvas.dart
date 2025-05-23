@@ -50,6 +50,9 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
       widget.charCount < widget.maxPerRow ? widget.charCount : widget.maxPerRow;
   int get rows => (widget.charCount / widget.maxPerRow).ceil();
 
+  //그리드에서 특정 셀(cellIndex)이 차지하는 사각 영역(Rectangle)을 계산”해 주는 역할
+  // ~/는 정수 나눗셈
+  //Rect는 Dart에서 사각형을 나타내는 값 객체(value object)
   Rect _cellRect(int cellIndex) {
     final row = cellIndex ~/ cols;
     final col = cellIndex % cols;
@@ -80,6 +83,17 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
     }
   }
 
+  /// 써야 하는 획수가 0인 경우에는 바로 다음 셀이 활성화되도록
+  void _skipZeroStrokeCells() {
+    final required = widget.essentialStrokeCounts;
+    while (activeCell < (cols * rows) &&
+           required != null &&
+           activeCell < required.length &&
+           required[activeCell] == 0) {
+      activeCell++;
+    }
+  }
+
   void _maybeAdvanceCell() {
     // 이 셀에 속한 획 개수 집계
     final cellStrokes =
@@ -93,6 +107,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
     if (activeCell < required!.length && cellStrokes >= required[activeCell]) {
       setState(() {
         activeCell = min(activeCell + 1, cols * rows - 1);
+        _skipZeroStrokeCells();
       });
     }
   }
@@ -100,6 +115,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   @override
   void initState() {
     super.initState();
+    _skipZeroStrokeCells();
   }
 
   @override
@@ -201,6 +217,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   }
 
   /// 사용자가 그린 획(Strokes)들을 “격자 셀 단위”로 묶어서, 각 셀 크기만큼의 PNG 이미지 바이트 리스트로 변환해 주는 기능
+  /// Uint8List는 바이너리 데이터(예: 이미지, 오디오, 네트워크 패킷)를 다룰 때, 바이트 단위로 메모리를 효율적으로 관리하기 위해 사용.
   Future<Map<int, List<Uint8List>>> exportCellStrokeImages() async {
     final int cols =
         widget.charCount < widget.maxPerRow
@@ -253,6 +270,21 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
 
         for (int i = 0; i < stroke.length - 1; i++) {
           canvas.drawLine(stroke[i], stroke[i + 1], paint);
+        }
+
+        // 획의 첫점과 마지막 점을 다른 색상으로 표시
+        final Paint startPaint =
+            Paint()
+              ..color = Colors.red
+              ..style = PaintingStyle.fill;
+        final Paint endPaint =
+            Paint()
+              ..color = Colors.blue
+              ..style = PaintingStyle.fill;
+        final double pointRadius = widget.penStrokeWidth * 0.5;
+        if (stroke.isNotEmpty) {
+          canvas.drawCircle(stroke.first, pointRadius, startPaint);
+          canvas.drawCircle(stroke.last, pointRadius, endPaint);
         }
 
         final picture = recorder.endRecording();

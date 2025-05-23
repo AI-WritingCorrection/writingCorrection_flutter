@@ -29,16 +29,19 @@ class PracticeCard extends StatelessWidget {
     this.cardWidth,
     this.cardHeight,
     this.fontSize,
-    this.semiFontSize, 
+    this.semiFontSize,
     this.imageScale,
   });
 
   double scaled(BuildContext context, double value) {
-    // 만약 cardWidth, cardHeight가 지정되었다면 그 값을 사용 
-    final Size size = (cardWidth!= null && cardHeight!=null) ? Size(cardWidth!,cardHeight!):MediaQuery.of(context).size;
+    // 만약 cardWidth, cardHeight가 지정되었다면 그 값을 사용
+    final Size size =
+        (cardWidth != null && cardHeight != null)
+            ? Size(cardWidth!, cardHeight!)
+            : MediaQuery.of(context).size;
     //가로모드/세로모드 구분
     final bool isLandscape = size.width > size.height;
-    final double base= isLandscape ? baseLandscape : basePortrait;
+    final double base = isLandscape ? baseLandscape : basePortrait;
     final double scale = (isLandscape ? size.height : size.width) / base;
     return value * scale;
   }
@@ -51,17 +54,20 @@ class PracticeCard extends StatelessWidget {
     final bool isLandscape =
         (cardWidth ?? MediaQuery.of(context).size.width) >
         (cardHeight ?? MediaQuery.of(context).size.height);
-    final titleFontSize =
-        scaled(context, fontSize ?? (isLandscape ? 24 : 16));
-    final subtitleFontSize =
-        scaled(context, semiFontSize ?? (isLandscape ? 20 : 13));
-    final imageSizeAdjusted =
-        scaled(context, imageScale ?? (isLandscape ? 110 : 70));
+    final titleFontSize = scaled(context, fontSize ?? (isLandscape ? 28 : 20));
+    final subtitleFontSize = scaled(
+      context,
+      semiFontSize ?? (isLandscape ? 20 : 13),
+    );
+    final imageSizeAdjusted = scaled(
+      context,
+      imageScale ?? (isLandscape ? 110 : 70),
+    );
 
     return SizedBox(
       width: cardWidth,
       height: cardHeight,
-      child:Padding(
+      child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: paddingH,
           vertical: scaled(context, 5),
@@ -108,6 +114,7 @@ class PracticeCard extends StatelessWidget {
                         child: Text(
                           subtitle,
                           style: TextStyle(
+                            fontFamily: 'MaruBuri',
                             fontSize: subtitleFontSize,
                             color: Colors.grey[600],
                           ),
@@ -127,7 +134,7 @@ class PracticeCard extends StatelessWidget {
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }

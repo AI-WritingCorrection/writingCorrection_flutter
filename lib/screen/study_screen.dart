@@ -55,7 +55,8 @@ class StudyScreen extends StatelessWidget {
                       Text(
                         '손글씨 연습',
                         style: TextStyle(
-                          fontSize: 22 * scale,
+                          fontSize: 23 * scale,
+                          fontFamily: 'MaruBuri',
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -75,8 +76,9 @@ class StudyScreen extends StatelessWidget {
               child: Text(
                 '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을\n차근차근 알려드립니다.',
                 style: TextStyle(
-                  fontSize: 17 * scale,
+                  fontSize: 15 * scale,
                   color: Colors.black87,
+                  fontFamily: 'MaruBuri',
                   fontWeight: FontWeight.w700,
                 ),
                 textAlign: TextAlign.left,
@@ -167,7 +169,8 @@ class StudyScreen extends StatelessWidget {
                   child: Text(
                     '손글씨 연습',
                     style: TextStyle(
-                      fontSize: 30 * scale,
+                      fontSize: 33 * scale,
+                      fontFamily: 'MaruBuri',
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
@@ -188,6 +191,7 @@ class StudyScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 23 * scale,
                   color: Colors.black87,
+                  fontFamily: 'MaruBuri',
                   fontWeight: FontWeight.w700,
                 ),
                 textAlign: TextAlign.center,
