@@ -56,7 +56,8 @@ class RecordScreen extends StatelessWidget {
                       Text(
                         '나의 기록',
                         style: TextStyle(
-                          fontSize: 22 * scale,
+                          fontSize: 23 * scale,
+                          fontFamily: 'MaruBuri',
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -77,6 +78,7 @@ class RecordScreen extends StatelessWidget {
                 '나의 연습 기록들을 다양한 방법으로 확인해보세요!',
                 style: TextStyle(
                   fontSize: 15 * scale,
+                  fontFamily: 'MaruBuri',
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
                 ),
@@ -182,7 +184,8 @@ class RecordScreen extends StatelessWidget {
                   child: Text(
                     '나의 기록',
                     style: TextStyle(
-                      fontSize: 30 * scale,
+                      fontSize: 33 * scale,
+                      fontFamily: 'MaruBuri',
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
@@ -201,6 +204,7 @@ class RecordScreen extends StatelessWidget {
               child: Text(
                 '나의 연습 기록들을 다양한 방법으로 확인해보세요!',
                 style: TextStyle(
+                  fontFamily: 'MaruBuri',
                   fontSize: 20 * scale,
                   color: Colors.black87,
                   fontWeight: FontWeight.w700,
@@ -232,7 +236,7 @@ class RecordScreen extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return MiniDialog(
-                            scale: scale,
+                            scale: scale * 1.5,
                             title: '개발 진행중',
                             content: '해당 기능은 개발중이니 조금만 기다려주세요!',
                           );
@@ -249,7 +253,7 @@ class RecordScreen extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return MiniDialog(
-                            scale: scale,
+                            scale: scale * 1.5,
                             title: '개발 진행중',
                             content: '해당 기능은 개발중이니 조금만 기다려주세요!',
                           );
@@ -266,7 +270,7 @@ class RecordScreen extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return MiniDialog(
-                            scale: scale,
+                            scale: scale * 1.5,
                             title: '개발 진행중',
                             content: '해당 기능은 개발중이니 조금만 기다려주세요!',
                           );
