@@ -58,7 +58,7 @@ class _DetailStudyPageState extends State<DetailStudyPage> {
                 padding: EdgeInsets.only(
                   left: 20 * scale,
                   right: 20 * scale,
-                  top: 20 * scale,
+                  top: 10 * scale,
                   bottom: 20 * scale,
                 ),
                 child: Column(

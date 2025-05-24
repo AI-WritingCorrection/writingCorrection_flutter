@@ -49,11 +49,13 @@ class _WritingPageState extends State<WritingPage> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            final double dialogScale = scaled(context, 3);
+            final double dialogScale = scaled(context, 2);
             return MiniDialog(
               scale: dialogScale,
-              title: '시간 초과',
-              content: '제한 시간이 초과되었습니다.',
+              title: '실패😢',
+              content:
+                  '시간이 초과되었어요!\n'
+                  '다음에는 조금 더 빨리 써봐요~',
             );
           },
         ).then((_) {
@@ -89,6 +91,7 @@ class _WritingPageState extends State<WritingPage> {
     return value * scale;
   }
 
+  //제출 버튼 클릭 시 호출되는 메서드
   Future<void> _handleSubmit() async {
     // 1.셀 단위 획 이미지 맵 추출
     final Map<int, List<Uint8List>> cellImages =
@@ -100,7 +103,52 @@ class _WritingPageState extends State<WritingPage> {
       (sum, strokes) => sum + strokes.length,
     );
 
-    // 3.Result 모델 생성
+    // 3. 마지막 셀의 획수를 확인하여, 정해진 획수와 맞는지 확인하고, 부족하거나 많으면 모달창을 띄우고 화면으로 돌아감
+    final int lastIndex = widget.practice.practiceText.length - 1;
+    final requiredStrokes =
+        widget.practice.essentialStrokeCounts?[lastIndex] ?? 0;
+    final actualStrokes = cellImages[lastIndex]?.length ?? 0;
+    if (actualStrokes > requiredStrokes) {
+      _timer?.cancel();
+      await showDialog(
+        context: context,
+        builder: (context) {
+          final double dialogScale = scaled(context, 2);
+          return MiniDialog(
+            scale: dialogScale,
+            title: '실패😢',
+            content:
+                '획이 너무 많아요!\n'
+                '획 수를 맞춰서 연습해보세요.',
+          );
+        },
+      );
+      //모달창이 닫히면 시간이 다시 흐르도록
+      if (!mounted) return;
+      _startTimer();
+      return;
+    } else if (actualStrokes < requiredStrokes) {
+      _timer?.cancel();
+      await showDialog(
+        context: context,
+        builder: (context) {
+          final double dialogScale = scaled(context, 2);
+          return MiniDialog(
+            scale: dialogScale,
+            title: '실패😢',
+            content:
+                '획이 부족해요!\n'
+                '획 수를 맞춰서 연습해보세요.',
+          );
+        },
+      );
+      //모달창이 닫히면 시간이 다시 흐르도록
+      if (!mounted) return;
+      _startTimer();
+      return;
+    }
+
+    // 4.Result 모델 생성
     final result = Result(
       userId: 'user123',
       practiceText: widget.practice.practiceText,
@@ -109,7 +157,7 @@ class _WritingPageState extends State<WritingPage> {
       score: 0.0, // 서버 응답 후 업데이트
     );
 
-    //4.로컬 저장용(test): 각 셀별 획 이미지 저장
+    // 5-1.로컬 저장용(test): 각 셀별 획 이미지 저장
     final dir = await getApplicationDocumentsDirectory();
     // 타임스태프로 네이밍된 폴더 안에 이미지들 있음.
     final now = DateTime.now();
@@ -137,10 +185,10 @@ class _WritingPageState extends State<WritingPage> {
       'Result submitted: userId=${result.userId}, practiceText="${result.practiceText}", streakCount=${result.streakCount}, cells=${result.cellImages.keys.toList()}',
     );
     //이미지 저장되는 위치 확인용
-    //print('saved to: ${dir.path}');
+    print('saved to: ${dir.path}');
 
-    //TODO: 서버에 result 전송
-    //TODO 결과 페이지로 이동
+    //TODO 5.2 서버에 result 전송
+    //TODO 6. 결과 페이지로 이동
   }
 
   @override
@@ -153,7 +201,20 @@ class _WritingPageState extends State<WritingPage> {
       // TODO: Handle this case.
       String() => throw UnimplementedError(),
     };
+    //10지 이하 문장에서 중앙에 위치하기 위한 boolean 변수
+    bool isBelow10Sentence =
+        (widget.practice.practiceText.length <= 10 &&
+            widget.practice.missionType == 'sentence');
+
+    // Calculate grid width to match practice box
+    final int colCount =
+        widget.practice.practiceText.length < 10
+            ? widget.practice.practiceText.length
+            : 10;
+    final double gridWidth = scaled(context, cellSize) * colCount;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
       body: SafeArea(
         child: Container(
           //container가 벗어난 부분의 경계선을 부드럽게 잘라냄
@@ -166,41 +227,46 @@ class _WritingPageState extends State<WritingPage> {
               //부모 Column의 너비에 맞춰 자식들이 폭을 꽉 채워서 렌더링됩니다.
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // 뒤로 가기 버튼
-                Row(
-                  children: [
-                    BackButtonWidget(scale: 1),
-                    Spacer(),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: scaled(context, 200),
-                        height: scaled(context, 60),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFFFCEEF),
-                          borderRadius: BorderRadius.circular(
-                            scaled(context, 12),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: scaled(context, 6),
-                              offset: Offset(0, scaled(context, 3)),
-                            ),
-                          ],
-                        ),
+                // 뒤로 가기 버튼 및 타이머
+                Container(
+                  height: scaled(context, 60),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: BackButtonWidget(scale: 1),
+                      ),
+                      Align(
                         alignment: Alignment.center,
-                        child: Text(
-                          _formatTime(_remainingTime),
-                          style: TextStyle(
-                            fontSize: scaled(context, 35),
-                            fontWeight: FontWeight.bold,
+                        child: Container(
+                          width: scaled(context, 200),
+                          height: scaled(context, 60),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFFFCEEF),
+                            borderRadius: BorderRadius.circular(
+                              scaled(context, 12),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: scaled(context, 6),
+                                offset: Offset(0, scaled(context, 3)),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            _formatTime(_remainingTime),
+                            style: TextStyle(
+                              fontSize: scaled(context, 35),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Spacer(),
-                  ],
+                    ],
+                  ),
                 ),
 
                 SizedBox(height: scaled(context, 20)),
@@ -215,32 +281,43 @@ class _WritingPageState extends State<WritingPage> {
 
                 SizedBox(height: scaled(context, 75)),
 
-                Container(
-                  height: scaled(context, 100),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFFCEEF91),
-                      width: scaled(context, 5),
-                    ),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: scaled(context, 6),
-                        offset: Offset(0, scaled(context, 3)),
-                      ),
-                    ],
-                  ),
+                // 연습과제 박스
+                Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    widget.practice.practiceText,
-                    style: TextStyle(
-                      fontSize: scaled(context, 50),
-                      fontWeight: FontWeight.bold,
+                  child: Container(
+                    height: scaled(context, 100),
+                    width: gridWidth,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: const Color(0xFFCEEF91),
+                        width: scaled(context, 5),
+                      ),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: scaled(context, 6),
+                          offset: Offset(0, scaled(context, 3)),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      widget.practice.practiceText,
+                      style: TextStyle(
+                        fontSize: scaled(context, 45),
+                        fontFamily: "MaruBuri",
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(
+                  height:
+                      isBelow10Sentence
+                          ? scaled(context, 81.75)
+                          : scaled(context, 30),
+                ),
 
                 Align(
                   alignment: Alignment.center,
@@ -255,7 +332,12 @@ class _WritingPageState extends State<WritingPage> {
                   ),
                 ),
 
-                SizedBox(height: scaled(context, 30)),
+                SizedBox(
+                  height:
+                      isBelow10Sentence
+                          ? scaled(context, 81.75)
+                          : scaled(context, 30),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
