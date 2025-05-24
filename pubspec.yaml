@@ -88,6 +88,38 @@ flutter:
     - family: Bazzi
       fonts:
         - asset: assets/font/Bazzi.otf
+    - family: Pretendard
+      fonts:
+        - asset: assets/font/Pretendard/Pretendard-Thin.ttf
+          weight: 100
+        - asset: assets/font/Pretendard/Pretendard-ExtraLight.ttf
+          weight: 200
+        - asset: assets/font/Pretendard/Pretendard-Light.ttf
+          weight: 300
+        - asset: assets/font/Pretendard/Pretendard-Regular.ttf
+          weight: 400
+        - asset: assets/font/Pretendard/Pretendard-Medium.ttf
+          weight: 500
+        - asset: assets/font/Pretendard/Pretendard-SemiBold.ttf
+          weight: 600
+        - asset: assets/font/Pretendard/Pretendard-Bold.ttf
+          weight: 700
+        - asset: assets/font/Pretendard/Pretendard-ExtraBold.ttf
+          weight: 800
+        - asset: assets/font/Pretendard/Pretendard-Black.ttf
+          weight: 900
+    - family: MaruBuri
+      fonts:
+        - asset: assets/font/MaruBuri/MaruBuri-ExtraLight.otf
+          weight: 200
+        - asset: assets/font/MaruBuri/MaruBuri-Light.otf
+          weight: 300
+        - asset: assets/font/MaruBuri/MaruBuri-Regular.otf
+          weight: 400
+        - asset: assets/font/MaruBuri/MaruBuri-SemiBold.otf
+          weight: 600
+        - asset: assets/font/MaruBuri/MaruBuri-Bold.otf
+          weight: 700          
     
   
   # For details regarding fonts from package dependencies,

@@ -40,6 +40,7 @@ class HandwritingPainter extends CustomPainter {
     for (int i = 0; i < currentStroke.length - 1; i++) {
       canvas.drawLine(currentStroke[i], currentStroke[i + 1], paint);
     }
+
   }
 
   @override
