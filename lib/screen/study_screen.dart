@@ -1,3 +1,7 @@
+import 'package:aiwriting_collection/screen/letter_writing_screen.dart';
+import 'package:aiwriting_collection/screen/sentence_writing_screen.dart';
+import 'package:aiwriting_collection/screen/word_writing_screen.dart';
+import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +31,7 @@ class StudyScreen extends StatelessWidget {
             : screenSize.width / basePortrait;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF3),
+      backgroundColor: Theme.of(context).canvasColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -98,31 +102,86 @@ class StudyScreen extends StatelessWidget {
               title: '자음과 모음 쓰기',
               subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
               imagePath: 'assets/character/rabbitTeacher.png',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return MiniDialog(
+                      scale: scale,
+                      title: '너무 작아!',
+                      content: '공부는 태블릿에서만 가능합니다!',
+                    );
+                  },
+                );
+              },
             ),
             PracticeCard(
-              title: '받침 있는 글자 쓰기',
+              title: '단어 쓰기',
               subtitle: '쌍자음, 겹받침 등 조금 더 복잡한 글자 연습',
               imagePath: 'assets/character/hamster.png',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return MiniDialog(
+                      scale: scale,
+                      title: '너무 작아!',
+                      content: '공부는 태블릿에서만 가능합니다!',
+                    );
+                  },
+                );
+              },
             ),
             PracticeCard(
               title: '문장 쓰기',
               subtitle: '문장 단위로 글씨를 또박또박 쓰는 연습',
               imagePath: 'assets/character/bearTeacher.png',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return MiniDialog(
+                      scale: scale,
+                      title: '너무 작아!',
+                      content: '공부는 태블릿에서만 가능합니다!',
+                    );
+                  },
+                );
+              },
             ),
             PracticeCard(
               title: '캘리그라피 연습',
               subtitle: '간단한 캘리그라피 연습을 통해 글씨체를 살려봐요',
               imagePath: 'assets/character/bearTeacher.png',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return MiniDialog(
+                      scale: scale,
+                      title: '너무 작아!',
+                      content: '공부는 태블릿에서만 가능합니다!',
+                    );
+                  },
+                );
+              },
             ),
             PracticeCard(
               title: '무한 글씨 연습',
               subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
               imagePath: 'assets/character/bearTeacher.png',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return MiniDialog(
+                      scale: scale,
+                      title: '너무 작아!',
+                      content: '공부는 태블릿에서만 가능합니다!',
+                    );
+                  },
+                );
+              },
             ),
 
             SizedBox(height: 80 * scale), // 하단 버튼 영역을 위해 여백
@@ -221,19 +280,37 @@ class StudyScreen extends StatelessWidget {
                     title: '자음과 모음 쓰기',
                     subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
                     imagePath: 'assets/character/rabbitTeacher.png',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const LetterWritingScreen(),
+                        ),
+                      );
+                    },
                   ),
                   PracticeCard(
-                    title: '받침 있는 글자 쓰기',
+                    title: '단어 쓰기',
                     subtitle: '쌍자음, 겹받침 등 복잡한 글자 연습',
                     imagePath: 'assets/character/hamster.png',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const WordWritingScreen(),
+                        ),
+                      );
+                    },
                   ),
                   PracticeCard(
                     title: '문장 쓰기',
                     subtitle: '문장 단위로 또박또박 쓰는 연습',
                     imagePath: 'assets/character/bearTeacher.png',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const SentenceWritingScreen(),
+                        ),
+                      );
+                    },
                   ),
                   PracticeCard(
                     title: '캘리그라피 연습',
