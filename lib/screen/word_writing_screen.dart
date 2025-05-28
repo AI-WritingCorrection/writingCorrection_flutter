@@ -5,17 +5,49 @@ import 'package:aiwriting_collection/widget/back_button.dart';
 class WordWritingScreen extends StatelessWidget {
   const WordWritingScreen({super.key});
 
-  static const List<List<String>> _wordRows = [
-    ['감', '꽃', '눈', '돈', '땀', '락', '물', '밥', '빵', '삶'],
-    ['쌀', '입', '자', '짱', '차', '컷', '탕', '펑', '형'],
-    ['솔찬', '윤슬', '도담', '미르', '꽃샘'],
-    ['헤윰', '올랑', '다올', '늘빈', '해솔'],
+  static const List<String> _allWords = [
+    '감',
+    '꽃',
+    '눈',
+    '돈',
+    '땀',
+    '락',
+    '물',
+    '밥',
+    '빵',
+    '삶',
+    '쌀',
+    '입',
+    '자',
+    '짱',
+    '차',
+    '컷',
+    '탕',
+    '형',
+    '솔찬',
+    '윤슬',
+    '도담',
+    '미르',
+    '헤윰',
+    '올랑',
+    '다올',
+    '늘빈',
+    '꽃샘',
+    '해솔',
   ];
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
+
+    // 단어 글자수 기준으로 매핑
+    final Map<int, List<String>> groups = {};
+    for (var w in _allWords) {
+      groups.putIfAbsent(w.length, () => []).add(w);
+    }
+    //글자수 길이 배열 [1,2,3 ...]
+    final lengths = groups.keys.toList()..sort();
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -47,7 +79,7 @@ class WordWritingScreen extends StatelessWidget {
                           // 여백을 추가한 백버튼
                           Padding(
                             padding: EdgeInsets.all(8 * scale),
-                            child: BackButtonWidget(scale: scale),
+                            child: BackButtonWidget(scale: 0.9 * scale),
                           ),
                           SizedBox(width: 8 * scale),
                           Text(
@@ -74,11 +106,11 @@ class WordWritingScreen extends StatelessWidget {
                 vertical: 24 * scale,
               ),
               child: Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.center,
                 child: Text(
                   '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 단어를 골라 글자를 써보세요.',
                   style: TextStyle(
-                    fontSize: 18 * scale,
+                    fontSize: 25 * scale,
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -90,13 +122,13 @@ class WordWritingScreen extends StatelessWidget {
 
             // 3) 단어 연습 섹션
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 32 * scale),
+              padding: EdgeInsets.symmetric(horizontal: 50 * scale),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   '단어 연습:',
                   style: TextStyle(
-                    fontSize: 20 * scale,
+                    fontSize: 30 * scale,
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
@@ -105,21 +137,34 @@ class WordWritingScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30 * scale),
-            for (var row in _wordRows) ...[
+            //글자수별로 단어를 그룹화하여 표시
+            for (var len in lengths) ...[
+              // Header for this group
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32 * scale),
-                child: Row(
+                padding: EdgeInsets.symmetric(vertical: 16 * scale),
+                child: Text(
+                  '${len}글자 단어',
+                  style: TextStyle(
+                    fontSize: 30 * scale,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Center(
+                //Wrap 위젯은 여러 자식 위젯을 줄 단위로 배치하고, 
+                //가로나 세로 공간이 부족할 때 자동으로 줄을 바꿔 다음 줄(run)에 배치해 주는 레이아웃 도구
+                child: Wrap(
+                  spacing: 15 * scale,
+                  runSpacing: 12 * scale,
+                  alignment: WrapAlignment.center,
                   children: [
-                    for (var word in row) ...[
-                      WordTile(word: word, scale: 1.5 * scale),
-                      SizedBox(width: 35 * scale),
-                    ],
+                    for (var word in groups[len]!)
+                      WordTile(word: word, scale: 1.7 * scale),
                   ],
                 ),
               ),
-              SizedBox(height: 12 * scale),
+              SizedBox(height: 50 * scale),
             ],
-            SizedBox(height: 80 * scale),
           ],
         ),
       ),

@@ -5,15 +5,50 @@ import 'package:aiwriting_collection/widget/back_button.dart';
 class LetterWritingScreen extends StatelessWidget {
   const LetterWritingScreen({super.key});
 
-  static const List<List<String>> _consonantRows = [
-    ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ'],
-    ['ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'],
+  static const List<String> _consonantRows = [
+    'ㄱ',
+    'ㄲ',
+    'ㄴ',
+    'ㄷ',
+    'ㄸ',
+    'ㄹ',
+    'ㅁ',
+    'ㅂ',
+    'ㅃ',
+    'ㅅ',
+    'ㅆ',
+    'ㅇ',
+    'ㅈ',
+    'ㅉ',
+    'ㅊ',
+    'ㅋ',
+    'ㅌ',
+    'ㅍ',
+    'ㅎ',
   ];
 
-  static const List<List<String>> _vowelRows = [
-    ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ'],
-    ['ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ'],
-    ['ㅣ'],
+  static const List<String> _vowelRows = [
+    'ㅏ',
+    'ㅐ',
+    'ㅑ',
+    'ㅒ',
+    'ㅓ',
+    'ㅔ',
+    'ㅕ',
+    'ㅖ',
+    'ㅗ',
+    'ㅘ',
+    'ㅙ',
+    'ㅚ',
+    'ㅛ',
+    'ㅜ',
+    'ㅝ',
+    'ㅞ',
+    'ㅟ',
+    'ㅠ',
+    'ㅡ',
+    'ㅢ',
+    'ㅣ',
   ];
 
   @override
@@ -51,7 +86,7 @@ class LetterWritingScreen extends StatelessWidget {
                           // 여백을 추가한 백버튼
                           Padding(
                             padding: EdgeInsets.all(8 * scale),
-                            child: BackButtonWidget(scale: scale),
+                            child: BackButtonWidget(scale: 0.9 * scale),
                           ),
                           SizedBox(width: 8 * scale),
                           Text(
@@ -74,15 +109,15 @@ class LetterWritingScreen extends StatelessWidget {
             // 2) 설명 텍스트
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 32 * scale,
+                horizontal: 40 * scale,
                 vertical: 24 * scale,
               ),
               child: Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.center,
                 child: Text(
                   '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 자음 또는 모음을 골라 글자를 써보세요.',
                   style: TextStyle(
-                    fontSize: 18 * scale,
+                    fontSize: 25 * scale,
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -94,13 +129,13 @@ class LetterWritingScreen extends StatelessWidget {
 
             // 3) 단어 연습 섹션
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 32 * scale),
+              padding: EdgeInsets.symmetric(horizontal: 52 * scale),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   '자음 연습:',
                   style: TextStyle(
-                    fontSize: 20 * scale,
+                    fontSize: 30 * scale,
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
@@ -109,29 +144,30 @@ class LetterWritingScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30 * scale),
-            for (var row in _consonantRows) ...[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32 * scale),
-                child: Row(
-                  children: [
-                    for (var word in row) ...[
-                      WordTile(word: word, scale: 1.5 * scale),
-                      SizedBox(width: 35 * scale),
-                    ],
-                  ],
-                ),
-              ),
-              SizedBox(height: 12 * scale),
-            ],
+
+            // Consonant letters arranged in a wrap with vertical padding
+            Wrap(
+              spacing: 15 * scale,
+              runSpacing: 12 * scale,
+              alignment: WrapAlignment.center,
+              children: [
+                for (var word in _consonantRows)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5 * scale),
+                    child: WordTile(word: word, scale: 1.7 * scale),
+                  ),
+              ],
+            ),
             SizedBox(height: 30 * scale),
+
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 32 * scale),
+              padding: EdgeInsets.symmetric(horizontal: 52 * scale),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   '모음 연습:',
                   style: TextStyle(
-                    fontSize: 20 * scale,
+                    fontSize: 30 * scale,
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
@@ -140,20 +176,20 @@ class LetterWritingScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30 * scale),
-            for (var row in _vowelRows) ...[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32 * scale),
-                child: Row(
-                  children: [
-                    for (var word in row) ...[
-                      WordTile(word: word, scale: 1.5 * scale),
-                      SizedBox(width: 35 * scale),
-                    ],
-                  ],
-                ),
-              ),
-              SizedBox(height: 12 * scale),
-            ],
+
+            // Vowel letters arranged in a wrap with vertical padding
+            Wrap(
+              spacing: 15 * scale,
+              runSpacing: 12 * scale,
+              alignment: WrapAlignment.center,
+              children: [
+                for (var word in _vowelRows)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5 * scale),
+                    child: WordTile(word: word, scale: 1.7 * scale),
+                  ),
+              ],
+            ),
             SizedBox(height: 80 * scale),
           ],
         ),
