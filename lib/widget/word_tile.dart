@@ -33,13 +33,20 @@ class WordTile extends StatelessWidget {
         height: tile,
         alignment: Alignment.center,
         decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 3 * scale,
+              offset: Offset(2 * scale, 2 * scale),
+            ),
+          ],
           color: const Color(0xFFCEEF91),
           borderRadius: BorderRadius.circular(8 * scale),
         ),
         child: Text(
           word,
           style: TextStyle(
-            fontSize: 18 * scale,
+            fontSize: 20 * scale,
             fontWeight: FontWeight.w600,
             color: Colors.black87,
           ),
