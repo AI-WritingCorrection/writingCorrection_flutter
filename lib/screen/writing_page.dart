@@ -97,19 +97,14 @@ class _WritingPageState extends State<WritingPage> {
     final Map<int, List<Uint8List>> cellImages =
         await _canvasKey.currentState?.exportCellStrokeImages() ?? {};
 
-    // 2.획 수 계산: 모든 셀의 획을 합친 총 획 수
-    final int strokeCount = cellImages.values.fold(
-      0,
-      (sum, strokes) => sum + strokes.length,
-    );
-
-    // 3. 마지막 셀의 획수를 확인하여, 정해진 획수와 맞는지 확인하고, 부족하거나 많으면 모달창을 띄우고 화면으로 돌아감
+    // 2. 마지막 셀의 획수를 확인하여, 정해진 획수와 맞는지 확인하고, 부족하거나 많으면 모달창을 띄우고 화면으로 돌아감
     final int lastIndex = widget.practice.practiceText.length - 1;
     final requiredStrokes =
         widget.practice.essentialStrokeCounts?[lastIndex] ?? 0;
     final actualStrokes = cellImages[lastIndex]?.length ?? 0;
     if (actualStrokes > requiredStrokes) {
       _timer?.cancel();
+      if (!mounted) return;
       await showDialog(
         context: context,
         builder: (context) {
@@ -129,6 +124,7 @@ class _WritingPageState extends State<WritingPage> {
       return;
     } else if (actualStrokes < requiredStrokes) {
       _timer?.cancel();
+      if (!mounted) return;
       await showDialog(
         context: context,
         builder: (context) {
@@ -147,13 +143,18 @@ class _WritingPageState extends State<WritingPage> {
       _startTimer();
       return;
     }
+    //3.각 획의 첫번째 점과 마지막 점을 저장
+    Map<int, List<Offset>>? firstAndLastStroke =
+        _canvasKey.currentState
+            ?.getFirstAndLastStrokes(); // 각 셀의 첫번째 점과 마지막 점을 저장
 
     // 4.Result 모델 생성
     final result = Result(
       userId: 'user123',
       practiceText: widget.practice.practiceText,
-      streakCount: strokeCount,
       cellImages: cellImages,
+      firstAndLastStroke: firstAndLastStroke ?? {},
+      detailedStrokeCounts: widget.practice.detailedStrokeCounts,
       score: 0.0, // 서버 응답 후 업데이트
     );
 
@@ -182,7 +183,7 @@ class _WritingPageState extends State<WritingPage> {
 
     // 로그 출력
     print(
-      'Result submitted: userId=${result.userId}, practiceText="${result.practiceText}", streakCount=${result.streakCount}, cells=${result.cellImages.keys.toList()}',
+      'Result submitted: userId=${result.userId}, practiceText="${result.practiceText}", firstAndLastStrokes=${result.firstAndLastStroke}, detailedStrokeCounts=${result.detailedStrokeCounts}',
     );
     //이미지 저장되는 위치 확인용
     print('saved to: ${dir.path}');
