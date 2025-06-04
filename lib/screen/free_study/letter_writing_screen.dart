@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/repository/practice_repository.dart';
-import 'package:aiwriting_collection/screen/writing_page.dart';
+import 'package:aiwriting_collection/screen/home/writing_page.dart';
 
 class LetterWritingScreen extends StatelessWidget {
   const LetterWritingScreen({super.key});
