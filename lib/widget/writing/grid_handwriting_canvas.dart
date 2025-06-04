@@ -144,6 +144,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
               cellSize: widget.cellSize,
             ),
           ),
+          
           Listener(
             behavior: HitTestBehavior.opaque,
             onPointerMove: (e) => _onPointerMove(e),
