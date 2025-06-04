@@ -1,6 +1,9 @@
 import 'package:aiwriting_collection/widget/word_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
+import 'package:aiwriting_collection/repository/practice_repository.dart';
+import 'package:aiwriting_collection/screen/writing_page.dart';
 
 class LetterWritingScreen extends StatelessWidget {
   const LetterWritingScreen({super.key});
@@ -53,6 +56,8 @@ class LetterWritingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repo = Provider.of<PracticeRepository>(context, listen: false);
+
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
 
@@ -154,7 +159,33 @@ class LetterWritingScreen extends StatelessWidget {
                 for (var word in _consonantRows)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 5 * scale),
-                    child: WordTile(word: word, scale: 1.7 * scale),
+                    child: WordTile(
+                      word: word,
+                      scale: 1.7 * scale,
+                      onTap: () async {
+                        // 1) 리포지토리에서 전체 리스트를 가져온 뒤,
+                        // 2) practiceText와 missionType으로 해당 Practice를 찾아냅니다.
+                        final allPractices = await repo.getAllPractices();
+                        final practice = allPractices.firstWhere(
+                          (p) =>
+                              p.missionType == 'phoneme' &&
+                              p.practiceText == word,
+                          orElse: () => throw Exception('Practice not found'),
+                        );
+
+                        // 3) WritingPage로 곧바로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => WritingPage(
+                                  practice: practice,
+                                  showGuides: true,
+                                ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
               ],
             ),
@@ -186,7 +217,33 @@ class LetterWritingScreen extends StatelessWidget {
                 for (var word in _vowelRows)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 5 * scale),
-                    child: WordTile(word: word, scale: 1.7 * scale),
+                    child: WordTile(
+                      word: word,
+                      scale: 1.7 * scale,
+                      onTap: () async {
+                        // 1) 리포지토리에서 전체 리스트를 가져온 뒤,
+                        // 2) practiceText와 missionType으로 해당 Practice를 찾아냅니다.
+                        final allPractices = await repo.getAllPractices();
+                        final practice = allPractices.firstWhere(
+                          (p) =>
+                              p.missionType == 'phoneme' &&
+                              p.practiceText == word,
+                          orElse: () => throw Exception('Practice not found'),
+                        );
+
+                        // 3) WritingPage로 곧바로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => WritingPage(
+                                  practice: practice,
+                                  showGuides: true,
+                                ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
               ],
             ),

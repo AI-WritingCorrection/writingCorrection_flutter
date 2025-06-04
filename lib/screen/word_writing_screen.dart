@@ -1,6 +1,9 @@
 import 'package:aiwriting_collection/widget/word_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
+import 'package:provider/provider.dart';
+import 'package:aiwriting_collection/repository/practice_repository.dart';
+import 'package:aiwriting_collection/screen/writing_page.dart';
 
 class WordWritingScreen extends StatelessWidget {
   const WordWritingScreen({super.key});
@@ -38,6 +41,8 @@ class WordWritingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repo = Provider.of<PracticeRepository>(context, listen: false);
+
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
 
@@ -143,7 +148,7 @@ class WordWritingScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 16 * scale),
                 child: Text(
-                  '${len}글자 단어',
+                  '$len글자 단어',
                   style: TextStyle(
                     fontSize: 30 * scale,
                     fontWeight: FontWeight.bold,
@@ -151,7 +156,7 @@ class WordWritingScreen extends StatelessWidget {
                 ),
               ),
               Center(
-                //Wrap 위젯은 여러 자식 위젯을 줄 단위로 배치하고, 
+                //Wrap 위젯은 여러 자식 위젯을 줄 단위로 배치하고,
                 //가로나 세로 공간이 부족할 때 자동으로 줄을 바꿔 다음 줄(run)에 배치해 주는 레이아웃 도구
                 child: Wrap(
                   spacing: 15 * scale,
@@ -159,7 +164,33 @@ class WordWritingScreen extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   children: [
                     for (var word in groups[len]!)
-                      WordTile(word: word, scale: 1.7 * scale),
+                      WordTile(
+                        word: word,
+                        scale: 1.7 * scale,
+                        onTap: () async {
+                          // 1) 리포지토리에서 전체 리스트를 가져온 뒤,
+                          // 2) practiceText와 missionType으로 해당 Practice를 찾아냅니다.
+                          final allPractices = await repo.getAllPractices();
+                          final practice = allPractices.firstWhere(
+                            (p) =>
+                                p.missionType == 'word' &&
+                                p.practiceText == word,
+                            orElse: () => throw Exception('Practice not found'),
+                          );
+
+                          // 3) WritingPage로 곧바로 이동
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => WritingPage(
+                                    practice: practice,
+                                    showGuides: true,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
                   ],
                 ),
               ),
