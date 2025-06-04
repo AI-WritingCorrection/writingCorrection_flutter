@@ -215,6 +215,22 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
       activeCell = 0;
     });
   }
+  //각 획의 첫 점과 마지막 점을 “격자 셀 단위”로 묶어서 반환하는 기능
+  Map<int, List<Offset>> getFirstAndLastStrokes() {
+    final Map<int, List<Offset>> firstAndLast = {};
+    for (var stroke in strokes) {
+      if (stroke.isEmpty) continue;
+      final mid = stroke[stroke.length ~/ 2];
+      final int colIndex = (mid.dx ~/ widget.cellSize).clamp(0, cols - 1);
+      final int rowIndex = (mid.dy ~/ widget.cellSize).clamp(0, rows - 1);
+      final cellIndex = rowIndex * cols + colIndex;
+
+      // 첫 점과 마지막 점을 저장
+      firstAndLast.putIfAbsent(cellIndex, () => []).add(stroke.first);
+      firstAndLast[cellIndex]?.add(stroke.last);
+    }
+    return firstAndLast;
+  }
 
   /// 사용자가 그린 획(Strokes)들을 “격자 셀 단위”로 묶어서, 각 셀 크기만큼의 PNG 이미지 바이트 리스트로 변환해 주는 기능
   /// Uint8List는 바이너리 데이터(예: 이미지, 오디오, 네트워크 패킷)를 다룰 때, 바이트 단위로 메모리를 효율적으로 관리하기 위해 사용.
@@ -270,21 +286,6 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
 
         for (int i = 0; i < stroke.length - 1; i++) {
           canvas.drawLine(stroke[i], stroke[i + 1], paint);
-        }
-
-        // 획의 첫점과 마지막 점을 다른 색상으로 표시
-        final Paint startPaint =
-            Paint()
-              ..color = Colors.red
-              ..style = PaintingStyle.fill;
-        final Paint endPaint =
-            Paint()
-              ..color = Colors.blue
-              ..style = PaintingStyle.fill;
-        final double pointRadius = widget.penStrokeWidth * 0.5;
-        if (stroke.isNotEmpty) {
-          canvas.drawCircle(stroke.first, pointRadius, startPaint);
-          canvas.drawCircle(stroke.last, pointRadius, endPaint);
         }
 
         final picture = recorder.endRecording();
