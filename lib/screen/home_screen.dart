@@ -5,10 +5,21 @@ import 'package:aiwriting_collection/widget/study_step.dart';
 import 'package:flutter/material.dart';
 
 /// 홈 탭용 나선형 레이아웃 페이지
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  //연습 과제 더미 데이터
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // 초기화 작업이 필요하면 여기에 추가
+  }
+
+  //연습 과제 더미 데이터
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
