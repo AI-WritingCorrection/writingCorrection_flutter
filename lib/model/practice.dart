@@ -16,12 +16,11 @@ class Practice {
     this.time = 120,
   }) {
     detailedStrokeCounts ??= calculateDetailedStrokeCounts();
-    essentialStrokeCounts = detailedStrokeCounts!.entries
-      .map((entry) {
-        final counts = entry.value;
-        return counts[0] + counts[1] + counts[2];
-      })
-      .toList();
+    essentialStrokeCounts =
+        detailedStrokeCounts!.entries.map((entry) {
+          final counts = entry.value;
+          return counts[0] + counts[1] + counts[2];
+        }).toList();
   }
 
   //practiceText의 각 글자를 초성/중성/종성으로 분리한 후 각 글자의 초성,중성,종성의 필요 획수를 계산하는 함수
@@ -32,9 +31,68 @@ class Practice {
       return detailedStrokeCounts!;
     }
 
+    final List<String> choseongJamo = [
+      'ㄱ',
+      'ㄲ',
+      'ㄴ',
+      'ㄷ',
+      'ㄸ',
+      'ㄹ',
+      'ㅁ',
+      'ㅂ',
+      'ㅃ',
+      'ㅅ',
+      'ㅆ',
+      'ㅇ',
+      'ㅈ',
+      'ㅉ',
+      'ㅊ',
+      'ㅋ',
+      'ㅌ',
+      'ㅍ',
+      'ㅎ',
+    ];
+    final List<String> jungseongJamo = [
+      'ㅏ',
+      'ㅐ',
+      'ㅑ',
+      'ㅒ',
+      'ㅓ',
+      'ㅔ',
+      'ㅕ',
+      'ㅖ',
+      'ㅗ',
+      'ㅘ',
+      'ㅙ',
+      'ㅚ',
+      'ㅛ',
+      'ㅜ',
+      'ㅝ',
+      'ㅞ',
+      'ㅟ',
+      'ㅠ',
+      'ㅡ',
+      'ㅢ',
+      'ㅣ',
+    ];
+
     final Map<int, List<int>> result = {};
     for (int i = 0; i < practiceText.length; i++) {
       String char = practiceText[i];
+      // 자음만 있는 경우를 위해
+      if (choseongJamo.contains(char)) {
+        int index = choseongJamo.indexOf(char);
+        int count = getChoseongStrokeCount(index);
+        result[i] = [count, 0, 0];
+        continue;
+      }
+      // 모음만 있는 경우를 위해
+      if (jungseongJamo.contains(char)) {
+        int index = jungseongJamo.indexOf(char);
+        int count = getJungseongStrokeCount(index);
+        result[i] = [0, count, 0];
+        continue;
+      }
       if (char.codeUnitAt(0) >= 0xAC00 && char.codeUnitAt(0) <= 0xD7A3) {
         int code = char.codeUnitAt(0) - 0xAC00;
         int jongseongIndex = code % 28;
@@ -144,4 +202,3 @@ class Practice {
     return jongseongStrokeCounts[index];
   }
 }
-

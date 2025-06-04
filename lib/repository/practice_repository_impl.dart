@@ -52,7 +52,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㄱ',
-      essentialStrokeCounts: [1],
       time: 30,
     ),
     Practice(
@@ -60,7 +59,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㄲ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -68,7 +66,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㄴ',
-      essentialStrokeCounts: [1],
       time: 30,
     ),
     Practice(
@@ -76,7 +73,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㄷ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -84,7 +80,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㄸ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -92,7 +87,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㄹ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -100,7 +94,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅁ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -108,7 +101,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅂ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -116,7 +108,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅃ',
-      essentialStrokeCounts: [8],
       time: 30,
     ),
     Practice(
@@ -124,7 +115,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅅ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -132,7 +122,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅆ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -140,7 +129,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅇ',
-      essentialStrokeCounts: [1],
       time: 30,
     ),
     Practice(
@@ -148,7 +136,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅈ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -156,7 +143,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅉ',
-      essentialStrokeCounts: [6],
       time: 30,
     ),
     Practice(
@@ -164,7 +150,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅊ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -172,7 +157,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅋ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -180,7 +164,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅌ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -188,7 +171,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅍ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -196,7 +178,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅎ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     // ── 자음(letter) 등록 끝 ────────────────────────────────────
@@ -207,7 +188,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅏ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -215,7 +195,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅐ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -223,7 +202,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅑ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -231,7 +209,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅒ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -239,7 +216,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅓ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -247,7 +223,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅔ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -255,7 +230,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅕ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -263,7 +237,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅖ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -271,7 +244,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅗ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -279,7 +251,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅘ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -287,7 +258,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅙ',
-      essentialStrokeCounts: [5],
       time: 30,
     ),
     Practice(
@@ -295,7 +265,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅚ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -303,7 +272,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅛ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -311,7 +279,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅜ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -319,7 +286,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅝ',
-      essentialStrokeCounts: [4],
       time: 30,
     ),
     Practice(
@@ -327,7 +293,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅞ',
-      essentialStrokeCounts: [5],
       time: 30,
     ),
     Practice(
@@ -335,7 +300,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅟ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -343,7 +307,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅠ',
-      essentialStrokeCounts: [3],
       time: 30,
     ),
     Practice(
@@ -351,7 +314,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅡ',
-      essentialStrokeCounts: [1],
       time: 30,
     ),
     Practice(
@@ -359,7 +321,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅢ',
-      essentialStrokeCounts: [2],
       time: 30,
     ),
     Practice(
@@ -367,7 +328,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/hamster.png',
       missionType: 'phoneme',
       practiceText: 'ㅣ',
-      essentialStrokeCounts: [1],
       time: 30,
     ),
     // ── 단어(word) 연습용 Practice 등록 시작 ──
@@ -376,7 +336,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '감',
-      essentialStrokeCounts: [6],
       time: 60,
     ),
     Practice(
@@ -384,7 +343,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '꽃',
-      essentialStrokeCounts: [8],
       time: 60,
     ),
     Practice(
@@ -392,7 +350,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '눈',
-      essentialStrokeCounts: [4],
       time: 60,
     ),
     Practice(
@@ -400,7 +357,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '돈',
-      essentialStrokeCounts: [5],
       time: 60,
     ),
     Practice(
@@ -408,7 +364,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '땀',
-      essentialStrokeCounts: [9],
       time: 60,
     ),
     Practice(
@@ -416,7 +371,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '락',
-      essentialStrokeCounts: [6],
       time: 60,
     ),
     Practice(
@@ -424,7 +378,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '물',
-      essentialStrokeCounts: [8],
       time: 60,
     ),
     Practice(
@@ -432,7 +385,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '밥',
-      essentialStrokeCounts: [10],
       time: 60,
     ),
     Practice(
@@ -440,7 +392,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '빵',
-      essentialStrokeCounts: [11],
       time: 60,
     ),
     Practice(
@@ -448,7 +399,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '삶',
-      essentialStrokeCounts: [10],
       time: 60,
     ),
     Practice(
@@ -456,7 +406,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '쌀',
-      essentialStrokeCounts: [9],
       time: 60,
     ),
     Practice(
@@ -464,7 +413,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '입',
-      essentialStrokeCounts: [6],
       time: 60,
     ),
     Practice(
@@ -472,7 +420,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '자',
-      essentialStrokeCounts: [5],
       time: 60,
     ),
     Practice(
@@ -480,7 +427,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '짱',
-      essentialStrokeCounts: [9],
       time: 60,
     ),
     Practice(
@@ -488,7 +434,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '차',
-      essentialStrokeCounts: [5],
       time: 60,
     ),
     Practice(
@@ -496,7 +441,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '컷',
-      essentialStrokeCounts: [6],
       time: 60,
     ),
     Practice(
@@ -504,7 +448,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '탕',
-      essentialStrokeCounts: [6],
       time: 60,
     ),
     Practice(
@@ -512,7 +455,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '형',
-      essentialStrokeCounts: [7],
       time: 60,
     ),
     Practice(
@@ -520,7 +462,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '솔찬',
-      essentialStrokeCounts: [7, 6],
       time: 60,
     ),
     Practice(
@@ -528,7 +469,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '윤슬',
-      essentialStrokeCounts: [5, 6],
       time: 60,
     ),
     Practice(
@@ -536,7 +476,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '도담',
-      essentialStrokeCounts: [4, 7],
       time: 60,
     ),
     Practice(
@@ -544,7 +483,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '미르',
-      essentialStrokeCounts: [4, 4],
       time: 60,
     ),
     Practice(
@@ -552,7 +490,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '헤윰',
-      essentialStrokeCounts: [6, 7],
       time: 60,
     ),
     Practice(
@@ -560,7 +497,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '올랑',
-      essentialStrokeCounts: [6, 6],
       time: 60,
     ),
     Practice(
@@ -568,7 +504,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '다올',
-      essentialStrokeCounts: [4, 6],
       time: 60,
     ),
     Practice(
@@ -576,7 +511,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '늘빈',
-      essentialStrokeCounts: [5, 6],
       time: 60,
     ),
     Practice(
@@ -584,7 +518,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '꽃샘',
-      essentialStrokeCounts: [7, 8],
       time: 60,
     ),
     Practice(
@@ -592,7 +525,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/rabbitTeacher.png',
       missionType: 'word',
       practiceText: '해솔',
-      essentialStrokeCounts: [6, 7],
       time: 60,
     ),
     // ── 문장(sentence) 연습용 Practice 등록 시작 ──
@@ -601,35 +533,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
       practiceText: '내가 마음에 드는 글을 예쁜 글씨체로 쓰고 싶다.',
-      essentialStrokeCounts: [
-        4,
-        3,
-        0,
-        5,
-        5,
-        4,
-        0,
-        3,
-        3,
-        0,
-        5,
-        5,
-        0,
-        5,
-        10,
-        0,
-        5,
-        5,
-        6,
-        5,
-        0,
-        5,
-        3,
-        0,
-        7,
-        4,
-        1,
-      ],
       time: 120,
     ),
     Practice(
@@ -637,36 +540,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
       practiceText: '때로는 질문은 복잡하지만 해답은 간단할 수도 있다.',
-      essentialStrokeCounts: [
-        7,
-        5,
-        3,
-        0,
-        6,
-        6,
-        3,
-        0,
-        7,
-        8,
-        5,
-        3,
-        6,
-        0,
-        6,
-        8,
-        3,
-        0,
-        4,
-        5,
-        8,
-        0,
-        4,
-        4,
-        0,
-        6,
-        4,
-        1,
-      ],
       time: 120,
     ),
     Practice(
@@ -674,32 +547,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
       practiceText: '항상 변화한다는 사실만 변하지 않을 뿐이다.',
-      essentialStrokeCounts: [
-        6,
-        5,
-        0,
-        8,
-        7,
-        6,
-        4,
-        3,
-        0,
-        4,
-        6,
-        6,
-        0,
-        8,
-        5,
-        3,
-        0,
-        7,
-        5,
-        0,
-        11,
-        2,
-        4,
-        1,
-      ],
       time: 120,
     ),
     Practice(
@@ -707,27 +554,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
       practiceText: '가는 말이 고와야 오는 말도 곱다.',
-      essentialStrokeCounts: [
-        3,
-        3,
-        0,
-        8,
-        2,
-        0,
-        3,
-        5,
-        4,
-        0,
-        3,
-        3,
-        0,
-        8,
-        4,
-        0,
-        7,
-        4,
-        1,
-      ],
       time: 180,
     ),
     Practice(
@@ -735,7 +561,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
       practiceText: '난 가끔 낮보다 밤이 더 활기 넘치고\n풍부한 색감을 가지고 있다고 생각한다.',
-      essentialStrokeCounts: [],
       time: 180,
     ),
     Practice(
@@ -743,7 +568,6 @@ class DummyPracticeRepository implements PracticeRepository {
       imageAddress: 'assets/character/bearTeacher.png',
       missionType: 'sentence',
       practiceText: '결국 모든 것은 괜찮아질 것이다,\n만약 그렇지 않다면, 끝이 아니다.',
-      essentialStrokeCounts: [],
       time: 180,
     ),
   ];

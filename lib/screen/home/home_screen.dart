@@ -1,5 +1,5 @@
 import 'package:aiwriting_collection/repository/practice_repository_impl.dart';
-import 'package:aiwriting_collection/screen/detail_studyPage.dart';
+import 'package:aiwriting_collection/screen/home/detail_studyPage.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
 import 'package:flutter/material.dart';
