@@ -344,6 +344,9 @@ class _WritingPageState extends State<WritingPage> {
                         gridColor: Color(0xFFFFCEEF),
                         gridWidth: scaled(context, 3),
                         cellSize: scaled(context, cellSize),
+                        // 가이드라인 표시 여부와 문자 전달
+                        showGuides: widget.showGuides,
+                        guideChar: widget.practice.practiceText,
                       ),
                     ),
                   ),
