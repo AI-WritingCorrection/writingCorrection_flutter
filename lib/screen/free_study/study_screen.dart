@@ -1,6 +1,6 @@
-import 'package:aiwriting_collection/screen/letter_writing_screen.dart';
-import 'package:aiwriting_collection/screen/sentence_writing_screen.dart';
-import 'package:aiwriting_collection/screen/word_writing_screen.dart';
+import 'package:aiwriting_collection/screen/free_study/letter_writing_screen.dart';
+import 'package:aiwriting_collection/screen/free_study/sentence_writing_screen.dart';
+import 'package:aiwriting_collection/screen/free_study/word_writing_screen.dart';
 import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';

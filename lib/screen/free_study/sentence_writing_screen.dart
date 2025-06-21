@@ -3,7 +3,7 @@ import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/word_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/repository/practice_repository.dart';
-import 'package:aiwriting_collection/screen/writing_page.dart';
+import 'package:aiwriting_collection/screen/home/writing_page.dart';
 
 class SentenceWritingScreen extends StatelessWidget {
   const SentenceWritingScreen({super.key});
@@ -231,7 +231,11 @@ class SentenceWritingScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => WritingPage(practice: practice),
+                              builder:
+                                  (_) => WritingPage(
+                                    practice: practice,
+                                    showGuides: true,
+                                  ),
                             ),
                           );
                         },

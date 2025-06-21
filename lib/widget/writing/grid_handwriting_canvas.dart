@@ -5,6 +5,7 @@ import 'package:aiwriting_collection/widget/writing/inactivecell_painter.dart';
 import 'package:flutter/material.dart';
 import 'grid_painter.dart';
 import 'handwriting_painter.dart';
+import 'guide_painter.dart';
 //각 함수마다 low와 col를 선언하는 이유
 //exportCellStrokeImages() 같은 메서드가 호출될 시점에 initState() 가 이미 지나갔거나,
 //아예 initState() 가 실행되지 않았다면 “필드가 초기화되지 않았다”는 LateInitializationError 가 터집니다.
@@ -21,6 +22,12 @@ class GridHandwritingCanvas extends StatefulWidget {
   final Color penColor;
   final double penStrokeWidth;
 
+  /// 가이드라인을 그릴지 여부
+  final bool showGuides;
+
+  /// 셀마다 그릴 가이드 문자. practiceText의 각 문자에 대응.
+  final String? guideChar;
+
   const GridHandwritingCanvas({
     super.key,
     required this.charCount,
@@ -31,6 +38,8 @@ class GridHandwritingCanvas extends StatefulWidget {
     this.gridWidth = 1.0,
     this.penColor = Colors.black,
     this.penStrokeWidth = 5.0,
+    this.showGuides = false,
+    this.guideChar,
   });
 
   @override
@@ -87,9 +96,9 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   void _skipZeroStrokeCells() {
     final required = widget.essentialStrokeCounts;
     while (activeCell < (cols * rows) &&
-           required != null &&
-           activeCell < required.length &&
-           required[activeCell] == 0) {
+        required != null &&
+        activeCell < required.length &&
+        required[activeCell] == 0) {
       activeCell++;
     }
   }
@@ -144,6 +153,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
               cellSize: widget.cellSize,
             ),
           ),
+
           Listener(
             behavior: HitTestBehavior.opaque,
             onPointerMove: (e) => _onPointerMove(e),
@@ -158,12 +168,39 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
                 lineWidth: widget.gridWidth,
                 lineColor: widget.gridColor,
               ),
-              foregroundPainter: HandwritingPainter(
-                strokes: strokes,
-                currentStroke: currentStroke,
-                strokeColor: widget.penColor,
-                strokeWidth: widget.penStrokeWidth,
-              ),
+              // 2) child로 GuidePainter + HandwritingPainter 를 묶어서 그린다
+              child:
+                  widget.showGuides
+                      ? CustomPaint(
+                        size: Size(width, height),
+                        painter: GuidePainter(
+                          guideText: widget.guideChar ?? '',
+                          charCount: widget.charCount,
+                          maxPerRow: widget.maxPerRow,
+                          cellSize: widget.cellSize,
+                          textStyle: TextStyle(
+                            fontFamily: 'Maruburi',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.withOpacity(0.3),
+                            fontSize: widget.cellSize * 0.7,
+                          ),
+                        ),
+                        foregroundPainter: HandwritingPainter(
+                          strokes: strokes,
+                          currentStroke: currentStroke,
+                          strokeColor: widget.penColor,
+                          strokeWidth: widget.penStrokeWidth,
+                        ),
+                      )
+                      : CustomPaint(
+                        size: Size(width, height),
+                        painter: HandwritingPainter(
+                          strokes: strokes,
+                          currentStroke: currentStroke,
+                          strokeColor: widget.penColor,
+                          strokeWidth: widget.penStrokeWidth,
+                        ),
+                      ),
             ),
           ),
         ],
@@ -215,6 +252,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
       activeCell = 0;
     });
   }
+
   //각 획의 첫 점과 마지막 점을 “격자 셀 단위”로 묶어서 반환하는 기능
   Map<int, List<Offset>> getFirstAndLastStrokes() {
     final Map<int, List<Offset>> firstAndLast = {};

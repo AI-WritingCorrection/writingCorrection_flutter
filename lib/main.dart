@@ -1,9 +1,9 @@
 import 'package:aiwriting_collection/repository/practice_repository.dart';
 import 'package:aiwriting_collection/repository/practice_repository_impl.dart';
-import 'package:aiwriting_collection/screen/home_screen.dart';
+import 'package:aiwriting_collection/screen/home/home_screen.dart';
 import 'package:aiwriting_collection/screen/login_screen.dart';
 import 'package:aiwriting_collection/screen/record_screen.dart';
-import 'package:aiwriting_collection/screen/study_screen.dart';
+import 'package:aiwriting_collection/screen/free_study/study_screen.dart';
 import 'package:aiwriting_collection/screen/mypage_screen.dart';
 import 'package:aiwriting_collection/widget/bottom_bar.dart';
 import 'package:flutter/material.dart';

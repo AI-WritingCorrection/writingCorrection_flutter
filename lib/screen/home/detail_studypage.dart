@@ -1,6 +1,6 @@
 import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/repository/practice_repository_impl.dart';
-import 'package:aiwriting_collection/screen/writing_page.dart';
+import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:flutter/material.dart';
