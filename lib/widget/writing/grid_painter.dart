@@ -40,7 +40,7 @@ class GridPainter extends CustomPainter {
       final y = r * cellSize;
       canvas.drawLine(Offset(0, y), Offset(fullCols * cellSize, y), paint);
     }
-    // 3) 모든 열에 대해 fullRows 칸씩 그리기 
+    // 3) 모든 열에 대해 fullRows 칸씩 그리기
     for (int c = 0; c <= fullCols; c++) {
       final x = c * cellSize;
       canvas.drawLine(Offset(x, 0), Offset(x, rows * cellSize), paint);
