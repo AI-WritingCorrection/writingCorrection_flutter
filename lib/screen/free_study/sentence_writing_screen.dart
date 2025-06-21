@@ -231,7 +231,11 @@ class SentenceWritingScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => WritingPage(practice: practice),
+                              builder:
+                                  (_) => WritingPage(
+                                    practice: practice,
+                                    showGuides: true,
+                                  ),
                             ),
                           );
                         },
