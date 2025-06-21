@@ -202,7 +202,6 @@ class _WritingPageState extends State<WritingPage> {
     final double cellSize = switch (widget.practice.missionType) {
       'sentence' => 103.5,
       'word' => 200,
-      'letter' => 200,
       'phoneme' => 200,
       // TODO: Handle this case.
       String() => throw UnimplementedError(),
@@ -345,6 +344,9 @@ class _WritingPageState extends State<WritingPage> {
                         gridColor: Color(0xFFFFCEEF),
                         gridWidth: scaled(context, 3),
                         cellSize: scaled(context, cellSize),
+                        // 가이드라인 표시 여부와 문자 전달
+                        showGuides: widget.showGuides,
+                        guideChar: widget.practice.practiceText,
                       ),
                     ),
                   ),
