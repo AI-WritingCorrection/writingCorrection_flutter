@@ -3,7 +3,7 @@
   //"박"이라는 텍스트를 입력하면 ㅂ/ㅏ/ㄱ으로 분리후 글자인덱스 0과 필요 획수인 <0,[4,2,1]>을 반환
   Map<int, List<int>> calculateDetailedStrokeCounts(Map<int, List<int>>? detailedStrokeCounts, String text) {
     if (detailedStrokeCounts != null) {
-      return detailedStrokeCounts!;
+      return detailedStrokeCounts;
     }
 
     final List<String> choseongJamo = [

@@ -82,7 +82,7 @@ class LoginStatus extends ChangeNotifier {
       _firebaseUid = userCredential.user?.uid;
       _email = userCredential.user?.email;
       return _firebaseUid;
-    } catch (e, st) {
+    } catch (e) {
       print('Google sign-in error: $e');
       return null;
     }
@@ -106,7 +106,7 @@ class LoginStatus extends ChangeNotifier {
       _firebaseIdToken = idToken;
       _email = userCredential.user?.email;
       return userCredential.user?.uid;
-    } catch (e, st) {
+    } catch (e) {
       print('Apple sign-in error: $e');
       return null;
     }
