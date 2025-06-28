@@ -1,15 +1,10 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:aiwriting_collection/model/practice.dart';
-import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart';
 import 'package:flutter/material.dart';
-import 'package:aiwriting_collection/api.dart';
+
 
 class FreeStudyPage extends StatefulWidget {
   final Practice nowPractice;
@@ -56,8 +51,6 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
       WritingType.WORD => 200,
       WritingType.PHONEME => 200,
       WritingType.FREE => 200,
-      // TODO: Handle this case.
-      String() => throw UnimplementedError(),
     };
     //10자 이하 문장에서 중앙에 위치하기 위한 boolean 변수
     bool isBelow10Sentence =
