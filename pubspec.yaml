@@ -40,7 +40,14 @@ dependencies:
   dotted_border: ^2.0.0
   simple_shadow: ^0.3.1
   path_provider: ^2.0.15
-
+  firebase_auth: ^5.0.3
+  firebase_core: ^3.0.3
+  sign_in_with_apple: ^7.0.1
+  kakao_flutter_sdk_user: ^1.9.7+3
+  shared_preferences: ^2.5.3
+  image_picker: ^1.1.2
+  google_sign_in: ^6.1.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +76,7 @@ flutter:
     - assets/image/
     - assets/font/
     - assets/character/
+    - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

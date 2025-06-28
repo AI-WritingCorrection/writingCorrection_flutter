@@ -1,7 +1,7 @@
-import '../model/practice.dart';
+// import '../model/practice.dart';
 
-abstract class PracticeRepository {
-  Future<List<Practice>> getAllPractices();
-  Future<Practice> getPracticeByIndex(int id);
-  int getPracticeNum();
-}
+// abstract class PracticeRepository {
+//   Future<List<Step>> getAllPractices();
+//   Future<Step> getPracticeByIndex(int id);
+//   int getPracticeNum();
+// }

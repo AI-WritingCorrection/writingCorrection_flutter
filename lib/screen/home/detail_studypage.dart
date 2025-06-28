@@ -1,5 +1,5 @@
-import 'package:aiwriting_collection/model/practice.dart';
-import 'package:aiwriting_collection/repository/practice_repository_impl.dart';
+import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
@@ -7,49 +7,48 @@ import 'package:flutter/material.dart';
 
 class DetailStudyPage extends StatefulWidget {
   final int pageNum;
-  DetailStudyPage({super.key, required this.pageNum});
+  const DetailStudyPage({super.key, required this.pageNum});
 
   @override
   State<DetailStudyPage> createState() => _DetailStudyPageState();
 }
 
 class _DetailStudyPageState extends State<DetailStudyPage> {
-  final practiceRepository = DummyPracticeRepository();
-  late Future<Practice> _practiceFuture;
+  final api = Api();
+  late Future<Steps> nowStep;
 
   @override
   void initState() {
     super.initState();
-    _practiceFuture = practiceRepository.getPracticeByIndex(widget.pageNum);
+    // Fetch the specific step from the server-side list
+    nowStep = api.getStepList().then((list) => list[widget.pageNum]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Practice>(
-      future: _practiceFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        final practice = snapshot.data!;
-        final Size screenSize = MediaQuery.of(context).size;
-        // reuse portrait scaling logic
-        final double basePortrait = 390.0;
-        final double baseLandscape = 844.0;
-        final bool isLandscape = screenSize.width > screenSize.height;
-        final double scale =
-            isLandscape
-                ? screenSize.height / baseLandscape
-                : screenSize.width / basePortrait;
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFBF3),
+      body: FutureBuilder<Steps>(
+        future: nowStep,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final step = snapshot.data!;
+          final Size screenSize = MediaQuery.of(context).size;
+          // reuse portrait scaling logic
+          final double basePortrait = 390.0;
+          final double baseLandscape = 844.0;
+          final bool isLandscape = screenSize.width > screenSize.height;
+          final double scale =
+              isLandscape
+                  ? screenSize.height / baseLandscape
+                  : screenSize.width / basePortrait;
 
-        //말풍선 왼쪽 여백
-        final double horizontalInset = 40 * scale;
-        final isHamster = practice.imageAddress.contains('hamster');
-        return Scaffold(
-          backgroundColor: const Color(0xFFFFFBF3),
-          body: SafeArea(
+          //말풍선 왼쪽 여백
+          final double horizontalInset = 40 * scale;
+          final isHamster = step.stepCharacter.contains('hamster');
+          return SafeArea(
             child: Container(
               //container가 벗어난 부분의 경계선을 부드럽게 잘라냄
               clipBehavior: Clip.antiAlias,
@@ -72,8 +71,8 @@ class _DetailStudyPageState extends State<DetailStudyPage> {
 
                     // 말풍선 + 캐릭터 이미지
                     SpeechBubble(
-                      text: practice.missionText,
-                      imageAsset: practice.imageAddress,
+                      text: step.stepMission,
+                      imageAsset: step.stepCharacter,
                       scale: scale,
                       horizontalInset: horizontalInset,
                       imageRight: isHamster ? -30 : -50,
@@ -117,9 +116,11 @@ class _DetailStudyPageState extends State<DetailStudyPage> {
                                 ],
                               ),
                               alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16 * scale,
+                              ),
                               child: Text(
-                                practice.practiceText,
+                                step.stepText,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.black,
@@ -177,7 +178,7 @@ class _DetailStudyPageState extends State<DetailStudyPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WritingPage(practice: practice,),
+                              builder: (context) => WritingPage(nowStep: step),
                             ),
                           );
                         },
@@ -213,9 +214,9 @@ class _DetailStudyPageState extends State<DetailStudyPage> {
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
