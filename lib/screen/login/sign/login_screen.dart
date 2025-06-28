@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../model/login_status.dart';
+import '../../../model/login_status.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +12,16 @@ class LoginScreen extends StatefulWidget {
 //scale*4 = 1% of screenWidth
 //scale*9.3 = 1% of screenHeight
 class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final login = context.read<LoginStatus>();
+    // print("✅ [LoginScreen 진입]");
+    // print("JWT: ${login.jwt}");
+    // print("UID: ${login.uid}");
+    // print("isLoggedIn: ${login.isLoggedIn}");
+  }
+
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
@@ -204,7 +214,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8.0 * scale),
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          try {
+                            final nav = Navigator.of(context);
+                            bool existed = await context
+                                .read<LoginStatus>()
+                                .loginWithProvider('APPLE');
+                            if (!mounted) return;
+                            if (existed) {
+                              // 200 → 홈 화면으로
+                              nav.pushReplacementNamed('/home');
+                            } else {
+                              // 404 → 가입 페이지로
+                              nav.pushNamed('/sign', arguments: 'APPLE');
+                            }
+                          } on Exception catch (e) {
+                            // TODO
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                            );
+                          }
+                        },
                         icon: const Icon(Icons.apple),
                         tooltip: 'Apple 로그인',
                         iconSize: scale * 40,
@@ -219,7 +249,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8.0 * scale),
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          try {
+                            final nav = Navigator.of(context);
+                            bool existed = await context
+                                .read<LoginStatus>()
+                                .loginWithProvider('GOOGLE');
+                            if (existed) {
+                              // 200 → 홈 화면으로
+                              nav.pushReplacementNamed('/home');
+                            } else {
+                              // 404 → 가입 페이지로
+                              nav.pushNamed('/sign', arguments: 'GOOGLE');
+                            }
+                          } on Exception catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                            );
+                          }
+                        },
                         icon: const Icon(Icons.g_mobiledata),
                         tooltip: 'Google 로그인',
                         iconSize: scale * 40,
@@ -234,7 +282,26 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8.0 * scale),
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          try {
+                            final nav = Navigator.of(context);
+                            bool existed = await context
+                                .read<LoginStatus>()
+                                .loginWithProvider('KAKAO');
+                            if (existed) {
+                              // 200 → 홈 화면으로
+                              nav.pushReplacementNamed('/home');
+                            } else {
+                              // 404 → 가입 페이지로
+                              nav.pushNamed('/sign', arguments: 'KAKAO');
+                            }
+                          } on Exception catch (e) {
+                            // TODO
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                            );
+                          }
+                        },
                         icon: const Icon(Icons.chat),
                         tooltip: 'Kakao 로그인',
                         iconSize: scale * 40,
@@ -250,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          context.read<LoginStatus>().setLoggedIn(true);
+                          context.read<LoginStatus>().loginAsGuest('Sehwan');
                         },
                         child: Text(
                           '게스트',
@@ -290,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: scale * 16,
-                            color: Colors.black, 
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -498,7 +565,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8.0 * scale),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                final nav = Navigator.of(context);
+                                bool existed = await context
+                                    .read<LoginStatus>()
+                                    .loginWithProvider('APPLE');
+                                if (existed) {
+                                  // 200 → 홈 화면으로
+                                  nav.pushReplacementNamed('/home');
+                                } else {
+                                  // 404 → 가입 페이지로
+                                  nav.pushNamed('/sign', arguments: 'APPLE');
+                                }
+                              } on Exception catch (e) {
+                                // TODO
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                                );
+                              }
+                            },
                             icon: const Icon(Icons.apple),
                             tooltip: 'Apple 로그인',
                             iconSize: scale * 50,
@@ -513,7 +599,33 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8.0 * scale),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                final nav = Navigator.of(context);
+                                bool existed = await context
+                                    .read<LoginStatus>()
+                                    .loginWithProvider('GOOGLE');
+                                if (existed) {
+                                  // 200 → 홈 화면으로
+                                  nav.pushReplacementNamed('/home');
+                                } else {
+                                  // 404 → 가입 페이지로
+                                  nav.pushNamed(
+                                    '/sign',
+                                    arguments: {
+                                      'provider': 'GOOGLE',
+                                      'email':
+                                          context.read<LoginStatus>().email,
+                                    },
+                                  );
+                                }
+                              } on Exception catch (e) {
+                                // TODO
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                                );
+                              }
+                            },
                             icon: const Icon(Icons.g_mobiledata),
                             tooltip: 'Google 로그인',
                             iconSize: scale * 50,
@@ -528,7 +640,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8.0 * scale),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                final nav = Navigator.of(context);
+                                bool existed = await context
+                                    .read<LoginStatus>()
+                                    .loginWithProvider('KAKAO');
+                                if (existed) {
+                                  // 200 → 홈 화면으로
+                                  nav.pushReplacementNamed('/home');
+                                } else {
+                                  // 404 → 가입 페이지로
+                                  nav.pushNamed('/sign', arguments: 'KAKAO');
+                                }
+                              } catch (e) {
+                                // 로그인 취소 또는 실패 → 아무 것도 안 함
+                                print('로그인 취소 또는 실패');
+                              }
+                            },
                             icon: const Icon(Icons.chat),
                             tooltip: 'Kakao 로그인',
                             iconSize: scale * 50,
@@ -544,7 +673,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           child: TextButton(
                             onPressed: () {
-                              context.read<LoginStatus>().setLoggedIn(true);
+                              context.read<LoginStatus>().loginAsGuest(
+                                'Sehwan',
+                              );
                             },
                             child: Text(
                               '게스트',
@@ -569,7 +700,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // 회원가입 페이지로 이동
+                          Navigator.of(context).pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'KAKAO',
+                              'email': 'tlrpv12@naver.com',
+                            },
+                          );
+                        },
                         child: Text(
                           '회원가입',
                           style: TextStyle(

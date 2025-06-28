@@ -1,71 +1,45 @@
+import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/practice.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/screen/free_study/free_studypage.dart';
 import 'package:aiwriting_collection/widget/word_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
-import 'package:aiwriting_collection/repository/practice_repository.dart';
-import 'package:aiwriting_collection/screen/home/writing_page.dart';
+
 
 class LetterWritingScreen extends StatelessWidget {
   const LetterWritingScreen({super.key});
 
-  static const List<String> _consonantRows = [
-    'ㄱ',
-    'ㄲ',
-    'ㄴ',
-    'ㄷ',
-    'ㄸ',
-    'ㄹ',
-    'ㅁ',
-    'ㅂ',
-    'ㅃ',
-    'ㅅ',
-    'ㅆ',
-    'ㅇ',
-    'ㅈ',
-    'ㅉ',
-    'ㅊ',
-    'ㅋ',
-    'ㅌ',
-    'ㅍ',
-    'ㅎ',
-  ];
-
-  static const List<String> _vowelRows = [
-    'ㅏ',
-    'ㅐ',
-    'ㅑ',
-    'ㅒ',
-    'ㅓ',
-    'ㅔ',
-    'ㅕ',
-    'ㅖ',
-    'ㅗ',
-    'ㅘ',
-    'ㅙ',
-    'ㅚ',
-    'ㅛ',
-    'ㅜ',
-    'ㅝ',
-    'ㅞ',
-    'ㅟ',
-    'ㅠ',
-    'ㅡ',
-    'ㅢ',
-    'ㅣ',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final repo = Provider.of<PracticeRepository>(context, listen: false);
-
+    final api=Api();
+    
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
-
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      body: FutureBuilder<List<Practice>>(future: api.getPracticeList(), builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No data available'));
+        }
+
+        List<Practice> consonantRows = snapshot.data!
+            .where((practice) => practice.practiceType == WritingType.PHONEME && (practice.practiceId >= 1 && practice.practiceId <= 19))
+            .toList();
+
+        List<Practice> vowelRows = snapshot.data!
+            .where((practice) => practice.practiceType == WritingType.PHONEME && (practice.practiceId >= 20 && practice.practiceId <= 39))
+            .toList();
+
+        print('consonantRows length: ${consonantRows.length}, vowelRows length: ${vowelRows.length}');
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
             // 1) 헤더 영역: 원고지 + 백 버튼 + 타이틀
             SizedBox(
               height: 180 * scale,
@@ -156,30 +130,19 @@ class LetterWritingScreen extends StatelessWidget {
               runSpacing: 12 * scale,
               alignment: WrapAlignment.center,
               children: [
-                for (var word in _consonantRows)
+                for (int i = 0; i < consonantRows.length; i++)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 5 * scale),
                     child: WordTile(
-                      word: word,
+                      word: consonantRows[i].practiceText,
                       scale: 1.7 * scale,
                       onTap: () async {
-                        // 1) 리포지토리에서 전체 리스트를 가져온 뒤,
-                        // 2) practiceText와 missionType으로 해당 Practice를 찾아냅니다.
-                        final allPractices = await repo.getAllPractices();
-                        final practice = allPractices.firstWhere(
-                          (p) =>
-                              p.missionType == 'phoneme' &&
-                              p.practiceText == word,
-                          orElse: () => throw Exception('Practice not found'),
-                        );
-
-                        // 3) WritingPage로 곧바로 이동
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder:
-                                (_) => WritingPage(
-                                  practice: practice,
+                                (_) => FreeStudyPage(
+                                  nowPractice: consonantRows[i],
                                   showGuides: true,
                                 ),
                           ),
@@ -208,36 +171,25 @@ class LetterWritingScreen extends StatelessWidget {
             ),
             SizedBox(height: 30 * scale),
 
-            // Vowel letters arranged in a wrap with vertical padding
+            // Consonant letters arranged in a wrap with vertical padding
             Wrap(
               spacing: 15 * scale,
               runSpacing: 12 * scale,
               alignment: WrapAlignment.center,
               children: [
-                for (var word in _vowelRows)
+                for (int i = 0; i < vowelRows.length; i++)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 5 * scale),
                     child: WordTile(
-                      word: word,
+                      word: vowelRows[i].practiceText,
                       scale: 1.7 * scale,
                       onTap: () async {
-                        // 1) 리포지토리에서 전체 리스트를 가져온 뒤,
-                        // 2) practiceText와 missionType으로 해당 Practice를 찾아냅니다.
-                        final allPractices = await repo.getAllPractices();
-                        final practice = allPractices.firstWhere(
-                          (p) =>
-                              p.missionType == 'phoneme' &&
-                              p.practiceText == word,
-                          orElse: () => throw Exception('Practice not found'),
-                        );
-
-                        // 3) WritingPage로 곧바로 이동
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder:
-                                (_) => WritingPage(
-                                  practice: practice,
+                                (_) => FreeStudyPage(
+                                  nowPractice: vowelRows[i],
                                   showGuides: true,
                                 ),
                           ),
@@ -250,7 +202,9 @@ class LetterWritingScreen extends StatelessWidget {
             SizedBox(height: 80 * scale),
           ],
         ),
-      ),
+      );
+    }
+    ),
     );
   }
 }

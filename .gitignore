@@ -34,6 +34,27 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Flutter build
+.flutter-plugins-cache
+.packages
+.metadata
+
+# iOS build and Xcode
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Flutter/Flutter.framework/
+ios/Flutter/App.framework/
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/DerivedData/
+
+# Android build
+android/.gradle/
+android/app/build/
+
+# IDE folders
+.vscode/
+
 # Android 스크린샷·심볼·맵
 app.*.symbols
 app.*.map.json
@@ -50,3 +71,6 @@ app.*.map.json
 
 # 루트 레벨 Gradle 캐시
 /.gradle/
+.env
+
+lib/build/ios/XCBuildData/

@@ -1,6 +1,9 @@
-import 'package:aiwriting_collection/widget/practice_card.dart';
-import 'package:aiwriting_collection/model/login_status.dart';
+import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:aiwriting_collection/api.dart';
 import 'package:provider/provider.dart';
+import 'package:aiwriting_collection/model/login_status.dart';
+import 'package:aiwriting_collection/main.dart';
+import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
 
 class DiagonalClipper extends CustomClipper<Path> {
@@ -26,7 +29,32 @@ class MypageScreen extends StatefulWidget {
 }
 
 class _MypageScreenState extends State<MypageScreen> {
-  bool isDailyAlarmOn = false; // 알람 토글
+  bool isDailyAlarmOn = false;
+  final api = Api(); // 알람 토글
+  UserProfile? _profile;
+  bool _loadingProfile = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final userId = context.read<LoginStatus>().userId;
+      final profile = await api.getUserProfile(userId!);
+      print('Loaded profile: ${profile.nickname}, pic: ${profile.profilePic}');
+      setState(() {
+        _profile = profile;
+        _loadingProfile = false;
+      });
+    } catch (e, st) {
+      print('❌ _loadUserProfile error: $e');
+      print(st);
+      setState(() => _loadingProfile = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +79,7 @@ class _MypageScreenState extends State<MypageScreen> {
             : screenSize.width / basePortrait;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).canvasColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -105,15 +133,28 @@ class _MypageScreenState extends State<MypageScreen> {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade300,
-                        radius: 70 * scale,
-                        child: Icon(
-                          Icons.person,
-                          size: 60 * scale,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
+                      _loadingProfile
+                          ? CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            radius: 70 * scale,
+                            child: CircularProgressIndicator(),
+                          )
+                          : CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            radius: 70 * scale,
+                            backgroundImage:
+                                _profile?.profilePic != null
+                                    ? NetworkImage(_profile!.profilePic!)
+                                    : null,
+                            child:
+                                _profile?.profilePic == null
+                                    ? Icon(
+                                      Icons.person,
+                                      size: 60 * scale,
+                                      color: Colors.grey.shade700,
+                                    )
+                                    : null,
+                          ),
                       Positioned(
                         bottom: -4 * scale,
                         right: -4 * scale,
@@ -144,7 +185,9 @@ class _MypageScreenState extends State<MypageScreen> {
                       borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
                     ),
                     child: Text(
-                      '게스트', // 사용자 이름 또는 '게스트'
+                      !_loadingProfile && _profile != null
+                          ? _profile!.nickname
+                          : '게스트',
                       style: TextStyle(
                         fontSize: 18 * scale,
                         fontWeight: FontWeight.w500,
@@ -164,7 +207,14 @@ class _MypageScreenState extends State<MypageScreen> {
                             Provider.of<LoginStatus>(
                               context,
                               listen: false,
-                            ).setLoggedIn(false);
+                            ).logout();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MyApp(),
+                              ),
+                              (route) => false,
+                            );
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12 * scale),
@@ -220,76 +270,99 @@ class _MypageScreenState extends State<MypageScreen> {
                   SizedBox(height: 40 * scale),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16 * scale),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
                       children: [
-                        Text(
-                          '일일 학습 알림',
-                          style: TextStyle(
-                            fontSize: 20 * scale,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
+                        // 1) 토글 Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '일일 학습 알림',
+                              style: TextStyle(
+                                fontSize: 20 * scale,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            Switch(
+                              value: isDailyAlarmOn,
+                              onChanged:
+                                  (v) => setState(() => isDailyAlarmOn = v),
+                              activeColor: Colors.green,
+                              activeTrackColor: Colors.grey.shade300,
+                              inactiveThumbColor: Colors.grey.shade700,
+                              inactiveTrackColor: Colors.grey.shade300,
+                            ),
+                          ],
                         ),
-                        Switch(
-                          value: isDailyAlarmOn,
-                          onChanged: (bool value) {
-                            setState(() {
-                              isDailyAlarmOn = value;
-                            });
+                        Divider(), // 토글 아래 구분선
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '다크 모드',
+                              style: TextStyle(
+                                fontSize: 20 * scale,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            Switch(
+                              value: isDailyAlarmOn,
+                              onChanged:
+                                  (v) => setState(() => isDailyAlarmOn = v),
+                              activeColor: Colors.green,
+                              activeTrackColor: Colors.grey.shade300,
+                              inactiveThumbColor: Colors.grey.shade700,
+                              inactiveTrackColor: Colors.grey.shade300,
+                            ),
+                          ],
+                        ),
+
+                        Divider(), // 토글 아래 구분선
+                        SizedBox(height: 40 * scale),
+                        PracticeCard(
+                          title: '캐릭터 소개',
+                          subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                          imagePath: 'assets/character/bearTeacher.png',
+                          onTap: () {
+                            // 곰곰 카드 탭 로직
                           },
-                          // 켜졌을 때 thumb(동그라미) 색
-                          activeColor: Colors.green,
-                          // 켜졌을 때 track(바탕) 색
-                          activeTrackColor: Colors.grey.shade300,
-                          // 꺼졌을 때 thumb 색
-                          inactiveThumbColor: Colors.grey.shade700,
-                          // 꺼졌을 때 track 색
-                          inactiveTrackColor: Colors.grey.shade300,
+                        ),
+                        SizedBox(height: 20 * scale),
+                        PracticeCard(
+                          title: '곰곰',
+                          subtitle:
+                              '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
+                          imagePath: 'assets/character/bearTeacher.png',
+                          onTap: () {
+                            // 해당 페이지로 이동하는 로직
+                          },
+                        ),
+                        SizedBox(height: 20 * scale),
+                        PracticeCard(
+                          title: '토토',
+                          subtitle:
+                              '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요. 지루할 틈 없이 신나게 따라와 보세요!',
+                          imagePath: 'assets/character/rabbitTeacher.png',
+                          onTap: () {},
+                        ),
+                        SizedBox(height: 20 * scale),
+                        PracticeCard(
+                          title: '다람',
+                          subtitle:
+                              '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다. 섬세한 한 획까지 믿고 맡겨 보세요!',
+                          imagePath: 'assets/character/hamster.png',
+                          onTap: () {},
                         ),
                       ],
                     ),
                   ),
-                  Divider(), // 토글 아래 구분선
-                  SizedBox(height: 40 * scale),
-                  PracticeCard(
-                    title: '캐릭터 소개',
-                    subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
-                    imagePath: 'assets/character/bearTeacher.png',
-                    onTap: () {
-                      // 곰곰 카드 탭 로직
-                    },
-                  ),
-                  SizedBox(height: 20 * scale),
-                  PracticeCard(
-                    title: '곰곰',
-                    subtitle:
-                        '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
-                    imagePath: 'assets/character/bearTeacher.png',
-                    onTap: () {
-                      // 해당 페이지로 이동하는 로직
-                    },
-                  ),
-                  SizedBox(height: 20 * scale),
-                  PracticeCard(
-                    title: '토토',
-                    subtitle:
-                        '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요. 지루할 틈 없이 신나게 따라와 보세요!',
-                    imagePath: 'assets/character/rabbitTeacher.png',
-                    onTap: () {},
-                  ),
-                  SizedBox(height: 20 * scale),
-                  PracticeCard(
-                    title: '다람',
-                    subtitle:
-                        '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다. 섬세한 한 획까지 믿고 맡겨 보세요!',
-                    imagePath: 'assets/character/hamster.png',
-                    onTap: () {},
-                  ),
+                  SizedBox(height: 80 * scale),
                 ],
               ),
             ),
-            SizedBox(height: 80 * scale), // 하단 버튼 영역을 위해 여백
+            // 하단 버튼 영역을 위해 여백
           ],
         ),
       ),
@@ -361,15 +434,28 @@ class _MypageScreenState extends State<MypageScreen> {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade300,
-                        radius: 70 * scale,
-                        child: Icon(
-                          Icons.person,
-                          size: 60 * scale,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
+                      _loadingProfile
+                          ? CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            radius: 70 * scale,
+                            child: CircularProgressIndicator(),
+                          )
+                          : CircleAvatar(
+                            backgroundColor: Colors.grey.shade300,
+                            radius: 70 * scale,
+                            backgroundImage:
+                                _profile?.profilePic != null
+                                    ? NetworkImage(_profile!.profilePic!)
+                                    : null,
+                            child:
+                                _profile?.profilePic == null
+                                    ? Icon(
+                                      Icons.person,
+                                      size: 60 * scale,
+                                      color: Colors.grey.shade700,
+                                    )
+                                    : null,
+                          ),
                       Positioned(
                         bottom: -4 * scale,
                         right: -4 * scale,
@@ -400,7 +486,9 @@ class _MypageScreenState extends State<MypageScreen> {
                       borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
                     ),
                     child: Text(
-                      '게스트', // 사용자 이름 또는 '게스트'
+                      !_loadingProfile && _profile != null
+                          ? _profile!.nickname
+                          : '게스트',
                       style: TextStyle(
                         fontSize: 18 * scale,
                         fontWeight: FontWeight.w500,
@@ -417,12 +505,15 @@ class _MypageScreenState extends State<MypageScreen> {
               children: [
                 // ── 로그아웃 버튼 ──
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     // 로그인 상태를 false 로 변경하면 main.dart 에서 자동으로 LoginScreen 으로 돌아갑니다.
-                    Provider.of<LoginStatus>(
+                    await api.logout();
+                    Provider.of<LoginStatus>(context, listen: false).logout();
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      listen: false,
-                    ).setLoggedIn(false);
+                      MaterialPageRoute(builder: (context) => const MyApp()),
+                      (route) => false,
+                    );
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(
