@@ -121,3 +121,5 @@ lib/build/ios/XCBuildData/PIFCache/target/TARGET@v11_hash=e79920aea8df26117891b2
 lib/build/ios/XCBuildData/PIFCache/target/TARGET@v11_hash=eceb3355070f7fee21444254ab1d1158-json
 lib/build/ios/XCBuildData/PIFCache/target/TARGET@v11_hash=ef81191ebf64b7bd159067b664d5ec86-json
 lib/build/ios/XCBuildData/PIFCache/workspace/WORKSPACE@v11_hash=(null)_subobjects=bd2d10e49ffc964b72f9ac5d77540278-json
+lib/firebase_options.dart
+macos/Runner/GoogleService-Info.plist
