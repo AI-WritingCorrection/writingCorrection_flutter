@@ -72,9 +72,12 @@ app.*.map.json
 # 루트 레벨 Gradle 캐시
 /.gradle/
 .env
-
+햣
 lib/build/ios/XCBuildData/lib/firebase_options.dart
 macos/Runner/GoogleService-Info.plist
+ios/Runner/GoogleService-Info.plist
+android/app/google-services.json
+lib/firebase_options.dart
 lib/build/ios/XCBuildData/PIFCache/project/PROJECT@v11_mod=312cb506536c44926b65cfb3d5b2f74e_hash=bfdfe7dc352907fc980b868725387e98plugins=1OJSG6M1FOV3XYQCBH7Z29RZ0FPR9XDE1-json
 lib/build/ios/XCBuildData/PIFCache/target/TARGET@v11_hash=0a5cbd223a1c49953c33b59b182eb80f-json
 lib/build/ios/XCBuildData/PIFCache/target/TARGET@v11_hash=1f4bc0fcddd6b037df05f9f4aca4b94f-json
@@ -123,3 +126,6 @@ lib/build/ios/XCBuildData/PIFCache/target/TARGET@v11_hash=ef81191ebf64b7bd159067
 lib/build/ios/XCBuildData/PIFCache/workspace/WORKSPACE@v11_hash=(null)_subobjects=bd2d10e49ffc964b72f9ac5d77540278-json
 lib/firebase_options.dart
 macos/Runner/GoogleService-Info.plist
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase.json
