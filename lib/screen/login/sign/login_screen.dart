@@ -15,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final login = context.read<LoginStatus>();
     // print("✅ [LoginScreen 진입]");
     // print("JWT: ${login.jwt}");
     // print("UID: ${login.uid}");
@@ -228,8 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               // 404 → 가입 페이지로
                               nav.pushNamed('/sign', arguments: 'APPLE');
                             }
-                          } on Exception catch (e) {
-                            // TODO
+                          } on Exception {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
                             );
@@ -262,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               // 404 → 가입 페이지로
                               nav.pushNamed('/sign', arguments: 'GOOGLE');
                             }
-                          } on Exception catch (e) {
+                          } on Exception {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
                             );
@@ -295,7 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               // 404 → 가입 페이지로
                               nav.pushNamed('/sign', arguments: 'KAKAO');
                             }
-                          } on Exception catch (e) {
+                          } on Exception {
                             // TODO
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
@@ -578,7 +576,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   // 404 → 가입 페이지로
                                   nav.pushNamed('/sign', arguments: 'APPLE');
                                 }
-                              } on Exception catch (e) {
+                              } on Exception {
                                 // TODO
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
@@ -619,8 +617,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                                   );
                                 }
-                              } on Exception catch (e) {
-                                // TODO
+                              } on Exception  {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
                                 );

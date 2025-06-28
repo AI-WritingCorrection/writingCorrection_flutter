@@ -39,10 +39,6 @@ class _SignScreenState extends State<SignScreen> {
     } else {
       _provider = context.read<LoginStatus>().lastProvider ?? '';
     }
-    final login = context.read<LoginStatus>();
-    // if (_emailController.text.isEmpty && login.email != null) {
-    //   _emailController.text = login.email!;
-    // }
     print("[SignScreen] didChangeDependencies, provider: '$_provider'");
   }
 

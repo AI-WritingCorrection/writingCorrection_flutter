@@ -237,8 +237,6 @@ class _WritingPageState extends State<WritingPage> {
       WritingType.WORD => 200,
       WritingType.PHONEME => 200,
       WritingType.FREE => 200,
-      // TODO: Handle this case.
-      String() => throw UnimplementedError(),
     };
     //10자 이하 문장에서 중앙에 위치하기 위한 boolean 변수
     bool isBelow10Sentence =
