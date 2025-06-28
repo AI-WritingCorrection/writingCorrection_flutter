@@ -1,122 +1,165 @@
+import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/screen/home/home_screen.dart';
+import 'package:aiwriting_collection/screen/login/sign/login_screen.dart';
+import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
+import 'package:aiwriting_collection/screen/record_screen.dart';
+import 'package:aiwriting_collection/screen/free_study/study_screen.dart';
+import 'package:aiwriting_collection/screen/mypage_screen.dart';
+import 'package:aiwriting_collection/widget/bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'model/login_status.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 
-void main() {
-  runApp(const MyApp());
+
+
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); // Load environment variables
+  KakaoSdk.init(
+    nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '',
+    javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY'] ?? '',
+  ); // 카카오 SDK 초기화
+  await Firebase.initializeApp();
+  final api = Api();
+  // Check existing FirebaseAuth session
+  final firebaseUser = FirebaseAuth.instance.currentUser;
+  bool initialLoggedIn = false;
+  int initialId = 0;
+  String? initialUid;
+  String? initialJwt;
+
+  if (firebaseUser != null) {
+    try {
+      final idToken = await firebaseUser.getIdToken();
+      final res = await api.login(idToken!);
+      if (res.statusCode == 200) {
+        final body = jsonDecode(res.body);
+        initialLoggedIn = true;
+        initialId = body['user_id'];
+        initialUid = firebaseUser.uid;
+        initialJwt = body['jwt'];
+      }
+    } catch (e) {
+      // network or parsing error
+      initialLoggedIn = false;
+      debugPrint('Auto-login error: $e');
+    }
+  }
+
+  // Determine logical screen size in dp
+  final physicalSize =
+      WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+  final devicePixelRatio =
+      WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+  final logicalSize = physicalSize / devicePixelRatio;
+  final bool isTablet = logicalSize.shortestSide >= 600;
+
+  //태블릿이면 가로모드로 고정
+  if (isTablet) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) {
+            final loginStatus = LoginStatus();
+            if (initialLoggedIn && initialUid != null && initialJwt != null) {
+              loginStatus.setUser(
+                userId: initialId,
+                uid: initialUid,
+                jwt: initialJwt,
+              );
+            }
+            return loginStatus;
+          },
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  // ignore: library_private_types_in_public_api
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'MyPen',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        fontFamily: 'Bazzi',
+        brightness: Brightness.light,
+        primaryColor: Color(0xFFCEEF91),
+        canvasColor: Color(0xFFFFFBF3),
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFFCEEF91),
+          secondary: Color(0xFFFFE5F2),
+          tertiary: Color(0xFFFFCEEF),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      //initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/home':
+            (context) => DefaultTabController(
+              length: 4,
+              child: Scaffold(
+                body: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    HomeScreen(),
+                    StudyScreen(),
+                    RecordScreen(),
+                    MypageScreen(),
+                  ],
+                ),
+                bottomNavigationBar: Bottom(),
+              ),
+            ),
+        '/study': (context) => StudyScreen(),
+        '/record': (context) => RecordScreen(),
+        '/mypage': (context) => MypageScreen(),
+        '/sign': (context) => SignScreen(),
+      },
+      home: Consumer<LoginStatus>(
+        builder: (context, loginStatus, child) {
+          return loginStatus.isLoggedIn
+              ? DefaultTabController(
+                length: 4,
+                child: Scaffold(
+                  body: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      HomeScreen(),
+                      StudyScreen(),
+                      RecordScreen(),
+                      MypageScreen(),
+                    ],
+                  ),
+                  bottomNavigationBar: Bottom(),
+                ),
+              )
+              : LoginScreen();
+        },
+      ),
     );
   }
 }
