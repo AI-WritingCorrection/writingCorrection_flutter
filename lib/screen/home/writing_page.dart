@@ -14,6 +14,7 @@ import 'package:aiwriting_collection/api.dart';
 import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:aiwriting_collection/widget/feedback_dialog.dart';
 
 class WritingPage extends StatefulWidget {
   final Steps nowStep;
@@ -219,12 +220,33 @@ class _WritingPageState extends State<WritingPage> {
     final res = await api.submitResult(resultCreate);
 
     if (res.statusCode == 200) {
-      // JSON 문자열 → Map
-      final Map<String, dynamic> data = jsonDecode(res.body);
       final decoded = utf8.decode(res.bodyBytes);
-      print('평가결과 :$decoded');
-      // DTO로 변환
-      EvaluationResult.fromJson(data);
+      print('평가결과 : $decoded');
+      final Map<String, dynamic> data = jsonDecode(decoded);
+
+      // ✅ 필요한 값만 꺼냄 (recognized_texts는 이번 단계에서 사용하지 않음)
+      final int? score = (data['score'] as num?)?.toInt();
+      final String summary = data['summary']?.toString() ?? '';
+
+      // (선택) 제출 중 타이머 멈추고 있었다면 재시작을 원하면 여기서 _startTimer() 호출
+      // if (mounted) _startTimer();
+
+      // ✅ 다이얼로그 표시: 맨 위 박스=score, 두 번째 박스=summary
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder:
+            (_) => FeedbackDialog(
+              feedback: summary,
+              imagePath: widget.nowStep.stepCharacter, // 캐릭터 경로
+              score: score,
+              // recognizedTexts: null, // 이번 단계에서는 표시 안 함
+            ),
+      );
+
+      // (옵션) 모달 닫힌 뒤에 타이머 재개하고 싶으면 여기에:
+      // if (mounted) _startTimer();
     } else {
       throw Exception('평가 전송 실패: ${res.statusCode}');
     }
