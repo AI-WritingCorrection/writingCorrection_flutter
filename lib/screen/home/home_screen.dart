@@ -328,8 +328,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   diameter: diameter,
                   onTap:
                       isActive
-                          ? () {
-                            Navigator.push(
+                          ? () async {
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
@@ -337,6 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         DetailStudyPage(pageNum: currentStep),
                               ),
                             );
+                            setState(() {});
                           }
                           : null,
                   myColor:

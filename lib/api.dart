@@ -8,8 +8,9 @@ import 'package:http/http.dart' as http;
 
 //싱글톤 패턴 적용
 class Api {
+  static const _baseUrl = 'http://52.78.166.204:8000/api';
   //안드로이드용
-  static const _baseUrl = 'http://10.0.2.2:8000/api';
+  //static const _baseUrl = 'http://10.0.2.2:8000/api';
 
   //iOS용
   //static const _baseUrl = 'http://localhost:8000/api';
