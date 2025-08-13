@@ -70,6 +70,7 @@ class _SignScreenState extends State<SignScreen> {
     );
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFBF3),
       appBar: AppBar(
         title: Text(
           '회원가입',
