@@ -36,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final double basePortrait = 390.0;
     final double scale = screenSize.width / basePortrait;
     final double horizontalPadding = 16 * scale;
-    final double verticalSpacingLarge = 24 * scale;
 
     return Scaffold(
       backgroundColor: const Color(0xFFCEEF91),
@@ -46,323 +45,213 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Padding(
-            padding: EdgeInsets.all(horizontalPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Image.asset(
-                    'assets/character/bearTeacher.png',
-                    height: 300 * scale,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: 90 * scale,
-                    maxHeight: 230 * scale,
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                      top: horizontalPadding,
-                      bottom: horizontalPadding * 0.3,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: ConstrainedBox(
+                // 태블릿에서도 폭이 너무 넓어지지 않도록 제한
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 28 * scale),
+
+                    // 마스코트
+                    Center(
+                      child: Image.asset(
+                        'assets/character/bearTeacher.png',
+                        height: 220 * scale,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[100],
-                      borderRadius: BorderRadius.circular(8.0 * scale),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(0, 4 * scale),
-                          blurRadius: 8 * scale,
+
+                    SizedBox(height: 16 * scale),
+
+                    // 제목 & 보조 카피
+                    Text(
+                      'AI 손글씨 교정을 시작해요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22 * scale,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 6 * scale),
+                    Text(
+                      '소셜 계정으로 간편하게 로그인',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14 * scale,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    SizedBox(height: 20 * scale),
+
+                    // 소셜 로그인 버튼들 (세로 스택)
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: 'Apple로 계속하기',
+                      icon: Icons.apple,
+                      background: Colors.black,
+                      foreground: Colors.white,
+                      border: null,
+                      onPressed: () async {
+                        try {
+                          final nav = Navigator.of(context);
+                          bool existed = await context
+                              .read<LoginStatus>()
+                              .loginWithProvider('APPLE');
+                          if (!mounted) return;
+                          if (existed) {
+                            // 200 → 홈 화면으로
+                            nav.pushReplacementNamed('/home');
+                          } else {
+                            // 404 → 가입 페이지로
+                            nav.pushNamed('/sign', arguments: 'APPLE');
+                          }
+                        } on Exception {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: 'Google로 계속하기',
+                      icon: Icons.g_mobiledata, // 필요시 G 로고 에셋으로 교체
+                      background: Color(0xFF466437),
+                      foreground: Colors.white,
+                      border: const BorderSide(color: Colors.black12),
+                      onPressed: () async {
+                        try {
+                          final nav = Navigator.of(context);
+                          bool existed = await context
+                              .read<LoginStatus>()
+                              .loginWithProvider('GOOGLE');
+                          if (existed) {
+                            // 200 → 홈 화면으로
+                            nav.pushReplacementNamed('/home');
+                          } else {
+                            // 404 → 가입 페이지로
+                            nav.pushNamed('/sign', arguments: 'GOOGLE');
+                          }
+                        } on Exception {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: '카카오로 계속하기',
+                      icon: Icons.chat, // 필요시 카카오 로고 에셋으로 교체
+                      background: const Color(0xFFFFE600),
+                      foreground: Colors.black,
+                      border: null,
+                      onPressed: () async {
+                        try {
+                          final nav = Navigator.of(context);
+                          bool existed = await context
+                              .read<LoginStatus>()
+                              .loginWithProvider('KAKAO');
+                          if (existed) {
+                            // 200 → 홈 화면으로
+                            nav.pushReplacementNamed('/home');
+                          } else {
+                            // 404 → 가입 페이지로
+                            nav.pushNamed('/sign', arguments: 'KAKAO');
+                          }
+                        } on Exception {
+                          // TODO
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    // 게스트 모드 버튼 (세컨더리 스타일)
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: '게스트로 먼저 체험',
+                      icon: Icons.person_outline, // 필요시 G 로고 에셋으로 교체
+                      background: Colors.white,
+                      foreground: Colors.black87,
+                      border: const BorderSide(color: Colors.black12),
+                      onPressed: () {
+                        // 기존 기능 그대로
+                        context.read<LoginStatus>().loginAsGuest('Sehwan');
+                      },
+                    ),
+
+                    SizedBox(height: 18 * scale),
+
+                    // 약관 문구 (작게)
+                    Text(
+                      '로그인 시 이용약관 및 개인정보처리방침에 동의합니다.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11 * scale,
+                        color: Colors.black54,
+                      ),
+                    ),
+
+                    // (옵션) 약관 링크 두 개
+                    SizedBox(height: 6 * scale),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            /* TODO: 약관 화면 */
+                          },
+                          child: Text(
+                            '이용약관',
+                            style: TextStyle(fontSize: 12 * scale),
+                          ),
+                        ),
+                        Text(
+                          ' · ',
+                          style: TextStyle(
+                            color: Colors.black26,
+                            fontSize: 12 * scale,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            /* TODO: 개인정보처리방침 */
+                          },
+                          child: Text(
+                            '개인정보처리방침',
+                            style: TextStyle(fontSize: 12 * scale),
+                          ),
                         ),
                       ],
                     ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        double parentH = constraints.maxHeight;
-                        double spacing = parentH * 0.1;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            SizedBox(height: spacing * 0.3),
-                            // 아이디 TextField를 Container로 감싸서 높이 제한
-                            Container(
-                              height: parentH * 0.3,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  labelText: '아이디',
-                                  labelStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  floatingLabelStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 3.0 * scale,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 3.0 * scale,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 3.0 * scale,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: parentH * 0.12 * 0.4,
-                                    horizontal: horizontalPadding,
-                                  ),
-                                ),
-                                style: TextStyle(
-                                  fontSize: parentH * 0.12 * 0.9,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: spacing * 0.3),
-                            // 비밀번호 TextField
-                            Container(
-                              height: parentH * 0.3,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  labelText: '비밀번호',
-                                  labelStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  floatingLabelStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 3.0 * scale,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 3.0 * scale,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 3.0 * scale,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: parentH * 0.12 * 0.4,
-                                    horizontal: horizontalPadding,
-                                  ),
-                                ),
-                                obscureText: true,
-                                style: TextStyle(
-                                  fontSize: parentH * 0.12 * 0.9,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: spacing * 0.3),
-                            ElevatedButton(
-                              onPressed: () {
-                                // 로그인 처리 (예: 상태 변경)
-                                // context.read<LoginStatus>().setLoggedIn(true);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: Size(
-                                  double.infinity,
-                                  parentH * 0.25,
-                                ),
-                              ),
-                              child: Text(
-                                '로그인',
-                                style: TextStyle(
-                                  fontSize: parentH * 0.10,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(height: verticalSpacingLarge),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: scale * 64, // 16% of screen width
-                      height: scale * 64,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBF3),
-                        borderRadius: BorderRadius.circular(8.0 * scale),
-                      ),
-                      child: IconButton(
-                        onPressed: () async {
-                          try {
-                            final nav = Navigator.of(context);
-                            bool existed = await context
-                                .read<LoginStatus>()
-                                .loginWithProvider('APPLE');
-                            if (!mounted) return;
-                            if (existed) {
-                              // 200 → 홈 화면으로
-                              nav.pushReplacementNamed('/home');
-                            } else {
-                              // 404 → 가입 페이지로
-                              nav.pushNamed('/sign', arguments: 'APPLE');
-                            }
-                          } on Exception {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.apple),
-                        tooltip: 'Apple 로그인',
-                        iconSize: scale * 40,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: scale * 64,
-                      height: scale * 64,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBF3),
-                        borderRadius: BorderRadius.circular(8.0 * scale),
-                      ),
-                      child: IconButton(
-                        onPressed: () async {
-                          try {
-                            final nav = Navigator.of(context);
-                            bool existed = await context
-                                .read<LoginStatus>()
-                                .loginWithProvider('GOOGLE');
-                            if (existed) {
-                              // 200 → 홈 화면으로
-                              nav.pushReplacementNamed('/home');
-                            } else {
-                              // 404 → 가입 페이지로
-                              nav.pushNamed('/sign', arguments: 'GOOGLE');
-                            }
-                          } on Exception {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.g_mobiledata),
-                        tooltip: 'Google 로그인',
-                        iconSize: scale * 40,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: scale * 64,
-                      height: scale * 64,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBF3),
-                        borderRadius: BorderRadius.circular(8.0 * scale),
-                      ),
-                      child: IconButton(
-                        onPressed: () async {
-                          try {
-                            final nav = Navigator.of(context);
-                            bool existed = await context
-                                .read<LoginStatus>()
-                                .loginWithProvider('KAKAO');
-                            if (existed) {
-                              // 200 → 홈 화면으로
-                              nav.pushReplacementNamed('/home');
-                            } else {
-                              // 404 → 가입 페이지로
-                              nav.pushNamed('/sign', arguments: 'KAKAO');
-                            }
-                          } on Exception {
-                            // TODO
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.chat),
-                        tooltip: 'Kakao 로그인',
-                        iconSize: scale * 40,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: scale * 64, // 16% of screen width
-                      height: scale * 64,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBF3),
-                        borderRadius: BorderRadius.circular(8.0 * scale),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          context.read<LoginStatus>().loginAsGuest('Sehwan');
-                        },
-                        child: Text(
-                          '게스트',
-                          style: TextStyle(
-                            fontSize: scale * 13,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+
+                    // (선택) 게스트 체험 링크가 필요하면 아래 주석 해제
+                    // SizedBox(height: 6 * scale),
+                    // TextButton(
+                    //   onPressed: () => context.read<LoginStatus>().setLoggedIn(true),
+                    //   child: Text('게스트로 먼저 체험', style: TextStyle(fontSize: 13 * scale, fontWeight: FontWeight.w700)),
+                    // ),
+                    SizedBox(height: 24 * scale),
                   ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: horizontalPadding,
-                    vertical: verticalSpacingLarge * 0.3,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          '회원가입',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: scale * 16,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          '아이디/비밀번호 찾기',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: scale * 16,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -373,9 +262,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLandscape(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     final double baseLandscape = 844.0;
-    final double scale = screenSize.height / baseLandscape;
+    final double scale = screenSize.height / baseLandscape; // 가로모드에서는 높이 기준
     final double horizontalPadding = 16 * scale;
-    final double verticalSpacingLarge = 24 * scale;
 
     return Scaffold(
       backgroundColor: const Color(0xFFCEEF91),
@@ -385,356 +273,247 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Padding(
-            padding: EdgeInsets.all(horizontalPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Image.asset(
-                    'assets/character/bearTeacher.png',
-                    height: 300 * scale,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(height: 20 * scale),
-                Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: screenSize.width * 0.6,
-                      minHeight: 90 * scale,
-                      maxHeight: 230 * scale,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: ConstrainedBox(
+                // 가로폭이 넓어도 너무 퍼지지 않도록 제한
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 24 * scale),
+
+                    // 마스코트
+                    Center(
+                      child: Image.asset(
+                        'assets/character/bearTeacher.png',
+                        height: 220 * scale,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    child: Container(
-                      padding: EdgeInsets.only(
-                        left: horizontalPadding,
-                        right: horizontalPadding,
-                        top: horizontalPadding,
-                        bottom: horizontalPadding * 0.3,
+
+                    SizedBox(height: 16 * scale),
+
+                    // 제목 & 보조 카피
+                    Text(
+                      'AI 손글씨 교정을 시작해요',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22 * scale,
+                        fontWeight: FontWeight.w800,
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(8.0 * scale),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            offset: Offset(0, 4 * scale),
-                            blurRadius: 8 * scale,
-                          ),
-                        ],
+                    ),
+                    SizedBox(height: 6 * scale),
+                    Text(
+                      '소셜 계정으로 간편하게 로그인',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14 * scale,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
                       ),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          double parentH = constraints.maxHeight;
-                          double spacing = parentH * 0.1;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(height: spacing * 0.3),
-                              // 아이디 TextField를 Container로 감싸서 높이 제한
-                              Container(
-                                height: parentH * 0.3,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    labelText: '아이디',
-                                    labelStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    floatingLabelStyle: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 3.0 * scale,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 3.0 * scale,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 3.0 * scale,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: parentH * 0.12 * 0.4,
-                                      horizontal: horizontalPadding,
-                                    ),
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: parentH * 0.12 * 0.9,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: spacing * 0.3),
-                              // 비밀번호 TextField
-                              Container(
-                                height: parentH * 0.3,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    labelText: '비밀번호',
-                                    labelStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    floatingLabelStyle: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 3.0 * scale,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 3.0 * scale,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 3.0 * scale,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: parentH * 0.12 * 0.4,
-                                      horizontal: horizontalPadding,
-                                    ),
-                                  ),
-                                  obscureText: true,
-                                  style: TextStyle(
-                                    fontSize: parentH * 0.12 * 0.9,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: spacing * 0.3),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // 로그인 처리 (예: 상태 변경)
-                                  // context.read<LoginStatus>().setLoggedIn(true);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(
-                                    double.infinity,
-                                    parentH * 0.25,
-                                  ),
-                                ),
-                                child: Text(
-                                  '로그인',
-                                  style: TextStyle(
-                                    fontSize: parentH * 0.10,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
+                    ),
+
+                    SizedBox(height: 20 * scale),
+
+                    // 소셜 로그인 버튼들
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: 'Apple로 계속하기',
+                      icon: Icons.apple, // 필요시 브랜드 에셋으로 교체
+                      background: Colors.black,
+                      foreground: Colors.white,
+                      border: null,
+                      onPressed: () async {
+                        try {
+                          final nav = Navigator.of(context);
+                          bool existed = await context
+                              .read<LoginStatus>()
+                              .loginWithProvider('APPLE');
+                          if (existed) {
+                            // 200 → 홈 화면으로
+                            nav.pushReplacementNamed('/home');
+                          } else {
+                            // 404 → 가입 페이지로
+                            nav.pushNamed('/sign', arguments: 'APPLE');
+                          }
+                        } on Exception {
+                          // TODO
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
                           );
-                        },
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: 'Google로 계속하기',
+                      icon: Icons.g_mobiledata, // 필요시 G 로고 에셋으로 교체
+                      background: Color(0xFF466437),
+                      foreground: Colors.white,
+                      border: const BorderSide(color: Colors.black12),
+                      onPressed: () async {
+                        try {
+                          final nav = Navigator.of(context);
+                          bool existed = await context
+                              .read<LoginStatus>()
+                              .loginWithProvider('GOOGLE');
+                          if (existed) {
+                            // 200 → 홈 화면으로
+                            nav.pushReplacementNamed('/home');
+                          } else {
+                            // 404 → 가입 페이지로
+                            nav.pushNamed(
+                              '/sign',
+                              arguments: {
+                                'provider': 'GOOGLE',
+                                'email': context.read<LoginStatus>().email,
+                              },
+                            );
+                          }
+                        } on Exception {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: '카카오로 계속하기',
+                      icon: Icons.chat, // 필요시 카카오 로고 에셋으로 교체
+                      background: const Color(0xFFFFE600),
+                      foreground: Colors.black,
+                      border: null,
+                      onPressed: () async {
+                        try {
+                          final nav = Navigator.of(context);
+                          bool existed = await context
+                              .read<LoginStatus>()
+                              .loginWithProvider('KAKAO');
+                          if (existed) {
+                            // 200 → 홈 화면으로
+                            nav.pushReplacementNamed('/home');
+                          } else {
+                            // 404 → 가입 페이지로
+                            nav.pushNamed('/sign', arguments: 'KAKAO');
+                          }
+                        } catch (e) {
+                          // 로그인 취소 또는 실패 → 아무 것도 안 함
+                          print('로그인 취소 또는 실패');
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    // 게스트 모드 버튼 (세컨더리 스타일)
+                    _socialBtn(
+                      context,
+                      scale: scale,
+                      label: '게스트로 먼저 체험',
+                      icon: Icons.person_outline, // 필요시 G 로고 에셋으로 교체
+                      background: Colors.white,
+                      foreground: Colors.black87,
+                      border: const BorderSide(color: Colors.black12),
+                      onPressed: () {
+                        // 기존 기능 그대로
+                        context.read<LoginStatus>().loginAsGuest('Sehwan');
+                      },
+                    ),
+
+                    SizedBox(height: 16 * scale),
+
+                    // 약관 문구
+                    Text(
+                      '로그인 시 이용약관 및 개인정보처리방침에 동의합니다.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11 * scale,
+                        color: Colors.black54,
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: verticalSpacingLarge),
-                // Align social buttons under the login box
-                Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth:
-                          screenSize.width * 0.6, // same width as login box
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    SizedBox(height: 6 * scale),
+
+                    // 약관 링크
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: scale * 80, // 16% of screen width
-                          height: scale * 80,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF3),
-                            borderRadius: BorderRadius.circular(8.0 * scale),
-                          ),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                final nav = Navigator.of(context);
-                                bool existed = await context
-                                    .read<LoginStatus>()
-                                    .loginWithProvider('APPLE');
-                                if (existed) {
-                                  // 200 → 홈 화면으로
-                                  nav.pushReplacementNamed('/home');
-                                } else {
-                                  // 404 → 가입 페이지로
-                                  nav.pushNamed('/sign', arguments: 'APPLE');
-                                }
-                              } on Exception {
-                                // TODO
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.apple),
-                            tooltip: 'Apple 로그인',
-                            iconSize: scale * 50,
+                        TextButton(
+                          onPressed: () {
+                            /* TODO: 약관 화면 */
+                          },
+                          child: Text(
+                            '이용약관',
+                            style: TextStyle(fontSize: 12 * scale),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: scale * 80,
-                          height: scale * 80,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF3),
-                            borderRadius: BorderRadius.circular(8.0 * scale),
-                          ),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                final nav = Navigator.of(context);
-                                bool existed = await context
-                                    .read<LoginStatus>()
-                                    .loginWithProvider('GOOGLE');
-                                if (existed) {
-                                  // 200 → 홈 화면으로
-                                  nav.pushReplacementNamed('/home');
-                                } else {
-                                  // 404 → 가입 페이지로
-                                  nav.pushNamed(
-                                    '/sign',
-                                    arguments: {
-                                      'provider': 'GOOGLE',
-                                      'email':
-                                          context.read<LoginStatus>().email,
-                                    },
-                                  );
-                                }
-                              } on Exception  {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.g_mobiledata),
-                            tooltip: 'Google 로그인',
-                            iconSize: scale * 50,
+                        Text(
+                          ' · ',
+                          style: TextStyle(
+                            color: Colors.black26,
+                            fontSize: 12 * scale,
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: scale * 80,
-                          height: scale * 80,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF3),
-                            borderRadius: BorderRadius.circular(8.0 * scale),
-                          ),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                final nav = Navigator.of(context);
-                                bool existed = await context
-                                    .read<LoginStatus>()
-                                    .loginWithProvider('KAKAO');
-                                if (existed) {
-                                  // 200 → 홈 화면으로
-                                  nav.pushReplacementNamed('/home');
-                                } else {
-                                  // 404 → 가입 페이지로
-                                  nav.pushNamed('/sign', arguments: 'KAKAO');
-                                }
-                              } catch (e) {
-                                // 로그인 취소 또는 실패 → 아무 것도 안 함
-                                print('로그인 취소 또는 실패');
-                              }
-                            },
-                            icon: const Icon(Icons.chat),
-                            tooltip: 'Kakao 로그인',
-                            iconSize: scale * 50,
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: scale * 80, // 16% of screen width
-                          height: scale * 80,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBF3),
-                            borderRadius: BorderRadius.circular(8.0 * scale),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              context.read<LoginStatus>().loginAsGuest(
-                                'Sehwan',
-                              );
-                            },
-                            child: Text(
-                              '게스트',
-                              style: TextStyle(
-                                fontSize: scale * 19,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                        TextButton(
+                          onPressed: () {
+                            /* TODO: 개인정보처리방침 */
+                          },
+                          child: Text(
+                            '개인정보처리방침',
+                            style: TextStyle(fontSize: 12 * scale),
                           ),
                         ),
                       ],
                     ),
-                  ),
+
+                    SizedBox(height: 24 * scale),
+                  ],
                 ),
-                SizedBox(height: verticalSpacingLarge * 0.3),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.width * 0.1,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          // 회원가입 페이지로 이동
-                          Navigator.of(context).pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'KAKAO',
-                              'email': 'tlrpv12@naver.com',
-                            },
-                          );
-                        },
-                        child: Text(
-                          '회원가입',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: scale * 20,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          '아이디/비밀번호 찾기',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: scale * 20,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+}
+
+Widget _socialBtn(
+  BuildContext context, {
+  required double scale,
+  required String label,
+  required IconData icon,
+  required VoidCallback onPressed,
+  Color? background,
+  Color? foreground,
+  BorderSide? border,
+}) {
+  return SizedBox(
+    height: 52 * scale,
+    child: ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 22 * scale),
+      label: Text(
+        label,
+        style: TextStyle(fontSize: 16 * scale, fontWeight: FontWeight.w800),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: background ?? Theme.of(context).colorScheme.primary,
+        foregroundColor: foreground ?? Theme.of(context).colorScheme.onPrimary,
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14 * scale),
+          side: border ?? BorderSide.none,
+        ),
+      ),
+    ),
+  );
 }
