@@ -1,5 +1,6 @@
-import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/model/login_status.dart';
 import 'package:aiwriting_collection/main.dart';
@@ -34,26 +35,96 @@ class _MypageScreenState extends State<MypageScreen> {
   UserProfile? _profile;
   bool _loadingProfile = true;
 
+  // 로그인 상태 변경에 반응해 프로필을 재로딩하기 위한 상태
+  int _lastLoadedUserId = 0;
+  late final LoginStatus _loginStatus;
+
+  final ImagePicker _imagePicker = ImagePicker();
+
+  Future<void> _pickProfileImage() async {
+    final XFile? picked = await _imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+    if (picked != null) {
+      final uid = _lastLoadedUserId;
+      final updatedPicUrl = await api.uploadProfileImage(picked.path, uid);
+      if (!mounted) return;
+      setState(() {
+        _loadingProfile = true; // 로딩 표시만 하고, 실제 데이터는 서버에서 재로딩
+      });
+      await _loadUserProfile(force: true);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('프로필 이미지가 업데이트되었습니다.')),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadUserProfile();
+    // Provider의 로그인 상태를 캐시하고 변경을 구독
+    _loginStatus = context.read<LoginStatus>();
+    _loginStatus.addListener(_onLoginStatusChanged);
+
+    // 첫 프레임 이후 userId가 이미 세팅되어 있다면 즉시 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final uid = _loginStatus.userId;
+      if (uid != null) {
+        _loadUserProfile();
+      }
+    });
   }
 
-  Future<void> _loadUserProfile() async {
+  void _onLoginStatusChanged() {
+    final uid = _loginStatus.userId;
+    if (!mounted) return;
+    // userId가 생기거나 바뀌면 프로필 재로딩
+    if (uid != null && uid != _lastLoadedUserId) {
+      _loadUserProfile(force: true);
+    }
+  }
+
+  Future<void> _loadUserProfile({bool force = false}) async {
     try {
       final userId = context.read<LoginStatus>().userId;
-      final profile = await api.getUserProfile(userId!);
-      print('Loaded profile: ${profile.nickname}, pic: ${profile.profilePic}');
+      // 아직 로그인 정보가 세팅되지 않았다면 기다렸다가 listener에서 재시도
+      if (userId == null) {
+        return;
+      }
+      // 이미 같은 유저로 로드되어 있고 강제 재로딩이 아니라면 스킵
+      if (!force && _lastLoadedUserId == userId && _profile != null) {
+        return;
+      }
+      if (mounted) {
+        setState(() {
+          _loadingProfile = true;
+        });
+      }
+      final profile = await api.getUserProfile(userId);
+      if (!mounted) return;
       setState(() {
         _profile = profile;
+        _lastLoadedUserId = userId;
         _loadingProfile = false;
       });
     } catch (e, st) {
       print('❌ _loadUserProfile error: $e');
       print(st);
-      setState(() => _loadingProfile = false);
+      if (mounted) {
+        setState(() {
+          _loadingProfile = false;
+        });
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    // listener 해제
+    _loginStatus.removeListener(_onLoginStatusChanged);
+    super.dispose();
   }
 
   @override
@@ -133,7 +204,7 @@ class _MypageScreenState extends State<MypageScreen> {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      _loadingProfile
+                      GestureDetector(onTap: _pickProfileImage, child: _loadingProfile
                           ? CircleAvatar(
                             backgroundColor: Colors.grey.shade300,
                             radius: 70 * scale,
@@ -154,7 +225,8 @@ class _MypageScreenState extends State<MypageScreen> {
                                       color: Colors.grey.shade700,
                                     )
                                     : null,
-                          ),
+                          ),),
+                      
                       Positioned(
                         bottom: -4 * scale,
                         right: -4 * scale,
@@ -185,9 +257,9 @@ class _MypageScreenState extends State<MypageScreen> {
                       borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
                     ),
                     child: Text(
-                      !_loadingProfile && _profile != null
+                      _profile != null
                           ? _profile!.nickname
-                          : '게스트',
+                          : (_loadingProfile ? '불러오는 중...' : '게스트'),
                       style: TextStyle(
                         fontSize: 18 * scale,
                         fontWeight: FontWeight.w500,
@@ -434,7 +506,9 @@ class _MypageScreenState extends State<MypageScreen> {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      _loadingProfile
+                      GestureDetector(
+                        onTap: _pickProfileImage,
+                        child:_loadingProfile
                           ? CircleAvatar(
                             backgroundColor: Colors.grey.shade300,
                             radius: 70 * scale,
@@ -455,7 +529,8 @@ class _MypageScreenState extends State<MypageScreen> {
                                       color: Colors.grey.shade700,
                                     )
                                     : null,
-                          ),
+                          ),),
+                      
                       Positioned(
                         bottom: -4 * scale,
                         right: -4 * scale,
@@ -486,9 +561,9 @@ class _MypageScreenState extends State<MypageScreen> {
                       borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
                     ),
                     child: Text(
-                      !_loadingProfile && _profile != null
+                      _profile != null
                           ? _profile!.nickname
-                          : '게스트',
+                          : (_loadingProfile ? '불러오는 중...' : '게스트'),
                       style: TextStyle(
                         fontSize: 18 * scale,
                         fontWeight: FontWeight.w500,

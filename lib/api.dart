@@ -161,6 +161,16 @@ class Api {
             : jsonMap;
     return UserProfile.fromJson(payload);
   }
+
+  // 프로필 이미지 수정
+  Future<http.Response> uploadProfileImage(String pickedPath, int userId) {
+    return http.post(
+      Uri.parse('$_baseUrl/user/uploadProfileImage/$userId'),
+      headers: _headers,
+      body: jsonEncode({'image_path': pickedPath}),
+    );
+  }
 }
+
 
 // 여기에 다른 /practice, /step 등 필요한 API 메서드를 계속 추가…
