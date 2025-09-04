@@ -31,15 +31,31 @@ class _SignScreenState extends State<SignScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final routeArgs = ModalRoute.of(context)?.settings.arguments;
+    String? routeProvider;
+    String? routeEmail;
     if (routeArgs is Map<String, dynamic>) {
-      _provider = routeArgs['provider'] ?? '';
-      _emailController.text = routeArgs['email'] ?? '';
+      routeProvider = routeArgs['provider'] as String?;
+      routeEmail = routeArgs['email'] as String?;
     } else if (routeArgs is String) {
-      _provider = routeArgs;
+      routeProvider = routeArgs;
     } else {
-      _provider = context.read<LoginStatus>().lastProvider ?? '';
+      routeProvider = context.read<LoginStatus>().lastProvider;
     }
-    print("[SignScreen] didChangeDependencies, provider: '$_provider'");
+    _provider = routeProvider ?? '';
+
+    // 이메일은: 라우트에서 온 값 우선, 없으면 FirebaseAuth의 현재 사용자 이메일로 채움
+    final firebaseEmail = FirebaseAuth.instance.currentUser?.email;
+    final effectiveEmail =
+        (routeEmail != null && routeEmail.trim().isNotEmpty)
+            ? routeEmail
+            : (firebaseEmail ?? '');
+    if (_emailController.text != effectiveEmail) {
+      _emailController.text = effectiveEmail;
+    }
+
+    print(
+      "[SignScreen] didChangeDependencies, provider: '$_provider', email: '${_emailController.text}'",
+    );
   }
 
   @override
@@ -68,6 +84,8 @@ class _SignScreenState extends State<SignScreen> {
       color: Colors.black,
       fontSize: 16 * scale,
     );
+
+    final bool hasEmail = _emailController.text.isNotEmpty;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
@@ -123,8 +141,8 @@ class _SignScreenState extends State<SignScreen> {
                     border: const OutlineInputBorder(),
                     labelStyle: textStyle,
                   ),
-                  readOnly: true,
-                  enabled: false,
+                  readOnly: hasEmail,
+                  enabled: !hasEmail,
                 ),
               ),
               // Nickname field
@@ -203,7 +221,8 @@ class _SignScreenState extends State<SignScreen> {
                               'email': _emailController.text,
                               'nickname': _nicknameController.text,
                               'birthdate': _birthdate!.toIso8601String(),
-                              'profile_pic': null,
+                              // 선택적: 프로필 이미지가 있으면 multipart로 함께 전송 (api.signup에서 처리)
+                              'filePath': _profileImage?.path,
                             };
 
                             await api.signup(payload);
@@ -247,6 +266,8 @@ class _SignScreenState extends State<SignScreen> {
       color: Colors.black,
       fontSize: 18 * scale,
     );
+
+    final bool hasEmail = _emailController.text.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -301,8 +322,8 @@ class _SignScreenState extends State<SignScreen> {
                     border: const OutlineInputBorder(),
                     labelStyle: textStyle,
                   ),
-                  readOnly: true,
-                  enabled: false,
+                  readOnly: hasEmail,
+                  enabled: !hasEmail,
                 ),
               ),
               // Nickname field
@@ -381,7 +402,8 @@ class _SignScreenState extends State<SignScreen> {
                               'email': _emailController.text,
                               'nickname': _nicknameController.text,
                               'birthdate': _birthdate!.toIso8601String(),
-                              'profile_pic': null,
+                              // 선택적: 프로필 이미지가 있으면 multipart로 함께 전송 (api.signup에서 처리)
+                              'filePath': _profileImage?.path,
                             };
 
                             await api.signup(payload);

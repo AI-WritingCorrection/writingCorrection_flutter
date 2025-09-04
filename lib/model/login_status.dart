@@ -52,10 +52,16 @@ class LoginStatus extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> _signInWithGoogle() async {
+  Future<String?> _signInWithGoogle({bool forceAccountPicker = false}) async {
     try {
       // Trigger the Google Sign-In flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final g = GoogleSignIn();
+      if (forceAccountPicker) {
+        // 기존 기본 계정 연결을 끊어 계정 선택 창을 강제로 띄움
+        await g.disconnect().catchError((_) {});
+      }
+      final GoogleSignInAccount? googleUser = await g.signIn();
+
       if (googleUser == null) {
         // User canceled the sign-in
         return null;
@@ -80,7 +86,9 @@ class LoginStatus extends ChangeNotifier {
           await FirebaseAuth.instance.currentUser?.getIdToken();
       _firebaseIdToken = idToken;
       _firebaseUid = userCredential.user?.uid;
-      _email = userCredential.user?.email;
+      _email =
+          userCredential.user?.email ??
+          FirebaseAuth.instance.currentUser?.email;
       return _firebaseUid;
     } catch (e) {
       print('Google sign-in error: $e');
@@ -156,7 +164,10 @@ class LoginStatus extends ChangeNotifier {
     }
   }
 
-  Future<bool> loginWithProvider(String provider) async {
+  Future<bool> loginWithProvider(
+    String provider, {
+    bool forceAccountPicker = false,
+  }) async {
     try {
       String? uid;
       print("[loginWithProvider] incoming provider argument: $provider");
@@ -164,7 +175,7 @@ class LoginStatus extends ChangeNotifier {
       print("[loginWithProvider] internal _provider set to: $_provider");
       switch (provider) {
         case 'GOOGLE':
-          uid = await _signInWithGoogle();
+          uid = await _signInWithGoogle(forceAccountPicker: forceAccountPicker);
           break;
         case 'APPLE':
           uid = await _signInWithApple();
@@ -216,6 +227,10 @@ class LoginStatus extends ChangeNotifier {
 
     try {
       await FirebaseAuth.instance.signOut();
+    } catch (_) {}
+
+    try {
+      await GoogleSignIn().disconnect();
     } catch (_) {}
 
     try {

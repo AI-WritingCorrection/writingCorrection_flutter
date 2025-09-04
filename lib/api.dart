@@ -5,10 +5,13 @@ import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 //싱글톤 패턴 적용
 class Api {
-  static const _baseUrl = 'http://52.78.166.204:8000/api';
+  static const _baseUrl = 'http://52.78.166.204/api';
   //안드로이드용
   //static const _baseUrl = 'http://10.0.2.2:8000/api';
 
@@ -36,6 +39,33 @@ class Api {
     _jwt = jwt;
   }
 
+  // --- Helpers: normalize file input and infer content type ---
+  String? _extractFilePath(dynamic fileRef) {
+    if (fileRef == null) return null;
+    if (fileRef is String) {
+      var s = fileRef.trim();
+      if (s.isEmpty) return null;
+      // Handle file:// URIs (iOS/Android)
+      if (s.startsWith('file://')) {
+        try {
+          s = Uri.parse(s).toFilePath();
+        } catch (_) {}
+      }
+      return s;
+    }
+    if (fileRef is XFile) return fileRef.path;
+    if (fileRef is File) return fileRef.path;
+    return null;
+  }
+
+  MediaType _inferContentType(String path) {
+    final p = path.toLowerCase();
+    if (p.endsWith('.png')) return MediaType('image', 'png');
+    if (p.endsWith('.webp')) return MediaType('image', 'webp');
+    // default jpeg (includes .jpg / .jpeg / unknown)
+    return MediaType('image', 'jpeg');
+  }
+
   /// 로그인
   Future<http.Response> login(String idToken) {
     return http.post(
@@ -49,12 +79,52 @@ class Api {
     return http.post(Uri.parse('$_baseUrl/auth/logout'), headers: _headers);
   }
 
-  Future<http.Response> signup(Map<String, dynamic> payload) {
-    return http.post(
-      Uri.parse('$_baseUrl/auth/signup'),
-      headers: _headers,
-      body: jsonEncode(payload),
-    );
+  Future<http.Response> signup(Map<String, dynamic> payload) async {
+    final uri = Uri.parse('$_baseUrl/auth/signup');
+    final req = http.MultipartRequest('POST', uri);
+  
+    // JWT가 필요한 경우에만 Authorization 추가 (대부분의 signup은 불필요)
+    if (_jwt != null) {
+      req.headers['Authorization'] = 'Bearer $_jwt';
+    }
+  
+    // 필수 필드 매핑 (키 변형도 수용)
+    final idToken   = payload['id_token'] ?? payload['idToken'];
+    final provider  = payload['provider'];
+    final email     = payload['email'];
+    final nickname  = payload['nickname'];
+    final birthdate = payload['birthdate'] ?? payload['birthdateIso'] ?? payload['birthdate_iso'];
+  
+    if (idToken == null || provider == null || email == null || nickname == null || birthdate == null) {
+      throw Exception('signup payload 누락: id_token/provider/email/nickname/birthdate는 필수입니다.');
+    }
+  
+    req.fields.addAll({
+      'id_token': idToken.toString(),
+      'provider': provider.toString(),
+      'email': email.toString(),
+      'nickname': nickname.toString(),
+      'birthdate': birthdate.toString(), // ISO 8601 문자열 기대
+    });
+  
+    // 선택적 파일 업로드 (문자열/파일/XFile 모두 수용)
+    final fileRef = payload['filePath'] ?? payload['profile_pic_path'] ?? payload['profile_pic'];
+    final path = _extractFilePath(fileRef);
+    if (path != null && path.trim().isNotEmpty) {
+      // 존재 확인 (fromPath 에서 던지기 전에 미리 명확한 에러를 주자)
+      if (!File(path).existsSync()) {
+        throw Exception('프로필 이미지 파일을 찾을 수 없습니다: ' + path);
+      }
+      req.files.add(await http.MultipartFile.fromPath(
+        'file',
+        path,
+        contentType: _inferContentType(path),
+      ));
+    }
+  
+    final streamed = await req.send();
+    final body = await streamed.stream.bytesToString();
+    return http.Response(body, streamed.statusCode, headers: streamed.headers);
   }
 
   /// 글씨 평가 결과를 서버에 전송
@@ -162,15 +232,46 @@ class Api {
     return UserProfile.fromJson(payload);
   }
 
-  // 프로필 이미지 수정
-  Future<http.Response> uploadProfileImage(String pickedPath, int userId) {
-    return http.post(
-      Uri.parse('$_baseUrl/user/uploadProfileImage/$userId'),
-      headers: _headers,
-      body: jsonEncode({'image_path': pickedPath}),
+  // 프로필 이미지 수정 (멀티파트 업로드, URL 반환)
+  Future<String> uploadProfileImage(String pickedPath, int userId) async {
+    final uri = Uri.parse('$_baseUrl/user/uploadProfileImage/$userId');
+    final req = http.MultipartRequest('POST', uri);
+
+    // JWT가 있다면 Authorization만 추가 (Content-Type은 MultipartRequest가 자동 설정)
+    if (_jwt != null) {
+      req.headers['Authorization'] = 'Bearer $_jwt';
+    }
+
+    // 필드명은 서버와 합의된 'file' 이어야 함
+    req.files.add(
+      await http.MultipartFile.fromPath(
+        'file',
+        pickedPath,
+        contentType: MediaType('image', 'jpeg'),
+      ),
     );
+
+    final streamed = await req.send();
+    final body = await streamed.stream.bytesToString();
+
+    if (streamed.statusCode != 200) {
+      throw Exception('프로필 이미지 업로드 실패 (${streamed.statusCode}): $body');
+    }
+
+    final decoded = jsonDecode(body);
+    final data =
+        (decoded is Map<String, dynamic> && decoded.containsKey('data'))
+            ? decoded['data']
+            : decoded;
+    final String? url =
+        (data is Map<String, dynamic>)
+            ? (data['profile_pic_url'] as String? ?? data['url'] as String?)
+            : null;
+    if (url == null) {
+      throw Exception('응답에 profile_pic_url이 없습니다: $body');
+    }
+    return url;
   }
 }
-
 
 // 여기에 다른 /practice, /step 등 필요한 API 메서드를 계속 추가…
