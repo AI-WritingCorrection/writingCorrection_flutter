@@ -7,21 +7,6 @@ import 'package:aiwriting_collection/main.dart';
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
 
-class DiagonalClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    return Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0) // 상단 우측
-      ..lineTo(size.width * 0.8, size.height) // 우측 바닥에서 20% 지점
-      ..lineTo(0, size.height) // 바닥 좌측
-      ..close();
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
 class MypageScreen extends StatefulWidget {
   const MypageScreen({super.key});
 
@@ -55,9 +40,9 @@ class _MypageScreenState extends State<MypageScreen> {
       });
       await _loadUserProfile(force: true);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('프로필 이미지가 업데이트되었습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('프로필 이미지가 업데이트되었습니다.')));
     }
   }
 
@@ -154,44 +139,40 @@ class _MypageScreenState extends State<MypageScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 180 * scale,
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ClipPath(
-                      clipper: DiagonalClipper(),
-                      child: Container(
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Center(
-                          child: Text(
-                            '마이 페이지',
-                            style: TextStyle(
-                              fontSize: 25 * scale,
-                              fontFamily: 'MaruBuri',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ),
+            Stack(
+              children: [
+                // 상단 배경 이미지 (예: 노트 배경 등)
+                Container(
+                  width: screenSize.width,
+                  height: 180 * scale, // 상단 높이를 적절히 조정
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/image/mypage.png'),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        image: DecorationImage(
-                          image: AssetImage('assets/character/bearTeacher.png'),
-                          fit: BoxFit.cover,
-                          alignment: Alignment(0, -2),
+                ),
+                // '손글씨 연습' 텍스트와 옆 이미지
+                Positioned(
+                  top: 80 * scale,
+                  left: 20 * scale,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        '마이 페이지',
+                        style: TextStyle(
+                          fontSize: 23 * scale,
+                          fontFamily: 'MaruBuri',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
-                    ),
+                      SizedBox(width: 8 * scale),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(height: 16 * scale),
             Padding(
@@ -204,29 +185,33 @@ class _MypageScreenState extends State<MypageScreen> {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      GestureDetector(onTap: _pickProfileImage, child: _loadingProfile
-                          ? CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            radius: 70 * scale,
-                            child: CircularProgressIndicator(),
-                          )
-                          : CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            radius: 70 * scale,
-                            backgroundImage:
-                                _profile?.profilePic != null
-                                    ? NetworkImage(_profile!.profilePic!)
-                                    : null,
-                            child:
-                                _profile?.profilePic == null
-                                    ? Icon(
-                                      Icons.person,
-                                      size: 60 * scale,
-                                      color: Colors.grey.shade700,
-                                    )
-                                    : null,
-                          ),),
-                      
+                      GestureDetector(
+                        onTap: _pickProfileImage,
+                        child:
+                            _loadingProfile
+                                ? CircleAvatar(
+                                  backgroundColor: Colors.grey.shade300,
+                                  radius: 70 * scale,
+                                  child: CircularProgressIndicator(),
+                                )
+                                : CircleAvatar(
+                                  backgroundColor: Colors.grey.shade300,
+                                  radius: 70 * scale,
+                                  backgroundImage:
+                                      _profile?.profilePic != null
+                                          ? NetworkImage(_profile!.profilePic!)
+                                          : null,
+                                  child:
+                                      _profile?.profilePic == null
+                                          ? Icon(
+                                            Icons.person,
+                                            size: 60 * scale,
+                                            color: Colors.grey.shade700,
+                                          )
+                                          : null,
+                                ),
+                      ),
+
                       Positioned(
                         bottom: -4 * scale,
                         right: -4 * scale,
@@ -458,42 +443,32 @@ class _MypageScreenState extends State<MypageScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 180 * scale,
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ClipPath(
-                      clipper: DiagonalClipper(),
-                      child: Container(
-                        color: Theme.of(context).colorScheme.secondary,
-                        child: Center(
-                          child: Text(
-                            '마이 페이지',
-                            style: TextStyle(
-                              fontFamily: 'MaruBuri',
-                              fontSize: 33 * scale,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ),
+            Stack(
+              children: [
+                Container(
+                  width: screenSize.width,
+                  height: 180 * scale,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/image/mypage.png'),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        image: DecorationImage(
-                          image: AssetImage('assets/character/bearTeacher.png'),
-                        ),
-                      ),
+                ),
+                Positioned(
+                  top: 80 * scale,
+                  left: 50 * scale,
+                  child: Text(
+                    '마이 페이지',
+                    style: TextStyle(
+                      fontSize: 33 * scale,
+                      fontFamily: 'MaruBuri',
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(height: 16 * scale),
             Padding(
@@ -508,29 +483,31 @@ class _MypageScreenState extends State<MypageScreen> {
                     children: [
                       GestureDetector(
                         onTap: _pickProfileImage,
-                        child:_loadingProfile
-                          ? CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            radius: 70 * scale,
-                            child: CircularProgressIndicator(),
-                          )
-                          : CircleAvatar(
-                            backgroundColor: Colors.grey.shade300,
-                            radius: 70 * scale,
-                            backgroundImage:
-                                _profile?.profilePic != null
-                                    ? NetworkImage(_profile!.profilePic!)
-                                    : null,
-                            child:
-                                _profile?.profilePic == null
-                                    ? Icon(
-                                      Icons.person,
-                                      size: 60 * scale,
-                                      color: Colors.grey.shade700,
-                                    )
-                                    : null,
-                          ),),
-                      
+                        child:
+                            _loadingProfile
+                                ? CircleAvatar(
+                                  backgroundColor: Colors.grey.shade300,
+                                  radius: 70 * scale,
+                                  child: CircularProgressIndicator(),
+                                )
+                                : CircleAvatar(
+                                  backgroundColor: Colors.grey.shade300,
+                                  radius: 70 * scale,
+                                  backgroundImage:
+                                      _profile?.profilePic != null
+                                          ? NetworkImage(_profile!.profilePic!)
+                                          : null,
+                                  child:
+                                      _profile?.profilePic == null
+                                          ? Icon(
+                                            Icons.person,
+                                            size: 60 * scale,
+                                            color: Colors.grey.shade700,
+                                          )
+                                          : null,
+                                ),
+                      ),
+
                       Positioned(
                         bottom: -4 * scale,
                         right: -4 * scale,
