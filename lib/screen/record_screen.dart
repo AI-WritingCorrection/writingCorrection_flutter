@@ -1,5 +1,6 @@
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:aiwriting_collection/widget/mini_dialog.dart';
+import 'package:aiwriting_collection/screen/mywritingcalendar.dart';
 import 'package:flutter/material.dart';
 
 class RecordScreen extends StatelessWidget {
@@ -110,15 +111,11 @@ class RecordScreen extends StatelessWidget {
               subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
               imagePath: 'assets/image/dailyCalendar.png',
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return MiniDialog(
-                      scale: scale,
-                      title: '개발 진행중',
-                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
-                    );
-                  },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MyWritingCalendarScreen(),
+                  ),
                 );
               },
             ),
@@ -249,15 +246,11 @@ class RecordScreen extends StatelessWidget {
                     subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
                     imagePath: 'assets/image/dailyCalendar.png',
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return MiniDialog(
-                            scale: scale * 1.5,
-                            title: '개발 진행중',
-                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
-                          );
-                        },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyWritingCalendarScreen(),
+                        ),
                       );
                     },
                   ),
