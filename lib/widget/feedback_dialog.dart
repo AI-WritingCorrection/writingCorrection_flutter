@@ -67,7 +67,7 @@ class FeedbackDialog extends StatelessWidget {
               child: Text(
                 '$score 점',
                 style: TextStyle(
-                  fontSize: 22 * scale,
+                  fontSize: 25 * scale,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -80,10 +80,15 @@ class FeedbackDialog extends StatelessWidget {
             context,
             label: '요약',
             trailingImage: imagePath,
+            minHeight: 180 * scale,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16 * scale,
+              vertical: 20 * scale,
+            ),
             child: Text(
               feedback,
               style: TextStyle(
-                fontSize: 18 * scale,
+                fontSize: 25 * scale,
                 fontWeight: FontWeight.w600,
                 height: 1.4,
               ),
@@ -108,7 +113,10 @@ class FeedbackDialog extends StatelessWidget {
                             padding: EdgeInsets.symmetric(vertical: 8 * scale),
                             child: Text(
                               '데이터 없음',
-                              style: TextStyle(fontSize: 16 * scale),
+                              style: TextStyle(
+                                fontSize: 25 * scale,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           )
                           : Wrap(
@@ -163,17 +171,21 @@ Widget _pillSection(
   required String trailingImage,
   required Widget child,
   required double scale,
+  double? minHeight, // ← 추가
+  EdgeInsetsGeometry? contentPadding, // ← (선택) 안쪽 여백 커스터마이즈
 }) {
   return Container(
-    padding: EdgeInsets.all(16 * scale),
+    constraints: BoxConstraints(
+      minHeight: (minHeight ?? 0), // ← 최소 높이 적용
+    ),
+    padding: contentPadding ?? EdgeInsets.all(16 * scale), // ← 기본 패딩 유지
     decoration: BoxDecoration(
       color: const Color(0xFFCEEF91),
-      borderRadius: BorderRadius.circular(18 * scale), // 둥근 모서리 크게
+      borderRadius: BorderRadius.circular(18 * scale),
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 왼쪽: 제목 + 내용
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
