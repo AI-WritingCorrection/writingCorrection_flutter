@@ -147,7 +147,7 @@ class _MypageScreenState extends State<MypageScreen> {
                   height: 180 * scale, // 상단 높이를 적절히 조정
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/image/mypage.png'),
+                      image: AssetImage('assets/image/mypage2.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -450,7 +450,7 @@ class _MypageScreenState extends State<MypageScreen> {
                   height: 180 * scale,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/image/mypage.png'),
+                      image: AssetImage('assets/image/mypage2.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
