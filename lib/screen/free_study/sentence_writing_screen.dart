@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/word_tile.dart';
 
-
 class SentenceWritingScreen extends StatelessWidget {
   const SentenceWritingScreen({super.key});
 
@@ -16,9 +15,13 @@ class SentenceWritingScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
 
-    // 화면 좌우에 줄 Padding 값을 동일하게 주기 (예: 16pt)
-    final double sidePadding = 64 * scale;
- 
+    final double screenWidth = size.width;
+    final double sidePadding = 64 * scale; // 좌우 패딩
+    final double spacingBetweenTiles = 128 * scale; // 두 열 사이 간격
+    final double availableWidth =
+        screenWidth - (sidePadding * 2) - spacingBetweenTiles;
+    final double eachTileWidth = availableWidth / 2;
+
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
       body: FutureBuilder<List<Practice>>(
@@ -32,13 +35,23 @@ class SentenceWritingScreen extends StatelessWidget {
             return Center(child: Text('No data available'));
           }
 
-          List<Practice> shortSentences = snapshot.data!
-              .where((practice) => practice.practiceType == WritingType.SENTENCE && practice.practiceText.length <= 30)
-              .toList();
+          List<Practice> shortSentences =
+              snapshot.data!
+                  .where(
+                    (practice) =>
+                        practice.practiceType == WritingType.SENTENCE &&
+                        practice.practiceText.length <= 30,
+                  )
+                  .toList();
 
-          List<Practice> longSentences = snapshot.data!
-              .where((practice) => practice.practiceType == WritingType.SENTENCE && practice.practiceText.length > 30)
-              .toList();
+          List<Practice> longSentences =
+              snapshot.data!
+                  .where(
+                    (practice) =>
+                        practice.practiceType == WritingType.SENTENCE &&
+                        practice.practiceText.length > 30,
+                  )
+                  .toList();
 
           return SingleChildScrollView(
             child: Column(
@@ -129,10 +142,9 @@ class SentenceWritingScreen extends StatelessWidget {
                 // 4) 짧은 문장들을 두 열로 배치 → Wrap 사용
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: sidePadding),
-                  child: 
-                  Wrap(
-                    spacing: 15 * scale,
-                    runSpacing: 12 * scale,
+                  child: Wrap(
+                    spacing: spacingBetweenTiles, // 열 간격 고정
+                    runSpacing: 64 * scale, // 행 간 세로 간격
                     alignment: WrapAlignment.center,
                     children: [
                       for (int i = 0; i < shortSentences.length; i++)
@@ -140,7 +152,8 @@ class SentenceWritingScreen extends StatelessWidget {
                           padding: EdgeInsets.symmetric(vertical: 5 * scale),
                           child: WordTile(
                             word: shortSentences[i].practiceText,
-                            scale: 1.7 * scale,
+                            scale: 1.2 * scale,
+                            maxWidth: eachTileWidth,
                             onTap: () async {
                               Navigator.push(
                                 context,
@@ -155,9 +168,9 @@ class SentenceWritingScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                      ],
-                    ),
-                   ),
+                    ],
+                  ),
+                ),
 
                 SizedBox(height: 64 * scale),
 
@@ -181,18 +194,20 @@ class SentenceWritingScreen extends StatelessWidget {
                 // 7) 긴 문장들을 두 열로 배치 → Wrap 사용
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: sidePadding),
-                  child: 
-                  Wrap(
-                    spacing: 15 * scale,
-                    runSpacing: 12 * scale,
+                  child: Wrap(
+                    spacing: spacingBetweenTiles,
+                    runSpacing: 16 * scale,
                     alignment: WrapAlignment.center,
                     children: [
                       for (int i = 0; i < longSentences.length; i++)
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5 * scale),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: eachTileWidth,
+                            minHeight: 80 * scale,
+                          ),
                           child: WordTile(
                             word: longSentences[i].practiceText,
-                            scale: 1.7 * scale,
+                            scale: 1.2 * scale,
                             onTap: () async {
                               Navigator.push(
                                 context,
