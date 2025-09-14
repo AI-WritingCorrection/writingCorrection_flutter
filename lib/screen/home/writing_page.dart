@@ -40,7 +40,7 @@ class _WritingPageState extends State<WritingPage> {
 
   final api = Api();
   //GlobalKey를 이용해 GridHandwritingCanvas의 내부 상태에 직접 접근할 수 있도록
-  final GlobalKey<GridHandwritingCanvasState> _canvasKey =
+  final GlobalKey<GridHandwritingCanvasState> _canvasKey = 
       GlobalKey<GridHandwritingCanvasState>();
 
   Timer? _timer;
@@ -113,20 +113,21 @@ class _WritingPageState extends State<WritingPage> {
 
   //제출 버튼 클릭 시 호출되는 메서드
   Future<void> _handleSubmit() async {
+    _timer?.cancel();
     // 1.셀 단위 획 이미지 맵 추출
-    final Map<int, List<Uint8List>> images =
+    final Map<int, List<Uint8List>> images = 
         await _canvasKey.currentState?.exportCellStrokeImages() ?? {};
 
     // 2. Base64 인코딩: Map<int, List<String>> 형태로 변환
     final Map<int, List<String>> cellImages = {};
     images.forEach((cellIndex, byteList) {
-      cellImages[cellIndex] =
+      cellImages[cellIndex] = 
           byteList.map((bytes) => base64Encode(bytes)).toList();
     });
 
     // 3. 마지막 셀의 획수를 확인하여, 정해진 획수와 맞는지 확인하고, 부족하거나 많으면 모달창을 띄우고 화면으로 돌아감
     final int lastIndex = widget.nowStep.stepText.length - 1;
-    final requiredStrokes =
+    final requiredStrokes = 
         widget.nowStep.essentialStrokeCounts?[lastIndex] ?? 0;
     final actualStrokes = cellImages[lastIndex]?.length ?? 0;
     if (actualStrokes > requiredStrokes) {
@@ -171,7 +172,7 @@ class _WritingPageState extends State<WritingPage> {
       return;
     }
     //4.각 획의 첫번째 점과 마지막 점을 저장
-    Map<int, List<Offset>>? firstAndLastStroke =
+    Map<int, List<Offset>>? firstAndLastStroke = 
         _canvasKey.currentState
             ?.getFirstAndLastStrokes(); // 각 셀의 첫번째 점과 마지막 점을 저장
 
@@ -195,7 +196,7 @@ class _WritingPageState extends State<WritingPage> {
     // 6-1.로컬 저장용(test): 각 셀별 획 이미지 저장
     final dir = await getApplicationDocumentsDirectory();
     final now = DateTime.now();
-    final timestamp =
+    final timestamp = 
         '${now.month.toString().padLeft(2, '0')}'
         '${now.day.toString().padLeft(2, '0')}'
         '${now.hour.toString().padLeft(2, '0')}'
@@ -261,12 +262,12 @@ class _WritingPageState extends State<WritingPage> {
       WritingType.FREE => 200,
     };
     //10자 이하 문장에서 중앙에 위치하기 위한 boolean 변수
-    bool isBelow10Sentence =
+    bool isBelow10Sentence = 
         (widget.nowStep.stepText.length <= 10 &&
             widget.nowStep.stepType == WritingType.SENTENCE);
 
     // Calculate grid width to match practice box
-    final int colCount =
+    final int colCount = 
         widget.nowStep.stepText.length < 10
             ? widget.nowStep.stepText.length
             : 10;
