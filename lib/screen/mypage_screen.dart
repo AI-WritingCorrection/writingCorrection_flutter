@@ -16,7 +16,7 @@ class MypageScreen extends StatefulWidget {
 
 class _MypageScreenState extends State<MypageScreen> {
   bool isDailyAlarmOn = false;
-  final api = Api(); // 알람 토글
+  final api = Api(); 
   UserProfile? _profile;
   bool _loadingProfile = true;
 
@@ -33,7 +33,7 @@ class _MypageScreenState extends State<MypageScreen> {
     );
     if (picked != null) {
       final uid = _lastLoadedUserId;
-      final updatedPicUrl = await api.uploadProfileImage(picked.path, uid);
+      await api.uploadProfileImage(picked.path, uid);
       if (!mounted) return;
       setState(() {
         _loadingProfile = true; // 로딩 표시만 하고, 실제 데이터는 서버에서 재로딩
