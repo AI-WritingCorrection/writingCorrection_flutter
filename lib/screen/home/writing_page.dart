@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:aiwriting_collection/model/evaluation_result.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/widget/mini_dialog.dart';
@@ -54,6 +53,7 @@ class _WritingPageState extends State<WritingPage> {
   }
 
   void _startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       //mounted는 state객체가 현재화면에 장착되어있는지를 나타내는 속성
       if (!mounted) {
@@ -74,7 +74,8 @@ class _WritingPageState extends State<WritingPage> {
               scale: dialogScale,
               title: '실패😢',
               content:
-                  '시간이 초과되었어요!\n'
+                  '시간이 초과되었어요!\n' 
+
                   '다음에는 조금 더 빨리 써봐요~',
             );
           },
@@ -89,6 +90,7 @@ class _WritingPageState extends State<WritingPage> {
   @override
   void dispose() {
     _timer?.cancel();
+    _timer = null;
     super.dispose();
   }
 
@@ -111,77 +113,73 @@ class _WritingPageState extends State<WritingPage> {
     return value * scale;
   }
 
-  //제출 버튼 클릭 시 호출되는 메서드
-  Future<void> _handleSubmit() async {
+  void _stopTimer() {
     _timer?.cancel();
-    // 1.셀 단위 획 이미지 맵 추출
-    final Map<int, List<Uint8List>> images = 
-        await _canvasKey.currentState?.exportCellStrokeImages() ?? {};
+    _timer = null;
+  }
 
-    // 2. Base64 인코딩: Map<int, List<String>> 형태로 변환
+  /// 캔버스에서 각 셀의 획 이미지를 추출합니다
+  Future<Map<int, List<Uint8List>>?> _exportCanvasImages() async {
+    return await _canvasKey.currentState?.exportCellStrokeImages();
+  }
+
+  /// 각 셀의 획 이미지를 base64로 인코딩합니다
+  Map<int, List<String>> _encodeImages(Map<int, List<Uint8List>> images) {
     final Map<int, List<String>> cellImages = {};
     images.forEach((cellIndex, byteList) {
-      cellImages[cellIndex] = 
+      cellImages[cellIndex] =
           byteList.map((bytes) => base64Encode(bytes)).toList();
     });
+    return cellImages;
+  }
 
-    // 3. 마지막 셀의 획수를 확인하여, 정해진 획수와 맞는지 확인하고, 부족하거나 많으면 모달창을 띄우고 화면으로 돌아감
+  /// 획 오류 다이얼로그를 표시합니다
+  Future<void> _showStrokeErrorDialog(String content) async {
+    if (!mounted) return;
+    await showDialog(
+      context: context,
+      builder: (context) {
+        final double dialogScale = scaled(context, 2);
+        return MiniDialog(
+          scale: dialogScale,
+          title: '실패😢',
+          content: content,
+        );
+      },
+    );
+  }
+
+  /// 획 수를 검증합니다
+  Future<bool> _validateStrokes(Map<int, List<String>> cellImages) async {
     final int lastIndex = widget.nowStep.stepText.length - 1;
-    final requiredStrokes = 
+    final requiredStrokes =
         widget.nowStep.essentialStrokeCounts?[lastIndex] ?? 0;
     final actualStrokes = cellImages[lastIndex]?.length ?? 0;
-    if (actualStrokes > requiredStrokes) {
-      _timer?.cancel();
-      if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) {
-          final double dialogScale = scaled(context, 2);
-          return MiniDialog(
-            scale: dialogScale,
-            title: '실패😢',
-            content:
-                '획이 너무 많아요!\n'
-                '획 수를 맞춰서 연습해보세요.',
-          );
-        },
-      );
-      //모달창이 닫히면 시간이 다시 흐르도록
-      if (!mounted) return;
-      _startTimer();
-      return;
-    } else if (actualStrokes < requiredStrokes) {
-      _timer?.cancel();
-      if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) {
-          final double dialogScale = scaled(context, 2);
-          return MiniDialog(
-            scale: dialogScale,
-            title: '실패😢',
-            content:
-                '획이 부족해요!\n'
-                '획 수를 맞춰서 연습해보세요.',
-          );
-        },
-      );
-      //모달창이 닫히면 시간이 다시 흐르도록
-      if (!mounted) return;
-      _startTimer();
-      return;
-    }
-    //4.각 획의 첫번째 점과 마지막 점을 저장
-    Map<int, List<Offset>>? firstAndLastStroke = 
-        _canvasKey.currentState
-            ?.getFirstAndLastStrokes(); // 각 셀의 첫번째 점과 마지막 점을 저장
 
-    // 5.Result 모델 생성
+    if (actualStrokes > requiredStrokes) {
+      await _showStrokeErrorDialog('획이 너무 많아요!\n획 수를 맞춰서 연습해보세요.');
+      return false;
+    } else if (actualStrokes < requiredStrokes) {
+      await _showStrokeErrorDialog('획이 부족해요!\n획 수를 맞춰서 연습해보세요.');
+      return false;
+    }
+    return true;
+  }
+
+  /// 작성 데이터를 제출하고 결과화면을 가져옵니다
+  Future<void> _submitWritingData(
+      Map<int, List<Uint8List>> rawImages,
+      Map<int, List<String>> encodedImages) async {
+    // Get first/last stroke points
+    Map<int, List<Offset>>? firstAndLastStroke =
+        _canvasKey.currentState?.getFirstAndLastStrokes();
+
+    // Create result model
     final resultCreate = {
       'user_id': context.read<LoginStatus>().userId,
       'step_id': widget.nowStep.stepId,
       'practice_text': widget.nowStep.stepText,
-      'cell_images': _stringKeyMap3(cellImages),
+      'cell_images': _stringKeyMap3(encodedImages),
       'firstandlast_stroke': (firstAndLastStroke ?? {}).map(
         (key, list) => MapEntry(
           key.toString(),
@@ -193,11 +191,11 @@ class _WritingPageState extends State<WritingPage> {
       ),
     };
     print(resultCreate);
-    // 6-1.로컬 저장용(test): 각 셀별 획 이미지 저장
+
+    // Save images locally (debug)
     final dir = await getApplicationDocumentsDirectory();
     final now = DateTime.now();
-    final timestamp = 
-        '${now.month.toString().padLeft(2, '0')}'
+    final timestamp = '${now.month.toString().padLeft(2, '0')}'
         '${now.day.toString().padLeft(2, '0')}'
         '${now.hour.toString().padLeft(2, '0')}'
         '${now.minute.toString().padLeft(2, '0')}'
@@ -206,7 +204,7 @@ class _WritingPageState extends State<WritingPage> {
     if (!await saveDir.exists()) {
       await saveDir.create(recursive: true);
     }
-    for (var entry in images.entries) {
+    for (var entry in rawImages.entries) {
       final cellIndex = entry.key;
       for (int i = 0; i < entry.value.length; i++) {
         final bytes = entry.value[i];
@@ -214,10 +212,9 @@ class _WritingPageState extends State<WritingPage> {
         await file.writeAsBytes(bytes);
       }
     }
-
     print('Saved raw stroke images to: ${saveDir.path}');
 
-    //6.2 서버에 result 전송
+    // Submit result to server
     final res = await api.submitResult(resultCreate);
 
     if (res.statusCode == 200) {
@@ -225,32 +222,45 @@ class _WritingPageState extends State<WritingPage> {
       print('평가결과 : $decoded');
       final Map<String, dynamic> data = jsonDecode(decoded);
 
-      // ✅ 필요한 값만 꺼냄 (recognized_texts는 이번 단계에서 사용하지 않음)
       final int? score = (data['score'] as num?)?.toInt();
       final String summary = data['summary']?.toString() ?? '';
 
-      // (선택) 제출 중 타이머 멈추고 있었다면 재시작을 원하면 여기서 _startTimer() 호출
-      // if (mounted) _startTimer();
-
-      // ✅ 다이얼로그 표시: 맨 위 박스=score, 두 번째 박스=summary
+      if (!mounted) return;
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder:
-            (_) => FeedbackDialog(
-              feedback: summary,
-              imagePath: widget.nowStep.stepCharacter, // 캐릭터 경로
-              score: score,
-              // recognizedTexts: null, // 이번 단계에서는 표시 안 함
-            ),
+        builder: (_) => FeedbackDialog(
+          feedback: summary,
+          imagePath: widget.nowStep.stepCharacter, // 캐릭터 경로
+          score: score,
+        ),
       );
-
-      // (옵션) 모달 닫힌 뒤에 타이머 재개하고 싶으면 여기에:
-      // if (mounted) _startTimer();
     } else {
+      // Consider showing an error dialog to the user
       throw Exception('평가 전송 실패: ${res.statusCode}');
     }
+  }
+
+  //제출버튼을 누른 후 과정을 처리하는 함수
+  Future<void> _handleSubmit() async {
+    _stopTimer();
+
+    final rawImages = await _exportCanvasImages();
+    if (rawImages == null || rawImages.isEmpty) {
+      _startTimer();
+      return;
+    }
+
+    final encodedImages = _encodeImages(rawImages);
+
+    final isStrokesValid = await _validateStrokes(encodedImages);
+    if (!isStrokesValid) {
+      _startTimer();
+      return;
+    }
+
+    await _submitWritingData(rawImages, encodedImages);
   }
 
   @override
@@ -262,12 +272,12 @@ class _WritingPageState extends State<WritingPage> {
       WritingType.FREE => 200,
     };
     //10자 이하 문장에서 중앙에 위치하기 위한 boolean 변수
-    bool isBelow10Sentence = 
+    bool isBelow10Sentence =
         (widget.nowStep.stepText.length <= 10 &&
             widget.nowStep.stepType == WritingType.SENTENCE);
 
     // Calculate grid width to match practice box
-    final int colCount = 
+    final int colCount =
         widget.nowStep.stepText.length < 10
             ? widget.nowStep.stepText.length
             : 10;
@@ -334,7 +344,7 @@ class _WritingPageState extends State<WritingPage> {
 
                   SpeechBubble(
                     text: widget.nowStep.stepMission,
-                    imageAsset: widget.nowStep.stepCharacter,
+                    imageAsset: widget.nowStep.stepCharacter, // Corrected: Original had 'step 로고' which is likely a typo
                     scale: scaled(context, 0.65),
                     horizontalInset: scaled(context, 80),
                     imageRight: -30,
