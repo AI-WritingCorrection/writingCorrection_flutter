@@ -1,39 +1,38 @@
+// lib/widget/feedback_dialog.dart
 import 'package:flutter/material.dart';
+import 'package:characters/characters.dart';
 
-/// AI 피드백 결과를 보여주는 모달 다이얼로그 위젯
+/// AI 피드백 결과를 보여주는 모달 다이얼로그 (총점 + 요약만)
 class FeedbackDialog extends StatelessWidget {
-  final int? score; // 총점(백엔드 score)
-  final Map<int, String>? recognizedTexts; // 글자별 OCR 결과(백엔드 recognized_texts)
-  /// 보여줄 피드백 텍스트
-  final String feedback;
+  final double? avgScore;
 
-  /// 캐릭터 이미지 경로
+  final String fullText;
+
+  final List<String> stages;
+
   final String imagePath;
 
   const FeedbackDialog({
     super.key,
-    required this.feedback,
+    required this.fullText,
+    required this.stages,
     required this.imagePath,
-    this.score,
-    this.recognizedTexts,
+    this.avgScore,
   });
 
   @override
   Widget build(BuildContext context) {
-    // 화면 높이의 80%를 다이얼로그 높이로 사용
+    // 화면 높이의 80% 사용
     final screenHeight = MediaQuery.of(context).size.height;
-    final dialogHeight = screenHeight * 0.8;
-    // 스케일 계산 (기존 scaled 함수와 유사)
+    final dialogHeight = screenHeight * 0.5;
+
+    // 스케일 계산
     final basePortrait = 390.0;
     final baseLandscape = 844.0;
     final size = MediaQuery.of(context).size;
     final isLandscape = size.width > size.height;
     final base = isLandscape ? baseLandscape : basePortrait;
     final scale = (isLandscape ? size.height : size.width) / base;
-
-    final sortedEntries =
-        (recognizedTexts ?? const <int, String>{}).entries.toList()
-          ..sort((a, b) => a.key.compareTo(b.key));
 
     return Container(
       height: dialogHeight,
@@ -58,111 +57,91 @@ class FeedbackDialog extends StatelessWidget {
             ),
           ),
 
-          // ✅ 고정 섹션 1: 총점 박스 (있을 때만)
-          if (score != null)
-            _pillSection(
-              context,
-              label: '총점',
-              trailingImage: imagePath,
-              child: Text(
-                '$score 점',
-                style: TextStyle(
-                  fontSize: 25 * scale,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              scale: scale,
-            ),
-          SizedBox(height: 12 * scale),
-
-          // ✅ 고정 섹션 2: 요약 박스 (기존 feedback)
+          // ── 섹션 1: 총점 ─────────────────────────────────────────────
           _pillSection(
             context,
-            label: '요약',
+            label: '총점',
             trailingImage: imagePath,
-            minHeight: 180 * scale,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16 * scale,
-              vertical: 20 * scale,
-            ),
             child: Text(
-              feedback,
+              (avgScore != null) ? '${avgScore!} 점' : '- 점',
               style: TextStyle(
                 fontSize: 25 * scale,
-                fontWeight: FontWeight.w600,
-                height: 1.4,
+                fontWeight: FontWeight.w700,
               ),
             ),
             scale: scale,
           ),
           SizedBox(height: 12 * scale),
 
-          // ✅ 스크롤 섹션: 글자별 피드백
-          Expanded(
-            child: _pillSection(
-              context,
-              label: '글자별 피드백',
-              trailingImage: imagePath,
-              // 안쪽만 스크롤!
-              child: Scrollbar(
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  child:
-                      (recognizedTexts == null || recognizedTexts!.isEmpty)
-                          ? Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8 * scale),
-                            child: Text(
-                              '데이터 없음',
-                              style: TextStyle(
-                                fontSize: 25 * scale,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          )
-                          : Wrap(
-                            spacing: 8 * scale,
-                            runSpacing: 8 * scale,
-                            children:
-                                sortedEntries
-                                    .map(
-                                      (e) => _chip(
-                                        context,
-                                        scale,
-                                        index: e.key,
-                                        text: e.value,
-                                      ),
-                                    )
-                                    .toList(),
-                          ),
-                ),
-              ),
-              scale: scale,
+          // ── 섹션 2: 요약(1~4차), 실패 글자만 빨강 ─────────────────────
+          _pillSection(
+            context,
+            label: '요약',
+            trailingImage: imagePath,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16 * scale,
+              vertical: 20 * scale,
             ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _filterLine(context, scale, title: '1차 : ', filterIndex: 0),
+                SizedBox(height: 8 * scale),
+                _filterLine(context, scale, title: '2차 : ', filterIndex: 1),
+                SizedBox(height: 8 * scale),
+                _filterLine(context, scale, title: '3차 : ', filterIndex: 2),
+                SizedBox(height: 8 * scale),
+                _filterLine(context, scale, title: '4차 : ', filterIndex: 3),
+              ],
+            ),
+            scale: scale,
           ),
         ],
       ),
     );
   }
-}
 
-Widget _chip(
-  BuildContext context,
-  double scale, {
-  required int index,
-  required String text,
-}) {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 8 * scale),
-    decoration: BoxDecoration(
-      color: const Color(0xFFE6F7E6),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Colors.black12),
-    ),
-    child: Text(
-      '[$index] $text',
-      style: TextStyle(fontSize: 14 * scale, fontWeight: FontWeight.w600),
-    ),
-  );
+  /// 각 차수(필터)에 대한 한 줄을 그려준다. 실패(해당 자리 '1')인 글자만 빨간색.
+  Widget _filterLine(
+    BuildContext context,
+    double scale, {
+    required String title,
+    required int filterIndex,
+  }) {
+    final spans = <TextSpan>[];
+
+    // 안전하게 문자/stage 길이 차이를 처리
+    final int n = fullText.characters.length;
+    for (int i = 0; i < n; i++) {
+      final String ch = fullText.characters.elementAt(i);
+      final String stage = (i < stages.length) ? stages[i] : '0000';
+      final bool isFail =
+          (filterIndex < stage.length) ? (stage[filterIndex] == '1') : false;
+
+      spans.add(
+        TextSpan(
+          text: ch,
+          style: TextStyle(
+            fontSize: 22 * scale,
+            fontWeight: FontWeight.w600,
+            color: isFail ? Colors.red : Colors.black,
+          ),
+        ),
+      );
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(
+          fontSize: 22 * scale,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+          height: 1.4,
+        ),
+        children: [TextSpan(text: title), ...spans],
+      ),
+    );
+  }
 }
 
 Widget _pillSection(
@@ -171,14 +150,12 @@ Widget _pillSection(
   required String trailingImage,
   required Widget child,
   required double scale,
-  double? minHeight, // ← 추가
-  EdgeInsetsGeometry? contentPadding, // ← (선택) 안쪽 여백 커스터마이즈
+  double? minHeight,
+  EdgeInsetsGeometry? contentPadding,
 }) {
   return Container(
-    constraints: BoxConstraints(
-      minHeight: (minHeight ?? 0), // ← 최소 높이 적용
-    ),
-    padding: contentPadding ?? EdgeInsets.all(16 * scale), // ← 기본 패딩 유지
+    constraints: BoxConstraints(minHeight: (minHeight ?? 0)),
+    padding: contentPadding ?? EdgeInsets.all(16 * scale),
     decoration: BoxDecoration(
       color: const Color(0xFFCEEF91),
       borderRadius: BorderRadius.circular(18 * scale),

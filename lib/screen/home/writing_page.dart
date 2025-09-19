@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:aiwriting_collection/widget/feedback_dialog.dart';
+import 'package:characters/characters.dart';
 
 class WritingPage extends StatefulWidget {
   final Steps nowStep;
@@ -37,9 +38,13 @@ class _WritingPageState extends State<WritingPage> {
     return src.map((key, value) => MapEntry(key.toString(), value));
   }
 
+  // 결과 저장 & 열람 가능 상태(mutable!)
+  List<Map<String, dynamic>> _letterResults = [];
+  bool _feedbackReady = false;
+
   final api = Api();
   //GlobalKey를 이용해 GridHandwritingCanvas의 내부 상태에 직접 접근할 수 있도록
-  final GlobalKey<GridHandwritingCanvasState> _canvasKey = 
+  final GlobalKey<GridHandwritingCanvasState> _canvasKey =
       GlobalKey<GridHandwritingCanvasState>();
 
   Timer? _timer;
@@ -74,8 +79,7 @@ class _WritingPageState extends State<WritingPage> {
               scale: dialogScale,
               title: '실패😢',
               content:
-                  '시간이 초과되었어요!\n' 
-
+                  '시간이 초과되었어요!\n'
                   '다음에는 조금 더 빨리 써봐요~',
             );
           },
@@ -98,6 +102,99 @@ class _WritingPageState extends State<WritingPage> {
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
     final secs = (seconds % 60).toString().padLeft(2, '0');
     return '$minutes:$secs';
+  }
+
+  Future<void> _showLetterFeedback(int index) async {
+    if (index < 0 || index >= _letterResults.length) return;
+    final item = _letterResults[index];
+
+    final String original = item['original_text']?.toString() ?? '';
+    final double? score = (item['score'] as num?)?.toDouble();
+    final String stage = item['stage']?.toString() ?? '0000';
+
+    // 글자 내부 피드백 배열(초성/중성/종성/전체 등)에서 null 제거
+    final List<dynamic> fbListRaw = (item['feedback'] as List?) ?? const [];
+    final List<String> fbList =
+        fbListRaw
+            .map((e) => e?.toString() ?? '')
+            .where((s) => s.isNotEmpty)
+            .toList();
+
+    if (!mounted) return;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        final sc = scaled(context, 1);
+
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.6,
+          padding: EdgeInsets.all(16 * sc),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24 * sc)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 드래그 핸들
+              Center(
+                child: Container(
+                  width: 40 * sc,
+                  height: 4 * sc,
+                  margin: EdgeInsets.only(bottom: 16 * sc),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2 * sc),
+                  ),
+                ),
+              ),
+              Text(
+                '글자별 피드백',
+                style: TextStyle(
+                  fontSize: 22 * sc,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: 8 * sc),
+
+              Text(
+                '대상 글자: $original   |   점수: ${score ?? '-'}   |   stage: $stage',
+                style: TextStyle(
+                  fontSize: 16 * sc,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 12 * sc),
+
+              Expanded(
+                child:
+                    fbList.isEmpty
+                        ? Center(
+                          child: Text(
+                            '피드백 없음',
+                            style: TextStyle(fontSize: 18 * sc),
+                          ),
+                        )
+                        : ListView.separated(
+                          itemCount: fbList.length,
+                          separatorBuilder: (_, __) => SizedBox(height: 6 * sc),
+                          itemBuilder:
+                              (_, i) => Text(
+                                '• ${fbList[i]}',
+                                style: TextStyle(
+                                  fontSize: 18 * sc,
+                                  height: 1.3,
+                                ),
+                              ),
+                        ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   //기본 기준값
@@ -140,11 +237,7 @@ class _WritingPageState extends State<WritingPage> {
       context: context,
       builder: (context) {
         final double dialogScale = scaled(context, 2);
-        return MiniDialog(
-          scale: dialogScale,
-          title: '실패😢',
-          content: content,
-        );
+        return MiniDialog(scale: dialogScale, title: '실패😢', content: content);
       },
     );
   }
@@ -168,8 +261,9 @@ class _WritingPageState extends State<WritingPage> {
 
   /// 작성 데이터를 제출하고 결과화면을 가져옵니다
   Future<void> _submitWritingData(
-      Map<int, List<Uint8List>> rawImages,
-      Map<int, List<String>> encodedImages) async {
+    Map<int, List<Uint8List>> rawImages,
+    Map<int, List<String>> encodedImages,
+  ) async {
     // Get first/last stroke points
     Map<int, List<Offset>>? firstAndLastStroke =
         _canvasKey.currentState?.getFirstAndLastStrokes();
@@ -195,7 +289,8 @@ class _WritingPageState extends State<WritingPage> {
     // Save images locally (debug)
     final dir = await getApplicationDocumentsDirectory();
     final now = DateTime.now();
-    final timestamp = '${now.month.toString().padLeft(2, '0')}'
+    final timestamp =
+        '${now.month.toString().padLeft(2, '0')}'
         '${now.day.toString().padLeft(2, '0')}'
         '${now.hour.toString().padLeft(2, '0')}'
         '${now.minute.toString().padLeft(2, '0')}'
@@ -215,6 +310,7 @@ class _WritingPageState extends State<WritingPage> {
     print('Saved raw stroke images to: ${saveDir.path}');
 
     // Submit result to server
+    // Submit result to server
     final res = await api.submitResult(resultCreate);
 
     if (res.statusCode == 200) {
@@ -222,22 +318,44 @@ class _WritingPageState extends State<WritingPage> {
       print('평가결과 : $decoded');
       final Map<String, dynamic> data = jsonDecode(decoded);
 
-      final int? score = (data['score'] as num?)?.toInt();
-      final String summary = data['summary']?.toString() ?? '';
+      // 제출 성공 후 결과 저장 + 열람 가능 플래그 켜기
+      setState(() {
+        _letterResults =
+            ((data['results'] as List?) ?? const [])
+                .cast<Map<String, dynamic>>();
+        _feedbackReady = true;
+      });
+
+      // 1) 평균 점수(실수 그대로)
+      final double? avgScore = (data['avg_score'] as num?)?.toDouble();
+
+      // 2) 글자별 stage 목록 만들기
+      final List<dynamic> results = (data['results'] as List?) ?? const [];
+      // results 길이가 과제 글자 수와 다를 수 있으니 안전하게 패딩/자르기
+      final int targetLen = widget.nowStep.stepText.characters.length;
+
+      final List<String> stages = List.generate(targetLen, (i) {
+        if (i < results.length) {
+          final item = results[i] as Map<String, dynamic>? ?? const {};
+          return (item['stage'] as String?) ?? '0000';
+        }
+        return '0000';
+      });
 
       if (!mounted) return;
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (_) => FeedbackDialog(
-          feedback: summary,
-          imagePath: widget.nowStep.stepCharacter, // 캐릭터 경로
-          score: score,
-        ),
+        builder:
+            (_) => FeedbackDialog(
+              avgScore: avgScore,
+              fullText: widget.nowStep.stepText,
+              stages: stages,
+              imagePath: widget.nowStep.stepCharacter,
+            ),
       );
     } else {
-      // Consider showing an error dialog to the user
       throw Exception('평가 전송 실패: ${res.statusCode}');
     }
   }
@@ -245,6 +363,9 @@ class _WritingPageState extends State<WritingPage> {
   //제출버튼을 누른 후 과정을 처리하는 함수
   Future<void> _handleSubmit() async {
     _stopTimer();
+    setState(() {
+      _feedbackReady = false;
+    });
 
     final rawImages = await _exportCanvasImages();
     if (rawImages == null || rawImages.isEmpty) {
@@ -282,6 +403,9 @@ class _WritingPageState extends State<WritingPage> {
             ? widget.nowStep.stepText.length
             : 10;
     final double gridWidth = scaled(context, cellSize) * colCount;
+    final int totalChars = widget.nowStep.stepText.length;
+    final int rowCount = (totalChars / 10).ceil();
+    final double gridHeight = scaled(context, cellSize) * rowCount;
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -344,7 +468,10 @@ class _WritingPageState extends State<WritingPage> {
 
                   SpeechBubble(
                     text: widget.nowStep.stepMission,
-                    imageAsset: widget.nowStep.stepCharacter, // Corrected: Original had 'step 로고' which is likely a typo
+                    imageAsset:
+                        widget
+                            .nowStep
+                            .stepCharacter, // Corrected: Original had 'step 로고' which is likely a typo
                     scale: scaled(context, 0.65),
                     horizontalInset: scaled(context, 80),
                     imageRight: -30,
@@ -394,24 +521,64 @@ class _WritingPageState extends State<WritingPage> {
 
                   Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      // behavior를 opaque로 주면, 자식 위 투명 영역에도 제스처를 잡습니다.
-                      behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
+                      width: gridWidth,
+                      height: gridHeight,
+                      child: Stack(
+                        children: [
+                          // 1) 캔버스는 피드백 준비되면 포인터 차단!
+                          AbsorbPointer(
+                            absorbing: _feedbackReady, // true면 아래 위젯이 터치 못 받음
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onPanDown: (_) {}, // 스크롤 방지 유지
+                              onVerticalDragUpdate: (_) {},
+                              child: GridHandwritingCanvas(
+                                key: _canvasKey,
+                                essentialStrokeCounts:
+                                    widget.nowStep.essentialStrokeCounts,
+                                charCount: widget.nowStep.stepText.length,
+                                gridColor: const Color(0xFFFFCEEF),
+                                gridWidth: scaled(context, 3),
+                                cellSize: scaled(context, cellSize),
+                                showGuides: widget.showGuides,
+                                guideChar: widget.nowStep.stepText,
+                              ),
+                            ),
+                          ),
 
-                      // 이 두 콜백만 있어도 세로 드래그를 잡아서 스크롤로 넘어가지 않게 합니다.
-                      onPanDown: (_) {}, // 터치다운 이벤트를 먼저 소비
-                      onVerticalDragUpdate: (_) {}, // 세로 드래그가 시작되면 아무 것도 하지 않음
-                      child: GridHandwritingCanvas(
-                        key: _canvasKey,
-                        essentialStrokeCounts:
-                            widget.nowStep.essentialStrokeCounts,
-                        charCount: widget.nowStep.stepText.length,
-                        gridColor: Color(0xFFFFCEEF),
-                        gridWidth: scaled(context, 3),
-                        cellSize: scaled(context, cellSize),
-                        // 가이드라인 표시 여부와 문자 전달
-                        showGuides: widget.showGuides,
-                        guideChar: widget.nowStep.stepText,
+                          // 2) 피드백 준비된 경우에만 탭을 가로채는 "투명 레이어"
+                          if (_feedbackReady)
+                            Positioned.fill(
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                // 드래그 제스처까지 먹어버리기 (아래로 안 내려가게)
+                                onPanDown: (_) {},
+                                onPanStart: (_) {},
+                                onPanUpdate: (_) {},
+                                onPanEnd: (_) {},
+                                // 탭 좌표로 셀 인덱스 계산
+                                onTapDown: (details) {
+                                  final double cs = scaled(context, cellSize);
+                                  final dx = details.localPosition.dx;
+                                  final dy = details.localPosition.dy;
+
+                                  final int col = (dx ~/ cs).clamp(
+                                    0,
+                                    colCount - 1,
+                                  );
+                                  final int row = (dy ~/ cs).clamp(
+                                    0,
+                                    rowCount - 1,
+                                  );
+
+                                  int index = row * 10 + col;
+                                  if (index >= totalChars) return; // 빈 칸은 무시
+                                  _showLetterFeedback(index);
+                                },
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ),
@@ -455,7 +622,16 @@ class _WritingPageState extends State<WritingPage> {
                       ),
                       SizedBox(width: scaled(context, 35)),
                       GestureDetector(
-                        onTap: () => _canvasKey.currentState?.clearAll(),
+                        onTap: () {
+                          _stopTimer(); // 타이머 멈춤
+                          _canvasKey.currentState?.clearAll(); // 글씨 지우기
+                          setState(() {
+                            _feedbackReady = false; // ⬅ 오버레이/탭 가로채기 비활성화
+                            _letterResults = []; // ⬅ (선택) 이전 결과도 비우기
+                            _remainingTime = widget.nowStep.stepTime; // 시간 초기화
+                          });
+                          _startTimer(); // 타이머 재시작
+                        },
                         child: Container(
                           width: scaled(context, 230),
                           height: scaled(context, 80),
