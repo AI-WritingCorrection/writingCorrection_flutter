@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Always add the study step
             final currentStep = stepCounter;
-            final bool isActive = currentStep <= enableUpTo;
+            final bool isActive = currentStep < enableUpTo;
             widgets.add(
               Positioned(
                 left: pos.dx,

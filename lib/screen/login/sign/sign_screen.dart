@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -225,9 +227,24 @@ class _SignScreenState extends State<SignScreen> {
                               'filePath': _profileImage?.path,
                             };
 
-                            await api.signup(payload);
-                            print('회원 가입 성공: $payload');
-                            Navigator.pushReplacementNamed(context, '/home');
+                            final res = await api.signup(payload);
+                            if (res.statusCode == 200 || res.statusCode == 201) {
+                              final body = jsonDecode(res.body);
+                              final jwt = body['jwt'];
+                              final userId = body['user_id'];
+                              final uid = context.read<LoginStatus>().uid;
+                              api.setJwt(jwt);
+                              context.read<LoginStatus>().setUser(
+                                    userId: userId,
+                                    uid: uid!,
+                                    jwt: jwt,
+                                    email: _emailController.text,
+                                  );
+                              print('회원 가입 성공: $payload');
+                              Navigator.pushReplacementNamed(context, '/home');
+                            } else {
+                              throw Exception('Server error: ${res.statusCode} ${res.body}');
+                            }
                           } catch (e) {
                             await FirebaseAuth.instance.signOut();
                             context.read<LoginStatus>().logout();
@@ -406,9 +423,24 @@ class _SignScreenState extends State<SignScreen> {
                               'filePath': _profileImage?.path,
                             };
 
-                            await api.signup(payload);
-                            print('회원 가입 성공: $payload');
-                            Navigator.pushReplacementNamed(context, '/home');
+                            final res = await api.signup(payload);
+                            if (res.statusCode == 200 || res.statusCode == 201) {
+                              final body = jsonDecode(res.body);
+                              final jwt = body['jwt'];
+                              final userId = body['user_id'];
+                              final uid = context.read<LoginStatus>().uid;
+                              api.setJwt(jwt);
+                              context.read<LoginStatus>().setUser(
+                                    userId: userId,
+                                    uid: uid!,
+                                    jwt: jwt,
+                                    email: _emailController.text,
+                                  );
+                              print('회원 가입 성공: $payload');
+                              Navigator.pushReplacementNamed(context, '/home');
+                            } else {
+                              throw Exception('Server error: ${res.statusCode} ${res.body}');
+                            }
                           } catch (e) {
                             await FirebaseAuth.instance.signOut();
                             context.read<LoginStatus>().logout();
