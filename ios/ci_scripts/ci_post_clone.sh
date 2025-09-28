@@ -1,70 +1,67 @@
 #!/bin/sh
 
-# 오류 발생 시 즉시 스크립트 중단
-set -e
+# -----------------------------------------------------------------------------
+# ci_post_clone.sh
+#  - Runs right after Xcode Cloud checks out your repository
+#  - Responsibilities:
+#     1) Generate config files from secrets (no secret echo to logs)
+#     2) Install Flutter SDK and dependencies
+#     3) Prepare CocoaPods
+# -----------------------------------------------------------------------------
 
-# 스크립트 실행 위치를 복제된 저장소의 루트로 변경
-cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cloned repo.
+set -euxo pipefail
 
-# --------------------------------------------------------------------
-# SECTION 1: Generate all necessary configuration files from secrets
-# 1단계: Xcode Cloud 비밀 변수를 사용하여 모든 설정 파일 생성하기
-# --------------------------------------------------------------------
+# Go to repo root
+cd "$CI_PRIMARY_REPOSITORY_PATH"
+
 echo "--- Generating configuration files from Xcode Cloud secrets ---"
-echo "--- .env 파일 생성 시작 ---"
 
-# KAKAO_JAVASCRIPT_APP_KEY 변수를 읽어 .env 파일에 쓰기 (파일 새로 생성)
-echo "KAKAO_JAVASCRIPT_APP_KEY=$KAKAO_JAVASCRIPT_APP_KEY" > .env
+# .env
+: "${KAKAO_JAVASCRIPT_APP_KEY:=}"; : "${KAKAO_NATIVE_APP_KEY:=}"
+{
+  echo "KAKAO_JAVASCRIPT_APP_KEY=$KAKAO_JAVASCRIPT_APP_KEY"
+  echo "KAKAO_NATIVE_APP_KEY=$KAKAO_NATIVE_APP_KEY"
+} > .env
+chmod 600 .env
 
-# KAKAO_NATIVE_APP_KEY 변수를 읽어 .env 파일에 추가하기
-echo "KAKAO_NATIVE_APP_KEY=$KAKAO_NATIVE_APP_KEY" >> .env
+# Firebase / Google configs
+: "${FIREBASE_JSON_BASE64:=}"
+: "${GOOGLE_SERVICE_INFO_PLIST_IOS_BASE64:=}"
+: "${GOOGLE_SERVICE_INFO_PLIST_MACOS_BASE64:=}"
+: "${GOOGLE_SERVICES_JSON_BASE64:=}"
+: "${FIREBASE_OPTIONS_DART_BASE64:=}"
 
-echo ".env 파일 생성 완료. 내용은 다음과 같습니다:"
-cat .env # 생성된 파일 내용을 로그에 출력하여 확인 (비밀 값은 *****로 표시됨)
+[ -n "$FIREBASE_JSON_BASE64" ] && echo "$FIREBASE_JSON_BASE64" | base64 --decode > firebase.json && chmod 600 firebase.json || true
+mkdir -p ios/Runner macos/Runner android/app lib
+[ -n "$GOOGLE_SERVICE_INFO_PLIST_IOS_BASE64" ] && echo "$GOOGLE_SERVICE_INFO_PLIST_IOS_BASE64" | base64 --decode > ios/Runner/GoogleService-Info.plist && chmod 600 ios/Runner/GoogleService-Info.plist || true
+[ -n "$GOOGLE_SERVICE_INFO_PLIST_MACOS_BASE64" ] && echo "$GOOGLE_SERVICE_INFO_PLIST_MACOS_BASE64" | base64 --decode > macos/Runner/GoogleService-Info.plist && chmod 600 macos/Runner/GoogleService-Info.plist || true
+[ -n "$GOOGLE_SERVICES_JSON_BASE64" ] && echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json && chmod 600 android/app/google-services.json || true
+[ -n "$FIREBASE_OPTIONS_DART_BASE64" ] && echo "$FIREBASE_OPTIONS_DART_BASE64" | base64 --decode > lib/firebase_options.dart || true
 
-# 프로젝트 루트에 firebase.json 파일 생성
-echo "Creating firebase.json..."
-echo $FIREBASE_JSON_BASE64 | base64 --decode > firebase.json
+echo "--- Config files generated successfully. ---"
 
-# iOS용 GoogleService-Info.plist 파일 생성
-echo "Creating GoogleService-Info.plist for iOS..."
-mkdir -p ios/Runner # Create directory if it doesn't exist (폴더가 없으면 생성)
-echo $GOOGLE_SERVICE_INFO_PLIST_IOS_BASE64 | base64 --decode > ios/Runner/GoogleService-Info.plist
+# Install Flutter
+FLUTTER_VERSION="${FLUTTER_VERSION:-3.24.3}"
+if ! command -v flutter >/dev/null 2>&1; then
+  git clone https://github.com/flutter/flutter.git --depth 1 -b stable "$HOME/flutter"
+  export PATH="$HOME/flutter/bin:$PATH"
+else
+  export PATH="$(dirname $(dirname $(command -v flutter)))/bin:$PATH"
+fi
 
-# macOS용 GoogleService-Info.plist 파일 생성
-echo "Creating GoogleService-Info.plist for macOS..."
-mkdir -p macos/Runner # Create directory if it doesn't exist (폴더가 없으면 생성)
-echo $GOOGLE_SERVICE_INFO_PLIST_MACOS_BASE64 | base64 --decode > macos/Runner/GoogleService-Info.plist
-
-# 안드로이드용 google-services.json 파일 생성
-echo "Creating google-services.json for Android..."
-mkdir -p android/app # Create directory if it doesn't exist (폴더가 없으면 생성)
-echo $GOOGLE_SERVICES_JSON_BASE64 | base64 --decode > android/app/google-services.json
-
-# lib 폴더에 firebase_options.dart 파일 생성
-echo "Creating firebase_options.dart..."
-mkdir -p lib # Create directory if it doesn't exist (폴더가 없으면 생성)
-echo $FIREBASE_OPTIONS_DART_BASE64 | base64 --decode > lib/firebase_options.dart
-
-echo "--- All configuration files have been generated successfully. ---"
-
-
-# git을 사용하여 Flutter 설치
-git clone https://github.com/flutter/flutter.git --depth 1 -b stable $HOME/flutter
-export PATH="$PATH:$HOME/flutter/bin"
-
-# iOS용 Flutter 아티팩트 설치
+flutter --version
 flutter precache --ios
-
-# Flutter 의존성 설치 (이때 .env 파일을 읽음)
 flutter pub get
 
-# Homebrew를 사용하여 CocoaPods 설치
-HOMEBREW_NO_AUTO_UPDATE=1 # disable homebrew's automatic updates.
-brew install cocoapods
+# CocoaPods
+if ! command -v pod >/dev/null 2>&1; then
+  HOMEBREW_NO_AUTO_UPDATE=1 brew install cocoapods
+fi
 
-# CocoaPods 의존성 설치
-cd ios && pod install # run `pod install` in the `ios` directory.
+(
+  cd ios
+  pod repo update
+  pod install
+)
 
-# 성공적으로 종료
-exit 0
+echo "ci_post_clone.sh completed."
