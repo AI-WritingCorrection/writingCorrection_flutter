@@ -1,6 +1,6 @@
-// lib/widget/feedback_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:characters/characters.dart';
+import 'package:aiwriting_collection/widget/pill_section.dart';
 
 /// AI 피드백 결과를 보여주는 모달 다이얼로그 (총점 + 요약만)
 class FeedbackDialog extends StatelessWidget {
@@ -22,7 +22,7 @@ class FeedbackDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 화면 높이의 80% 사용
+    // 화면 높이의 50% 사용
     final screenHeight = MediaQuery.of(context).size.height;
     final dialogHeight = screenHeight * 0.5;
 
@@ -58,10 +58,10 @@ class FeedbackDialog extends StatelessWidget {
           ),
 
           // ── 섹션 1: 총점 ─────────────────────────────────────────────
-          _pillSection(
-            context,
+          PillSection(
             label: '총점',
             trailingImage: imagePath,
+            scale: scale,
             child: Text(
               (avgScore != null) ? '${avgScore!} 점' : '- 점',
               style: TextStyle(
@@ -69,19 +69,18 @@ class FeedbackDialog extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            scale: scale,
           ),
           SizedBox(height: 12 * scale),
 
           // ── 섹션 2: 요약(1~4차), 실패 글자만 빨강 ─────────────────────
-          _pillSection(
-            context,
+          PillSection(
             label: '요약',
             trailingImage: imagePath,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16 * scale,
               vertical: 20 * scale,
             ),
+            scale: scale,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -94,7 +93,6 @@ class FeedbackDialog extends StatelessWidget {
                 _filterLine(context, scale, title: '4차 : ', filterIndex: 3),
               ],
             ),
-            scale: scale,
           ),
         ],
       ),
@@ -142,46 +140,4 @@ class FeedbackDialog extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _pillSection(
-  BuildContext context, {
-  required String label,
-  required String trailingImage,
-  required Widget child,
-  required double scale,
-  double? minHeight,
-  EdgeInsetsGeometry? contentPadding,
-}) {
-  return Container(
-    constraints: BoxConstraints(minHeight: (minHeight ?? 0)),
-    padding: contentPadding ?? EdgeInsets.all(16 * scale),
-    decoration: BoxDecoration(
-      color: const Color(0xFFCEEF91),
-      borderRadius: BorderRadius.circular(18 * scale),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 18 * scale,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              SizedBox(height: 8 * scale),
-              child,
-            ],
-          ),
-        ),
-        SizedBox(width: 8 * scale),
-        Image.asset(trailingImage, width: 48 * scale, height: 48 * scale),
-      ],
-    ),
-  );
 }

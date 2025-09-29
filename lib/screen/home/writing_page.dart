@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:aiwriting_collection/widget/feedback_dialog.dart';
+import 'package:aiwriting_collection/widget/letter_feedback.dart';
 import 'package:characters/characters.dart';
 
 class WritingPage extends StatefulWidget {
@@ -126,72 +127,23 @@ class _WritingPageState extends State<WritingPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
-        final sc = scaled(context, 1);
+        final String original = item['original_text']?.toString() ?? '';
+        final double? score = (item['score'] as num?)?.toDouble();
+        final String stage = item['stage']?.toString() ?? '0000';
 
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.6,
-          padding: EdgeInsets.all(16 * sc),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24 * sc)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 드래그 핸들
-              Center(
-                child: Container(
-                  width: 40 * sc,
-                  height: 4 * sc,
-                  margin: EdgeInsets.only(bottom: 16 * sc),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2 * sc),
-                  ),
-                ),
-              ),
-              Text(
-                '글자별 피드백',
-                style: TextStyle(
-                  fontSize: 22 * sc,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              SizedBox(height: 8 * sc),
+        final List<dynamic> fbListRaw = (item['feedback'] as List?) ?? const [];
+        final List<String> fbList =
+            fbListRaw
+                .map((e) => e?.toString() ?? '')
+                .where((s) => s.isNotEmpty)
+                .toList();
 
-              Text(
-                '대상 글자: $original   |   점수: ${score ?? '-'}   |   stage: $stage',
-                style: TextStyle(
-                  fontSize: 16 * sc,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 12 * sc),
-
-              Expanded(
-                child:
-                    fbList.isEmpty
-                        ? Center(
-                          child: Text(
-                            '피드백 없음',
-                            style: TextStyle(fontSize: 18 * sc),
-                          ),
-                        )
-                        : ListView.separated(
-                          itemCount: fbList.length,
-                          separatorBuilder: (_, __) => SizedBox(height: 6 * sc),
-                          itemBuilder:
-                              (_, i) => Text(
-                                '• ${fbList[i]}',
-                                style: TextStyle(
-                                  fontSize: 18 * sc,
-                                  height: 1.3,
-                                ),
-                              ),
-                        ),
-              ),
-            ],
-          ),
+        return LetterFeedbackSheet(
+          targetChar: original,
+          score: score,
+          stage: stage,
+          feedback: fbList,
+          imagePath: widget.nowStep.stepCharacter,
         );
       },
     );
