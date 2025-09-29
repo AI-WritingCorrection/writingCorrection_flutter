@@ -64,4 +64,14 @@ fi
   pod install
 )
 
+
+# 필수 키 검증
+GSI_PLIST="ios/Runner/GoogleService-Info.plist"
+need_keys() {
+  /usr/libexec/PlistBuddy -c "Print :$1" "$GSI_PLIST" >/dev/null 2>&1
+}
+[ -f "$GSI_PLIST" ] || { echo "❌ Missing GoogleService-Info.plist"; exit 1; }
+need_keys "CLIENT_ID" || { echo "❌ CLIENT_ID missing in GoogleService-Info.plist"; exit 1; }
+need_keys "REVERSED_CLIENT_ID" || { echo "❌ REVERSED_CLIENT_ID missing in GoogleService-Info.plist"; exit 1; }
+
 echo "ci_post_clone.sh completed."
