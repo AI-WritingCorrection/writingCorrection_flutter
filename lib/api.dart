@@ -82,23 +82,32 @@ class Api {
   Future<http.Response> signup(Map<String, dynamic> payload) async {
     final uri = Uri.parse('$_baseUrl/auth/signup');
     final req = http.MultipartRequest('POST', uri);
-  
+
     // JWT가 필요한 경우에만 Authorization 추가 (대부분의 signup은 불필요)
     if (_jwt != null) {
       req.headers['Authorization'] = 'Bearer $_jwt';
     }
-  
+
     // 필수 필드 매핑 (키 변형도 수용)
-    final idToken   = payload['id_token'] ?? payload['idToken'];
-    final provider  = payload['provider'];
-    final email     = payload['email'];
-    final nickname  = payload['nickname'];
-    final birthdate = payload['birthdate'] ?? payload['birthdateIso'] ?? payload['birthdate_iso'];
-  
-    if (idToken == null || provider == null || email == null || nickname == null || birthdate == null) {
-      throw Exception('signup payload 누락: id_token/provider/email/nickname/birthdate는 필수입니다.');
+    final idToken = payload['id_token'] ?? payload['idToken'];
+    final provider = payload['provider'];
+    final email = payload['email'];
+    final nickname = payload['nickname'];
+    final birthdate =
+        payload['birthdate'] ??
+        payload['birthdateIso'] ??
+        payload['birthdate_iso'];
+
+    if (idToken == null ||
+        provider == null ||
+        email == null ||
+        nickname == null ||
+        birthdate == null) {
+      throw Exception(
+        'signup payload 누락: id_token/provider/email/nickname/birthdate는 필수입니다.',
+      );
     }
-  
+
     req.fields.addAll({
       'id_token': idToken.toString(),
       'provider': provider.toString(),
@@ -106,25 +115,29 @@ class Api {
       'nickname': nickname.toString(),
       'birthdate': birthdate.toString(), // ISO 8601 문자열 기대
     });
-  
+
     // 선택적 파일 업로드 (문자열/파일/XFile 모두 수용)
-    final fileRef = payload['filePath'] ?? payload['profile_pic_path'] ?? payload['profile_pic'];
+    final fileRef =
+        payload['filePath'] ??
+        payload['profile_pic_path'] ??
+        payload['profile_pic'];
     final path = _extractFilePath(fileRef);
     if (path != null && path.trim().isNotEmpty) {
       // 존재 확인 (fromPath 에서 던지기 전에 미리 명확한 에러를 주자)
       if (!File(path).existsSync()) {
         throw Exception('프로필 이미지 파일을 찾을 수 없습니다: ' + path);
       }
-      req.files.add(await http.MultipartFile.fromPath(
-        'file',
-        path,
-        contentType: _inferContentType(path),
-      ));
+      req.files.add(
+        await http.MultipartFile.fromPath(
+          'file',
+          path,
+          contentType: _inferContentType(path),
+        ),
+      );
     }
-  
+
     final streamed = await req.send();
-    final body = await streamed.stream.bytesToString();
-    return http.Response(body, streamed.statusCode, headers: streamed.headers);
+    return await http.Response.fromStream(streamed);
   }
 
   /// 글씨 평가 결과를 서버에 전송

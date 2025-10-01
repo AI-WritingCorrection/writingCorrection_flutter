@@ -87,8 +87,6 @@ class _SignScreenState extends State<SignScreen> {
       fontSize: 16 * scale,
     );
 
-    final bool hasEmail = _emailController.text.isNotEmpty;
-
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
       appBar: AppBar(
@@ -100,169 +98,14 @@ class _SignScreenState extends State<SignScreen> {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: verticalSpacingLarge),
-              // Profile image picker
-              Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    final XFile? file = await ImagePicker().pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    if (file != null)
-                      setState(() => _profileImage = File(file.path));
-                  },
-                  child: CircleAvatar(
-                    radius: 48,
-                    backgroundImage:
-                        _profileImage != null
-                            ? FileImage(_profileImage!)
-                            : null,
-                    child:
-                        _profileImage == null
-                            ? const Icon(Icons.camera_alt, size: 48)
-                            : null,
-                  ),
-                ),
-              ),
-              SizedBox(height: verticalSpacingLarge),
-              // Email field (read-only)
-              Padding(
-                padding: EdgeInsets.only(bottom: verticalSpacing),
-                child: TextFormField(
-                  controller: _emailController,
-                  style: textStyle,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: const OutlineInputBorder(),
-                    labelStyle: textStyle,
-                  ),
-                  readOnly: hasEmail,
-                  enabled: !hasEmail,
-                ),
-              ),
-              // Nickname field
-              Padding(
-                padding: EdgeInsets.only(bottom: verticalSpacing),
-                child: TextFormField(
-                  controller: _nicknameController,
-                  style: textStyle,
-                  decoration: InputDecoration(
-                    labelText: 'Nickname',
-                    border: const OutlineInputBorder(),
-                    labelStyle: textStyle,
-                  ),
-                  validator:
-                      (v) => v == null || v.isEmpty ? '닉네임을 입력하세요' : null,
-                ),
-              ),
-              // Birthdate picker
-              Padding(
-                padding: EdgeInsets.only(bottom: verticalSpacingLarge),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _birthdate == null
-                            ? '생년월일 선택'
-                            : '생년월일: ${_birthdate!.toLocal().toString().split(' ')[0]}',
-                        style: textStyle,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime(2000),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (date != null) setState(() => _birthdate = date);
-                      },
-                      child: Text('선택', style: textStyle),
-                    ),
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 48 * scale),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed:
-                    _isLoading
-                        ? null
-                        : () async {
-                          setState(() => _isLoading = true);
-                          try {
-                            if (!_formKey.currentState!.validate() ||
-                                _birthdate == null)
-                              return;
-
-                            await FirebaseAuth.instance.currentUser!.getIdToken(
-                              true,
-                            );
-                            final idToken =
-                                context.read<LoginStatus>().firebaseIdToken;
-                            _provider =
-                                context.read<LoginStatus>().lastProvider ?? '';
-                            if (idToken == null || idToken.isEmpty)
-                              throw Exception('No ID token');
-
-                            final payload = {
-                              'id_token': idToken,
-                              'provider': _provider,
-                              'email': _emailController.text,
-                              'nickname': _nicknameController.text,
-                              'birthdate': _birthdate!.toIso8601String(),
-                              // 선택적: 프로필 이미지가 있으면 multipart로 함께 전송 (api.signup에서 처리)
-                              'filePath': _profileImage?.path,
-                            };
-
-                            final res = await api.signup(payload);
-                            if (res.statusCode == 200 || res.statusCode == 201) {
-                              final body = jsonDecode(res.body);
-                              final jwt = body['jwt'];
-                              final userId = body['user_id'];
-                              final uid = context.read<LoginStatus>().uid;
-                              api.setJwt(jwt);
-                              context.read<LoginStatus>().setUser(
-                                    userId: userId,
-                                    uid: uid!,
-                                    jwt: jwt,
-                                    email: _emailController.text,
-                                  );
-                              print('회원 가입 성공: $payload');
-                              Navigator.pushReplacementNamed(context, '/home');
-                            } else {
-                              throw Exception('Server error: ${res.statusCode} ${res.body}');
-                            }
-                          } catch (e) {
-                            await FirebaseAuth.instance.signOut();
-                            context.read<LoginStatus>().logout();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('회원가입에 실패했습니다: $e')),
-                            );
-                          } finally {
-                            setState(() => _isLoading = false);
-                          }
-                        },
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator()
-                        : Text('회원 가입', style: buttonTextStyle),
-              ),
-            ],
-          ),
-        ),
+      body: _buildBody(
+        context,
+        scale,
+        textStyle,
+        buttonTextStyle,
+        horizontalPadding,
+        verticalSpacing,
+        verticalSpacingLarge,
       ),
     );
   }
@@ -284,8 +127,6 @@ class _SignScreenState extends State<SignScreen> {
       fontSize: 18 * scale,
     );
 
-    final bool hasEmail = _emailController.text.isNotEmpty;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -296,168 +137,189 @@ class _SignScreenState extends State<SignScreen> {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: verticalSpacingLarge),
-              // Profile image picker
-              Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    final XFile? file = await ImagePicker().pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    if (file != null)
-                      setState(() => _profileImage = File(file.path));
-                  },
-                  child: CircleAvatar(
-                    radius: 48,
-                    backgroundImage:
-                        _profileImage != null
-                            ? FileImage(_profileImage!)
-                            : null,
-                    child:
-                        _profileImage == null
-                            ? const Icon(Icons.camera_alt, size: 48)
-                            : null,
-                  ),
+      body: _buildBody(
+        context,
+        scale,
+        textStyle,
+        buttonTextStyle,
+        horizontalPadding,
+        verticalSpacing,
+        verticalSpacingLarge,
+      ),
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    double scale,
+    TextStyle textStyle,
+    TextStyle buttonTextStyle,
+    double horizontalPadding,
+    double verticalSpacing,
+    double verticalSpacingLarge,
+  ) {
+    final bool hasEmail = _emailController.text.isNotEmpty;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: verticalSpacingLarge),
+            // Profile image picker
+            Center(
+              child: GestureDetector(
+                onTap: () async {
+                  final XFile? file = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (file != null)
+                    setState(() => _profileImage = File(file.path));
+                },
+                child: CircleAvatar(
+                  radius: 48,
+                  backgroundImage:
+                      _profileImage != null ? FileImage(_profileImage!) : null,
+                  child:
+                      _profileImage == null
+                          ? const Icon(Icons.camera_alt, size: 48)
+                          : null,
                 ),
               ),
-              SizedBox(height: verticalSpacingLarge),
-              // Email field (read-only)
-              Padding(
-                padding: EdgeInsets.only(bottom: verticalSpacing),
-                child: TextFormField(
-                  controller: _emailController,
-                  style: textStyle,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: const OutlineInputBorder(),
-                    labelStyle: textStyle,
-                  ),
-                  readOnly: hasEmail,
-                  enabled: !hasEmail,
+            ),
+            SizedBox(height: verticalSpacingLarge),
+            // Email field (read-only)
+            Padding(
+              padding: EdgeInsets.only(bottom: verticalSpacing),
+              child: TextFormField(
+                controller: _emailController,
+                style: textStyle,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: const OutlineInputBorder(),
+                  labelStyle: textStyle,
                 ),
+                readOnly: hasEmail,
+                enabled: !hasEmail,
               ),
-              // Nickname field
-              Padding(
-                padding: EdgeInsets.only(bottom: verticalSpacing),
-                child: TextFormField(
-                  controller: _nicknameController,
-                  style: textStyle,
-                  decoration: InputDecoration(
-                    labelText: 'Nickname',
-                    border: const OutlineInputBorder(),
-                    labelStyle: textStyle,
-                  ),
-                  validator:
-                      (v) => v == null || v.isEmpty ? '닉네임을 입력하세요' : null,
+            ),
+            // Nickname field
+            Padding(
+              padding: EdgeInsets.only(bottom: verticalSpacing),
+              child: TextFormField(
+                controller: _nicknameController,
+                style: textStyle,
+                decoration: InputDecoration(
+                  labelText: 'Nickname',
+                  border: const OutlineInputBorder(),
+                  labelStyle: textStyle,
                 ),
+                validator: (v) => v == null || v.isEmpty ? '닉네임을 입력하세요' : null,
               ),
-              // Birthdate picker
-              Padding(
-                padding: EdgeInsets.only(bottom: verticalSpacingLarge),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _birthdate == null
-                            ? '생년월일 선택'
-                            : '생년월일: ${_birthdate!.toLocal().toString().split(' ')[0]}',
-                        style: textStyle,
-                      ),
+            ),
+            // Birthdate picker
+            Padding(
+              padding: EdgeInsets.only(bottom: verticalSpacingLarge),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _birthdate == null
+                          ? '생년월일 선택'
+                          : '생년월일: ${_birthdate!.toLocal().toString().split(' ')[0]}',
+                      style: textStyle,
                     ),
-                    TextButton(
-                      onPressed: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime(2000),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        if (date != null) setState(() => _birthdate = date);
-                      },
-                      child: Text('선택', style: textStyle),
-                    ),
-                  ],
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime(2000),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (date != null) setState(() => _birthdate = date);
+                    },
+                    child: Text('선택', style: textStyle),
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 48 * scale),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 48 * scale),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed:
-                    _isLoading
-                        ? null
-                        : () async {
-                          setState(() => _isLoading = true);
-                          try {
-                            if (!_formKey.currentState!.validate() ||
-                                _birthdate == null)
-                              return;
+              onPressed:
+                  _isLoading
+                      ? null
+                      : () async {
+                        setState(() => _isLoading = true);
+                        try {
+                          if (!_formKey.currentState!.validate() ||
+                              _birthdate == null)
+                            return;
 
-                            await FirebaseAuth.instance.currentUser!.getIdToken(
-                              true,
+                          await FirebaseAuth.instance.currentUser!.getIdToken(
+                            true,
+                          );
+                          final idToken =
+                              context.read<LoginStatus>().firebaseIdToken;
+                          _provider =
+                              context.read<LoginStatus>().lastProvider ?? '';
+                          if (idToken == null || idToken.isEmpty)
+                            throw Exception('No ID token');
+
+                          final payload = {
+                            'id_token': idToken,
+                            'provider': _provider,
+                            'email': _emailController.text,
+                            'nickname': _nicknameController.text,
+                            'birthdate': _birthdate!.toIso8601String(),
+                            // 선택적: 프로필 이미지가 있으면 multipart로 함께 전송 (api.signup에서 처리)
+                            'filePath': _profileImage?.path,
+                          };
+
+                          final res = await api.signup(payload);
+                          if (res.statusCode == 200 || res.statusCode == 201) {
+                            final body = jsonDecode(utf8.decode(res.bodyBytes));
+                            final jwt = body['jwt'];
+                            final userId = body['user_id'];
+                            final uid = context.read<LoginStatus>().uid;
+                            api.setJwt(jwt);
+                            context.read<LoginStatus>().setUser(
+                              userId: userId,
+                              uid: uid!,
+                              jwt: jwt,
+                              email: _emailController.text,
                             );
-                            final idToken =
-                                context.read<LoginStatus>().firebaseIdToken;
-                            _provider =
-                                context.read<LoginStatus>().lastProvider ?? '';
-                            if (idToken == null || idToken.isEmpty)
-                              throw Exception('No ID token');
-
-                            final payload = {
-                              'id_token': idToken,
-                              'provider': _provider,
-                              'email': _emailController.text,
-                              'nickname': _nicknameController.text,
-                              'birthdate': _birthdate!.toIso8601String(),
-                              // 선택적: 프로필 이미지가 있으면 multipart로 함께 전송 (api.signup에서 처리)
-                              'filePath': _profileImage?.path,
-                            };
-
-                            final res = await api.signup(payload);
-                            if (res.statusCode == 200 || res.statusCode == 201) {
-                              final body = jsonDecode(res.body);
-                              final jwt = body['jwt'];
-                              final userId = body['user_id'];
-                              final uid = context.read<LoginStatus>().uid;
-                              api.setJwt(jwt);
-                              context.read<LoginStatus>().setUser(
-                                    userId: userId,
-                                    uid: uid!,
-                                    jwt: jwt,
-                                    email: _emailController.text,
-                                  );
-                              print('회원 가입 성공: $payload');
-                              Navigator.pushReplacementNamed(context, '/home');
-                            } else {
-                              throw Exception('Server error: ${res.statusCode} ${res.body}');
-                            }
-                          } catch (e) {
-                            await FirebaseAuth.instance.signOut();
-                            context.read<LoginStatus>().logout();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('회원가입에 실패했습니다: $e')),
+                            print('회원 가입 성공: $payload');
+                            Navigator.pushReplacementNamed(context, '/home');
+                          } else {
+                            throw Exception(
+                              'Server error: ${res.statusCode} ${res.body}',
                             );
-                          } finally {
-                            setState(() => _isLoading = false);
                           }
-                        },
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator()
-                        : Text('회원 가입', style: buttonTextStyle),
-              ),
-            ],
-          ),
+                        } catch (e) {
+                          await FirebaseAuth.instance.signOut();
+                          context.read<LoginStatus>().logout();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('회원가입에 실패했습니다: $e')),
+                          );
+                        } finally {
+                          setState(() => _isLoading = false);
+                        }
+                      },
+              child:
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : Text('회원 가입', style: buttonTextStyle),
+            ),
+          ],
         ),
       ),
     );

@@ -15,7 +15,6 @@ import '../../../model/login_status.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:aiwriting_collection/widget/feedback_dialog.dart';
 import 'package:aiwriting_collection/widget/letter_feedback.dart';
-import 'package:characters/characters.dart';
 
 class WritingPage extends StatefulWidget {
   final Steps nowStep;
