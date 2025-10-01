@@ -155,7 +155,22 @@ class LoginStatus extends ChangeNotifier {
       print('[6] 얻은 ID 토큰: $idToken');
       _firebaseIdToken = idToken;
       _firebaseUid = user.uid;
-      _email = FirebaseAuth.instance.currentUser?.email;
+
+      // 카카오 사용자 정보 가져오기
+      try {
+        final kakaoUser = await UserApi.instance.me();
+        print('Kakao user object: ${kakaoUser.toString()}');
+        _email = kakaoUser.kakaoAccount?.email;
+        print('Kakao user email: $_email');
+      } catch (e) {
+        print('Failed to get Kakao user info: $e');
+      }
+
+      // Firebase 유저의 이메일이 비어있을 경우를 대비
+      if (_email == null || _email!.isEmpty) {
+        _email = FirebaseAuth.instance.currentUser?.email;
+      }
+
       print('email=$_email');
       return _firebaseUid;
     } catch (e, st) {
@@ -164,7 +179,7 @@ class LoginStatus extends ChangeNotifier {
     }
   }
 
-  Future<bool> loginWithProvider(
+  Future<Map<String, dynamic>?> loginWithProvider(
     String provider, {
     bool forceAccountPicker = false,
   }) async {
@@ -187,33 +202,35 @@ class LoginStatus extends ChangeNotifier {
           throw Exception("Unknown provider: $provider");
       }
 
-      if (uid != null) {
-        final idToken = _firebaseIdToken;
-        final res = await api.login(idToken!);
-        print('Login successful with $provider, uid: $uid');
-        if (res.statusCode == 200) {
-          final body = jsonDecode(res.body);
-          final jwt = jsonDecode(res.body)['jwt'];
-          api.setJwt(jwt);
-          setUser(
-            userId: body['user_id'],
-            uid: uid,
-            jwt: body['jwt'],
-            email: _email,
-          );
-          print('User logged in successfully: ${body['user_id']}');
-          return true;
-        } else if (res.statusCode == 404) {
-          print('User not found, redirecting to signup');
-          return false;
-        } else {
-          throw Exception('Server error: ${res.statusCode} ${res.body}');
-        }
+      if (uid == null) {
+        print('Login cancelled by user.');
+        return null;
       }
-      throw Exception("Provider login failed");
+
+      final idToken = _firebaseIdToken;
+      final res = await api.login(idToken!);
+      print('Login successful with $provider, uid: $uid');
+      if (res.statusCode == 200) {
+        final body = jsonDecode(res.body);
+        final jwt = jsonDecode(res.body)['jwt'];
+        api.setJwt(jwt);
+        setUser(
+          userId: body['user_id'],
+          uid: uid,
+          jwt: body['jwt'],
+          email: _email,
+        );
+        print('User logged in successfully: ${body['user_id']}');
+        return {'success': true, 'email': _email};
+      } else if (res.statusCode == 404) {
+        print('User not found, redirecting to signup');
+        return {'success': false, 'email': _email};
+      } else {
+        throw Exception('Server error: ${res.statusCode} ${res.body}');
+      }
     } catch (e) {
       print("loginWithProvider error: $e");
-      rethrow;
+      return null;
     }
   }
 

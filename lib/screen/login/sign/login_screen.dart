@@ -99,23 +99,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       foreground: Colors.white,
                       border: null,
                       onPressed: () async {
-                        try {
-                          final nav = Navigator.of(context);
-                          bool existed = await context
-                              .read<LoginStatus>()
-                              .loginWithProvider('APPLE');
-                          if (!mounted) return;
-                          if (existed) {
-                            // 200 → 홈 화면으로
-                            nav.pushReplacementNamed('/home');
-                          } else {
-                            // 404 → 가입 페이지로
-                            nav.pushNamed('/sign', arguments: 'APPLE');
-                          }
-                        } on Exception {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                          );
+                        final nav = Navigator.of(context);
+                        final result = await context
+                            .read<LoginStatus>()
+                            .loginWithProvider('APPLE');
+
+                        if (result == null) return; // User cancelled
+
+                        if (!mounted) return;
+
+                        if (result['success'] == true) {
+                          // 200 → 홈 화면으로
+                          nav.pushReplacementNamed('/home');
+                        } else {
+                          // 404 → 가입 페이지로
+                          nav.pushNamed('/sign', arguments: {
+                            'provider': 'APPLE',
+                            'email': result['email']
+                          });
                         }
                       },
                     ),
@@ -130,22 +131,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       foreground: Colors.white,
                       border: const BorderSide(color: Colors.black12),
                       onPressed: () async {
-                        try {
-                          final nav = Navigator.of(context);
-                          bool existed = await context
-                              .read<LoginStatus>()
-                              .loginWithProvider('GOOGLE');
-                          if (existed) {
-                            // 200 → 홈 화면으로
-                            nav.pushReplacementNamed('/home');
-                          } else {
-                            // 404 → 가입 페이지로
-                            nav.pushNamed('/sign', arguments: 'GOOGLE');
-                          }
-                        } on Exception {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                          );
+                        final nav = Navigator.of(context);
+                        final result = await context
+                            .read<LoginStatus>()
+                            .loginWithProvider('GOOGLE');
+
+                        if (result == null) return; // User cancelled
+
+                        if (!mounted) return;
+
+                        if (result['success'] == true) {
+                          // 200 → 홈 화면으로
+                          nav.pushReplacementNamed('/home');
+                        } else {
+                          // 404 → 가입 페이지로
+                          nav.pushNamed('/sign', arguments: {
+                            'provider': 'GOOGLE',
+                            'email': result['email']
+                          });
                         }
                       },
                     ),
@@ -160,23 +163,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       foreground: Colors.black,
                       border: null,
                       onPressed: () async {
-                        try {
-                          final nav = Navigator.of(context);
-                          bool existed = await context
-                              .read<LoginStatus>()
-                              .loginWithProvider('KAKAO');
-                          if (existed) {
-                            // 200 → 홈 화면으로
-                            nav.pushReplacementNamed('/home');
-                          } else {
-                            // 404 → 가입 페이지로
-                            nav.pushNamed('/sign', arguments: 'KAKAO');
-                          }
-                        } on Exception {
-                          // TODO
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                          );
+                        final nav = Navigator.of(context);
+                        final result = await context
+                            .read<LoginStatus>()
+                            .loginWithProvider('KAKAO');
+
+                        if (result == null) return; // User cancelled
+
+                        if (!mounted) return;
+
+                        if (result['success'] == true) {
+                          // 200 → 홈 화면으로
+                          nav.pushReplacementNamed('/home');
+                        } else {
+                          // 404 → 가입 페이지로
+                          nav.pushNamed('/sign', arguments: {
+                            'provider': 'KAKAO',
+                            'email': result['email']
+                          });
                         }
                       },
                     ),
@@ -327,23 +331,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       foreground: Colors.white,
                       border: null,
                       onPressed: () async {
-                        try {
-                          final nav = Navigator.of(context);
-                          bool existed = await context
-                              .read<LoginStatus>()
-                              .loginWithProvider('APPLE');
-                          if (existed) {
-                            // 200 → 홈 화면으로
-                            nav.pushReplacementNamed('/home');
-                          } else {
-                            // 404 → 가입 페이지로
-                            nav.pushNamed('/sign', arguments: 'APPLE');
-                          }
-                        } on Exception {
-                          // TODO
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
-                          );
+                        final nav = Navigator.of(context);
+                        final result = await context
+                            .read<LoginStatus>()
+                            .loginWithProvider('APPLE');
+
+                        if (result == null) return; // User cancelled
+
+                        if (!mounted) return;
+
+                        if (result['success'] == true) {
+                          // 200 → 홈 화면으로
+                          nav.pushReplacementNamed('/home');
+                        } else {
+                          // 404 → 가입 페이지로
+                          nav.pushNamed('/sign', arguments: {
+                            'provider': 'APPLE',
+                            'email': result['email']
+                          });
                         }
                       },
                     ),
@@ -358,27 +363,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       foreground: Colors.white,
                       border: const BorderSide(color: Colors.black12),
                       onPressed: () async {
-                        try {
-                          final nav = Navigator.of(context);
-                          bool existed = await context
-                              .read<LoginStatus>()
-                              .loginWithProvider('GOOGLE');
-                          if (existed) {
-                            // 200 → 홈 화면으로
-                            nav.pushReplacementNamed('/home');
-                          } else {
-                            // 404 → 가입 페이지로
-                            nav.pushNamed(
-                              '/sign',
-                              arguments: {
-                                'provider': 'GOOGLE',
-                                'email': context.read<LoginStatus>().email,
-                              },
-                            );
-                          }
-                        } on Exception {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('로그인 중 오류가 발생했습니다.')),
+                        final nav = Navigator.of(context);
+                        final result = await context
+                            .read<LoginStatus>()
+                            .loginWithProvider('GOOGLE');
+
+                        if (result == null) return; // User cancelled
+
+                        if (!mounted) return;
+
+                        if (result['success'] == true) {
+                          // 200 → 홈 화면으로
+                          nav.pushReplacementNamed('/home');
+                        } else {
+                          // 404 → 가입 페이지로
+                          nav.pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'GOOGLE',
+                              'email': result['email'],
+                            },
                           );
                         }
                       },
@@ -394,21 +398,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       foreground: Colors.black,
                       border: null,
                       onPressed: () async {
-                        try {
-                          final nav = Navigator.of(context);
-                          bool existed = await context
-                              .read<LoginStatus>()
-                              .loginWithProvider('KAKAO');
-                          if (existed) {
-                            // 200 → 홈 화면으로
-                            nav.pushReplacementNamed('/home');
-                          } else {
-                            // 404 → 가입 페이지로
-                            nav.pushNamed('/sign', arguments: 'KAKAO');
-                          }
-                        } catch (e) {
-                          // 로그인 취소 또는 실패 → 아무 것도 안 함
-                          print('로그인 취소 또는 실패');
+                        final nav = Navigator.of(context);
+                        final result = await context
+                            .read<LoginStatus>()
+                            .loginWithProvider('KAKAO');
+
+                        if (result == null) return; // User cancelled
+
+                        if (!mounted) return;
+
+                        if (result['success'] == true) {
+                          // 200 → 홈 화면으로
+                          nav.pushReplacementNamed('/home');
+                        } else {
+                          // 404 → 가입 페이지로
+                          nav.pushNamed('/sign', arguments: {
+                            'provider': 'KAKAO',
+                            'email': result['email']
+                          });
                         }
                       },
                     ),
