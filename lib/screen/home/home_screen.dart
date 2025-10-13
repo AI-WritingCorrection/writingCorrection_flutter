@@ -2,7 +2,7 @@ import 'package:aiwriting_collection/api.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/mission_record.dart';
 import 'package:aiwriting_collection/model/login_status.dart';
-import 'package:aiwriting_collection/screen/home/detail_studyPage.dart';
+import 'package:aiwriting_collection/screen/home/detail_studypage.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
