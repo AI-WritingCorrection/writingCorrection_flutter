@@ -294,6 +294,9 @@ class _WritingPageState extends State<WritingPage> {
       });
 
       if (!mounted) return;
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(); // Close the loading dialog
+      }
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -332,7 +335,39 @@ class _WritingPageState extends State<WritingPage> {
       return;
     }
 
-    await _submitWritingData(rawImages, encodedImages);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+
+    // Removed the showDialog for CircularProgressIndicator as it was causing an issue in the previous turn.
+    // If needed, it can be added back with proper error handling.
+    try {
+      await _submitWritingData(rawImages, encodedImages);
+    } catch (e) {
+      if (mounted) {
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop(); // Close the loading dialog
+        }
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: const Text('오류'),
+                content: Text('평가 전송 중 오류가 발생했습니다: $e'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('확인'),
+                  ),
+                ],
+              ),
+        );
+      }
+    }
   }
 
   @override

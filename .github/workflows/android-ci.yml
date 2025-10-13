@@ -1,0 +1,81 @@
+# 워크플로우 이름
+name: Android CI & Build
+
+# 실행 조건: main 브랜치에 push 이벤트가 발생했을 때
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-android:
+    name: Build Android App
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 소스 코드 체크아웃
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # 2. Java (JDK) 설치 (안드로이드 빌드에 필요)
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      # 3. Flutter SDK 설치
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 4. (중요) Keystore 파일 생성
+      # GitHub Secrets에 저장된 Base64 텍스트를 디코딩하여 jks 파일로 복원합니다.
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+
+      # 5. (중요) 서명 키 정보 파일 생성
+      # Secrets에 저장된 비밀번호들을 key.properties 파일에 기록합니다.
+      - name: Create key.properties
+        run: 
+          echo "storeFile=upload-keystore.jks" > android/key.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+
+      # 6. Flutter 의존성 설치
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 7. 코드 품질 검사 (테스트 실행)
+      - name: Run tests
+        run: flutter test
+
+      # 8. 안드로이드 APK 빌드
+      - name: Build Android APK
+        run: flutter build apk
+
+      # 9. 빌드된 .apk 파일을 아티팩트로 업로드
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+    #   # 8. 안드로이드 앱 번들(AAB) 빌드
+    #   # Google Play에 제출하기 위한 표준 형식입니다.
+    #   - name: Build Android App Bundle
+    #     run: flutter build appbundle
+
+    #   # 9. 빌드된 .aab 파일을 아티팩트로 업로드 (나중에 다운로드 가능)
+    #   - name: Upload App Bundle artifact
+    #     uses: actions/upload-artifact@v3
+    #     with:
+    #       name: app-release-bundle
+    #       path: build/app/outputs/bundle/release/app-release.aab
+
+
+
+
+
