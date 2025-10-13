@@ -15,7 +15,7 @@ jobs:
     steps:
       # 1. 소스 코드 체크아웃
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 2. 환경 설정 파일 생성
       - name: Generate config files from secrets
@@ -34,10 +34,10 @@ jobs:
 
       # 3. Java (JDK) 설치 (안드로이드 빌드에 필요)
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: 'temurin'
+          java-version: '17'
 
       # 4. Flutter SDK 설치
       - name: Setup Flutter
@@ -55,7 +55,7 @@ jobs:
       # Secrets에 저장된 비밀번호들을 key.properties 파일에 기록합니다.
       - name: Create key.properties
         run: |
-          echo "storeFile=upload-keystore.jks" > android/key.properties
+          echo "storeFile=app/upload-keystore.jks" > android/key.properties
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
