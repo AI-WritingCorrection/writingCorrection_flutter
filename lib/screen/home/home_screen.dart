@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/generated_request_list.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/mission_record.dart';
 import 'package:aiwriting_collection/model/login_status.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/screen/home/detail_studypage.dart';
+import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
@@ -202,7 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      //bottomNavigationBar: Bottom(),
     );
   }
 
@@ -248,6 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final int count = steps.length;
           final int numBreaks = (count - 1) ~/ 5;
           final int totalSlots = count + numBreaks;
+          int nowImageButtonNum = 0;
 
           final List<Offset> positions = [];
           for (int i = 0; i < totalSlots; i++) {
@@ -295,12 +299,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
           for (int i = 0; i < positions.length; i++) {
             final pos = positions[i];
-
+            final bool imageActive = (stepCounter - 1) < enableUpTo;
             // Insert chapter break after every 5 steps (once)
             if (!insertedChapterBreak &&
                 stepCounter > 0 &&
                 stepCounter % 5 == 0) {
               final double sepX = pos.dx - (separatorSize - diameter) / 2;
+              final int buttonIndex = stepCounter ~/ 5 - 1;
               widgets.add(
                 Positioned(
                   left: sepX,
@@ -308,7 +313,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CharacterButton(
                     assetPath: 'assets/character/bearTeacher.png',
                     size: separatorSize,
-                    onTap: () {},
+                    onTap:
+                        imageActive
+                            ? () async {
+                              print(
+                                'Image button tapped! nowImageButtonNum: $buttonIndex',
+                              ); // Debug print
+                              final nowRequest =
+                                  generatedRequestList[buttonIndex];
+                              final form = nowRequest['form'];
+                              final res = await api.requestAiText(nowRequest);
+                              final decoded = utf8.decode(res.bodyBytes);
+                              final Map<String, dynamic> data = jsonDecode(
+                                decoded,
+                              );
+                              final String requestedText =
+                                  (data['result'] as String) ?? '오류';
+                              Steps aiStep = Steps(
+                                stepId: stepCounter,
+                                stepMission: '밑의 글자를 작성해보세요!',
+                                stepCharacter:
+                                    'assets/character/bearTeacher.png',
+                                stepType: WritingType.values.byName(form),
+                                stepText: requestedText,
+                              );
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => WritingPage(nowStep: aiStep),
+                                ),
+                              );
+                              if (mounted) {
+                                setState(() {});
+                              }
+                            }
+                            : null,
                   ),
                 ),
               );
@@ -333,11 +373,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) =>
-                                        DetailStudyPage(pageNum: currentStep),
+                                    (context) => DetailStudyPage(
+                                      nowStep: steps[currentStep],
+                                    ),
                               ),
                             );
-                            setState(() {});
+                            if (mounted) {
+                              setState(() {});
+                            }
                           }
                           : null,
                   myColor:
@@ -364,7 +407,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      //bottomNavigationBar: Bottom(),
     );
   }
 }

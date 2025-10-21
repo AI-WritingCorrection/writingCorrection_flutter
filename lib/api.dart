@@ -12,15 +12,10 @@ import 'package:image_picker/image_picker.dart';
 //싱글톤 패턴 적용
 class Api {
   static const _baseUrl = 'http://52.78.166.204/api';
-  //안드로이드용
-  //static const _baseUrl = 'http://10.0.2.2:8000/api';
-
-  //iOS용
-  //static const _baseUrl = 'http://localhost:8000/api';
-
   static Api? _instance;
   final http.Client _client;
   String? _jwt;
+
   // 로그인 후에 저장된 JWT
   Map<String, String> get _headers {
     final h = {'Content-Type': 'application/json'};
@@ -62,6 +57,9 @@ class Api {
     final p = path.toLowerCase();
     if (p.endsWith('.png')) return MediaType('image', 'png');
     if (p.endsWith('.webp')) return MediaType('image', 'webp');
+    if(p.endsWith('.heic') || p.endsWith('.heif')) {
+      return MediaType('image', 'heic');
+    }
     // default jpeg (includes .jpg / .jpeg / unknown)
     return MediaType('image', 'jpeg');
   }
@@ -225,7 +223,7 @@ class Api {
         .toList();
   }
 
-  // TODO: 마이페이지 프로필 조회
+  // 마이페이지 프로필 조회
   Future<UserProfile> getUserProfile(int userId) async {
     final res = await _client.get(
       Uri.parse('$_baseUrl/user/getProfile/$userId'),
@@ -285,6 +283,17 @@ class Api {
     }
     return url;
   }
+
+  /// 글씨 평가 결과를 서버에 전송
+  Future<http.Response> requestAiText(Map<String, dynamic> payload) {
+    return http.post(
+      Uri.parse('$_baseUrl/text/generate'),
+      headers: _headers,
+      body: jsonEncode(payload),
+    );
+  }
 }
+
+
 
 // 여기에 다른 /practice, /step 등 필요한 API 메서드를 계속 추가…
