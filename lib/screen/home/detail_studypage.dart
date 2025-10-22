@@ -1,40 +1,20 @@
-import 'package:aiwriting_collection/api.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
-class DetailStudyPage extends StatefulWidget {
-  final int pageNum;
-  const DetailStudyPage({super.key, required this.pageNum});
-
-  @override
-  State<DetailStudyPage> createState() => _DetailStudyPageState();
-}
-
-class _DetailStudyPageState extends State<DetailStudyPage> {
-  final api = Api();
-  late Future<Steps> nowStep;
-
-  @override
-  void initState() {
-    super.initState();
-    // Fetch the specific step from the server-side list
-    nowStep = api.getStepList().then((list) => list[widget.pageNum]);
-  }
+class DetailStudyPage extends StatelessWidget {
+  final Steps nowStep;
+  const DetailStudyPage({super.key, required this.nowStep});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
-      body: FutureBuilder<Steps>(
-        future: nowStep,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: CircularProgressIndicator());
-          }
-          final step = snapshot.data!;
+      body: Builder(
+        builder: (context) {
+          final step = nowStep;
           final Size screenSize = MediaQuery.of(context).size;
           // reuse portrait scaling logic
           final double basePortrait = 390.0;
@@ -69,7 +49,7 @@ class _DetailStudyPageState extends State<DetailStudyPage> {
                     BackButtonWidget(scale: scale),
                     SizedBox(height: 20 * scale),
 
-                    // 말풍선 + 캐릭터 이미지
+                    //말풍선 + 캐릭터 이미지
                     SpeechBubble(
                       text: step.stepMission,
                       imageAsset: step.stepCharacter,
