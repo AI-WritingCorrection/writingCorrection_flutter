@@ -28,6 +28,4 @@ class Steps {
           return counts[0] + counts[1] + counts[2];
         }).toList();
   }
-
-
 }
