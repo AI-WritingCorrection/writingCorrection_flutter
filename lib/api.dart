@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:aiwriting_collection/model/mission_record.dart';
 import 'package:aiwriting_collection/model/practice.dart';
+import 'package:aiwriting_collection/model/stats.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
@@ -221,6 +222,21 @@ class Api {
           ),
         )
         .toList();
+  }
+
+  // 유저 공부기록 조회
+  Future<List<Stats>> getUserStats(int userId) async {
+    final res = await _client.get(
+      Uri.parse('$_baseUrl/user/stats/$userId'),
+      headers: _headers,
+    );
+    if (res.statusCode != 200) {
+      final decodedError = utf8.decode(res.bodyBytes);
+      throw Exception('유저 공부기록 조회 실패 (${res.statusCode}): $decodedError');
+    }
+    final decoded = utf8.decode(res.bodyBytes);
+    final List<dynamic> jsonList = jsonDecode(decoded);
+    return jsonList.map((e) => Stats.fromJson(e)).toList();
   }
 
   // 마이페이지 프로필 조회

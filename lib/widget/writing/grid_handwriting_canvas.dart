@@ -37,7 +37,7 @@ class GridHandwritingCanvas extends StatefulWidget {
     this.gridColor = Colors.black,
     this.gridWidth = 1.0,
     this.penColor = Colors.black,
-    this.penStrokeWidth = 5.0,
+    this.penStrokeWidth = 8.0,
     this.showGuides = false,
     this.guideChar,
   });

@@ -23,6 +23,7 @@ class WritingPage extends StatefulWidget {
     super.key,
     required this.nowStep,
     this.showGuides = false,
+   
   });
 
   @override
@@ -457,7 +458,7 @@ class _WritingPageState extends State<WritingPage> {
                     imageAsset:
                         widget
                             .nowStep
-                            .stepCharacter, // Corrected: Original had 'step 로고' which is likely a typo
+                            .stepCharacter,
                     scale: scaled(context, 0.65),
                     horizontalInset: scaled(context, 80),
                     imageRight: -30,
