@@ -15,6 +15,7 @@ import 'model/login_status.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart'; // kDebugMode
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -134,6 +135,15 @@ class _MyAppState extends State<MyApp> {
         '/record': (context) => RecordScreen(),
         '/mypage': (context) => MypageScreen(),
         '/sign': (context) => SignScreen(),
+
+        // ✅ 개발용 프리뷰 라우트
+        if (kDebugMode)
+          '/sign_preview':
+              (context) => const SignScreen(
+                debugEmail: 'preview_user@example.com',
+                debugProvider: 'google',
+                useMockApi: true, // 서버호출 생략
+              ),
       },
       home: Consumer<LoginStatus>(
         builder: (context, loginStatus, child) {
