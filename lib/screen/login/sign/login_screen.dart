@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
+import 'package:flutter/foundation.dart'; // kDebugMode
+import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -113,10 +115,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           nav.pushReplacementNamed('/home');
                         } else {
                           // 404 → 가입 페이지로
-                          nav.pushNamed('/sign', arguments: {
-                            'provider': 'APPLE',
-                            'email': result['email']
-                          });
+                          nav.pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'APPLE',
+                              'email': result['email'],
+                            },
+                          );
                         }
                       },
                     ),
@@ -145,10 +150,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           nav.pushReplacementNamed('/home');
                         } else {
                           // 404 → 가입 페이지로
-                          nav.pushNamed('/sign', arguments: {
-                            'provider': 'GOOGLE',
-                            'email': result['email']
-                          });
+                          nav.pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'GOOGLE',
+                              'email': result['email'],
+                            },
+                          );
                         }
                       },
                     ),
@@ -177,10 +185,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           nav.pushReplacementNamed('/home');
                         } else {
                           // 404 → 가입 페이지로
-                          nav.pushNamed('/sign', arguments: {
-                            'provider': 'KAKAO',
-                            'email': result['email']
-                          });
+                          nav.pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'KAKAO',
+                              'email': result['email'],
+                            },
+                          );
                         }
                       },
                     ),
@@ -345,10 +356,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           nav.pushReplacementNamed('/home');
                         } else {
                           // 404 → 가입 페이지로
-                          nav.pushNamed('/sign', arguments: {
-                            'provider': 'APPLE',
-                            'email': result['email']
-                          });
+                          nav.pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'APPLE',
+                              'email': result['email'],
+                            },
+                          );
                         }
                       },
                     ),
@@ -412,10 +426,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           nav.pushReplacementNamed('/home');
                         } else {
                           // 404 → 가입 페이지로
-                          nav.pushNamed('/sign', arguments: {
-                            'provider': 'KAKAO',
-                            'email': result['email']
-                          });
+                          nav.pushNamed(
+                            '/sign',
+                            arguments: {
+                              'provider': 'KAKAO',
+                              'email': result['email'],
+                            },
+                          );
                         }
                       },
                     ),
@@ -448,6 +465,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(height: 6 * scale),
+
+                    _buildDebugSignPreviewButton(context),
 
                     // 약관 링크
                     Row(
@@ -521,6 +540,34 @@ Widget _socialBtn(
           side: border ?? BorderSide.none,
         ),
       ),
+    ),
+  );
+}
+
+Widget _buildDebugSignPreviewButton(BuildContext context) {
+  if (!kDebugMode) return const SizedBox.shrink(); // 릴리즈 빌드에서 숨김
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+    child: TextButton.icon(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      icon: const Icon(Icons.build),
+      label: const Text('회원가입 UI 프리뷰 (DEBUG)'),
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder:
+                (_) => const SignScreen(
+                  debugEmail: 'preview_user@example.com',
+                  debugProvider: 'google',
+                  useMockApi: true, // 서버/파이어베이스 호출 생략
+                ),
+          ),
+        );
+      },
     ),
   );
 }
