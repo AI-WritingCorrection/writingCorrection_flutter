@@ -11,3 +11,9 @@ enum AuthProvider {
   NAVER,
   APPLE,
 }
+
+enum UserType{
+  CHILD,
+  ADULT,
+  FOREIGN
+}

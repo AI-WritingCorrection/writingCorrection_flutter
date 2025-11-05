@@ -8,7 +8,7 @@ import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/screen/home/detail_studypage.dart';
 import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/character_button.dart';
-import 'package:aiwriting_collection/widget/mini_dialog.dart';
+import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +33,69 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     // 초기화 작업이 필요하면 여기에 추가
+  }
+
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('도움말'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text(
+                  '스텝 활성화 규칙',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  '이전 단계를 성공적으로 완료해야 다음 단계가 활성화됩니다. 차근차근 단계를 밟아가며 실력을 키워보세요!',
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '색상 안내',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: const [
+                    Icon(
+                      Icons.circle,
+                      color: Color.fromARGB(255, 199, 246, 151),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(child: Text('현재 학습할 수 있는 단계입니다.')),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: const [
+                    Icon(Icons.circle, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Expanded(child: Text('아직 잠겨있는 단계입니다. 이전 단계를 먼저 완료해주세요.')),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '이미지 버튼 기능',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  '각 챕터의 마지막에 있는 동물 선생님 버튼을 누르면, 특별한 AI 추천 문제를 풀어볼 수 있습니다.',
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('닫기', style: TextStyle(color: Colors.black87)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   //연습 과제 더미 데이터
@@ -144,12 +207,14 @@ class _HomeScreenState extends State<HomeScreen> {
           // 처음 이미지 버튼은 중간에 배치
           widgets.add(
             Positioned(
-              left: (screenSize.width - separatorSize * 0.9) / 2,
+              left: (screenSize.width - separatorSize * 0.9) / 2 + 20,
               top: 100 * scale,
               child: CharacterButton(
-                assetPath: 'assets/character/rabbitTeacher.png',
-                size: separatorSize,
-                onTap: () {},
+                assetPath: 'assets/image/search.png',
+                size: separatorSize * 0.6,
+                onTap: () {
+                  _showHelpDialog();
+                },
               ),
             ),
           );
@@ -173,7 +238,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CharacterButton(
                     assetPath: 'assets/character/bearTeacher.png',
                     size: separatorSize,
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return MiniDialog(
+                            scale: scale,
+                            title: '너무 작아!',
+                            content: '공부는 태블릿에서만 가능합니다!',
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               );
@@ -331,15 +407,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
           final widgets = <Widget>[];
 
-          // 처음 이미지 버튼은 중간에 배치
+          // 처음 이미지 버튼은 중앙에 배치
+          //좀 더 오른쪽으로 가게 수정
           widgets.add(
             Positioned(
-              left: (screenSize.width - separatorSize * 0.9) / 2,
+              left: (screenSize.width - separatorSize * 0.9) / 2 + 20,
               top: 100 * scale,
               child: CharacterButton(
-                assetPath: 'assets/character/rabbitTeacher.png',
-                size: separatorSize,
-                onTap: () {},
+                assetPath: 'assets/image/search.png',
+                size: separatorSize * 0.8,
+                onTap: () {
+                  _showHelpDialog();
+                },
               ),
             ),
           );

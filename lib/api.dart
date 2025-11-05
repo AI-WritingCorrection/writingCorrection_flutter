@@ -139,7 +139,7 @@ class Api {
     return await http.Response.fromStream(streamed);
   }
 
-  /// 글씨 평가 결과를 서버에 전송
+  /// 글씨데이터를 서버에 전송하여 평가 결과를 받음
   Future<http.Response> submitResult(Map<String, dynamic> payload) {
     return http.post(
       Uri.parse('$_baseUrl/step/evaluate'),
@@ -147,8 +147,6 @@ class Api {
       body: jsonEncode(payload),
     );
   }
-
-  //글씨 평가 채점 결과를 서버에 가져옴
 
   /// 서버에서 스텝 목록을 가져와 Steps 객체로 반환합니다.
   Future<List<Steps>> getStepList() async {
@@ -163,18 +161,7 @@ class Api {
     // **rawBytes** 를 UTF-8로 디코딩
     final decoded = utf8.decode(res.bodyBytes);
     final List<dynamic> jsonList = jsonDecode(decoded);
-    return jsonList
-        .map(
-          (e) => Steps(
-            stepId: e['step_id'],
-            stepMission: e['step_mission'],
-            stepCharacter: e['step_character'], // 서버 필드명 그대로 사용
-            stepType: WritingType.values.byName(e['step_type'] as String),
-            stepText: e['step_text'],
-            stepTime: e['step_time'] ?? 120,
-          ),
-        )
-        .toList();
+    return jsonList.map((e) => Steps.fromJson(e)).toList();
   }
 
   Future<List<Practice>> getPracticeList() async {
@@ -188,18 +175,7 @@ class Api {
     }
     final decoded = utf8.decode(res.bodyBytes);
     final List<dynamic> jsonList = jsonDecode(decoded);
-    return jsonList
-        .map(
-          (e) => Practice(
-            practiceId: e['practice_id'],
-            practiceCharacter: e['practice_character'],
-            practiceType: WritingType.values.byName(
-              e['practice_type'] as String,
-            ),
-            practiceText: e['practice_text'],
-          ),
-        )
-        .toList();
+    return jsonList.map((e) => Practice.fromJson(e)).toList();
   }
 
   Future<List<MissionRecord>> getMissionRecords(int userId) async {
@@ -213,15 +189,7 @@ class Api {
     }
     final decoded = utf8.decode(res.bodyBytes);
     final List<dynamic> jsonList = jsonDecode(decoded);
-    return jsonList
-        .map(
-          (e) => MissionRecord(
-            stepId: e['step_id'] as int,
-            userId: e['user_id'] as int,
-            isCleared: e['isCleared'] as bool,
-          ),
-        )
-        .toList();
+    return jsonList.map((e) => MissionRecord.fromJson(e)).toList();
   }
 
   // 유저 공부기록 조회
@@ -257,6 +225,19 @@ class Api {
             ? jsonMap['data']
             : jsonMap;
     return UserProfile.fromJson(payload);
+  }
+
+  // 프로필 정보 수정
+  Future<void> updateProfile(UpdateProfile profile, int userId) async {
+    final res = await _client.post(
+      Uri.parse('$_baseUrl/user/updateProfile/$userId'),
+      headers: _headers,
+      body: jsonEncode(profile.toJson()),
+    );
+    if (res.statusCode != 200) {
+      final decodedError = utf8.decode(res.bodyBytes);
+      throw Exception('프로필 수정 실패 (${res.statusCode}): $decodedError');
+    }
   }
 
   // 프로필 이미지 수정 (멀티파트 업로드, URL 반환)

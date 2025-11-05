@@ -1,5 +1,7 @@
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:aiwriting_collection/widget/dialog/edit_profile_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/model/login_status.dart';
@@ -16,9 +18,14 @@ class MypageScreen extends StatefulWidget {
 
 class _MypageScreenState extends State<MypageScreen> {
   bool isDailyAlarmOn = false;
-  final api = Api(); 
+  final api = Api();
   UserProfile? _profile;
   bool _loadingProfile = true;
+
+  // 프로필 정보가 서버로 전송되고 저장되는 동안 true가 됩니다.
+  bool _isUpdating = false;
+  // 로그아웃 과정이 진행되는 동안 true가 됩니다.
+  bool _isLoggingOut = false;
 
   // 로그인 상태 변경에 반응해 프로필을 재로딩하기 위한 상태
   int _lastLoadedUserId = 0;
@@ -100,6 +107,76 @@ class _MypageScreenState extends State<MypageScreen> {
       if (mounted) {
         setState(() {
           _loadingProfile = false;
+        });
+      }
+    }
+  }
+
+  void _showEditProfileDialog() async {
+    if (_profile == null) return;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => EditProfileDialog(
+        profile: _profile!,
+        userId: _lastLoadedUserId,
+      ),
+    );
+
+    if (result == true) {
+      await _loadUserProfile(force: true);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('프로필이 업데이트되었습니다.')),
+        );
+      }
+    } else if (result == false) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('프로필 업데이트가 취소되었거나 실패했습니다.')),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleLogout() async {
+    if (_isLoggingOut) return;
+    setState(() {
+      _isLoggingOut = true;
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      await api.logout();
+      if (!mounted) return;
+
+      Provider.of<LoginStatus>(context, listen: false).logout();
+
+      Navigator.of(context).pop(); // Close the loading dialog
+
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MyApp()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).pop(); // Close the loading dialog
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+      }
+    }
+    finally {
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = false;
         });
       }
     }
@@ -252,33 +329,87 @@ class _MypageScreenState extends State<MypageScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 40 * scale),
+                  SizedBox(height: 20 * scale),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // ── 로그아웃 버튼 ──
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16 * scale, // 좌우 여백
+                          vertical: 8 * scale, // 상하 여백
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white, // 배경색
+                          border: Border.all(
+                            color: Colors.grey.shade400, // 테두리 색
+                            width: 1 * scale, // 테두리 두께
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            8 * scale,
+                          ), // 둥근 모서리
+                        ),
+                        child: Text(
+                          _profile != null
+                              ? _profile!.birthdate.toString().split(' ')[0]
+                              : (_loadingProfile
+                                  ? '불러오는 중...'
+                                  : '나이는 공부에 상관없죠!'),
+                          style: TextStyle(
+                            fontSize: 18 * scale,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16 * scale),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16 * scale, // 좌우 여백
+                          vertical: 8 * scale, // 상하 여백
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white, // 배경색
+                          border: Border.all(
+                            color: Colors.grey.shade400, // 테두리 색
+                            width: 1 * scale, // 테두리 두께
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            8 * scale,
+                          ), // 둥근 모서리
+                        ),
+                        child: Text(
+                          _profile != null
+                              ? _profile!.userType.name
+                              : (_loadingProfile
+                                  ? '불러오는 중...'
+                                  : '회원 유형을 알 수 없어요.'),
+                          style: TextStyle(
+                            fontSize: 18 * scale,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20 * scale),
+                  Row(
+                    children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
-                            // 로그인 상태를 false 로 변경하면 main.dart 에서 자동으로 LoginScreen 으로 돌아갑니다.
-                            Provider.of<LoginStatus>(
-                              context,
-                              listen: false,
-                            ).logout();
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const MyApp(),
-                              ),
-                              (route) => false,
-                            );
-                          },
+                          onTap: _handleLogout,
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 12 * scale),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12 * scale,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              border: Border.all(color: Colors.grey.shade400),
-                              borderRadius: BorderRadius.circular(45 * scale),
+                              border: Border.all(
+                                color: Colors.grey.shade400,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                45 * scale,
+                              ),
                             ),
                             child: Center(
                               child: Text(
@@ -293,29 +424,30 @@ class _MypageScreenState extends State<MypageScreen> {
                           ),
                         ),
                       ),
-
                       SizedBox(width: 16 * scale),
-
-                      // ── 회원탈퇴 버튼 ──
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
-                            // TODO: 회원탈퇴 다이얼로그 및 로직 구현
-                          },
+                          onTap: _showEditProfileDialog,
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 12 * scale),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12 * scale,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              border: Border.all(color: Colors.grey.shade400),
-                              borderRadius: BorderRadius.circular(45 * scale),
+                              border: Border.all(
+                                color: Colors.grey.shade400,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                45 * scale,
+                              ),
                             ),
                             child: Center(
                               child: Text(
-                                '회원탈퇴',
+                                '회원정보수정',
                                 style: TextStyle(
                                   fontSize: 16 * scale,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.redAccent, // 탈퇴는 위험 표시 색상
+                                  color: Colors.blueAccent, // 수정은 정보 표시 색상
                                 ),
                               ),
                             ),
@@ -324,102 +456,104 @@ class _MypageScreenState extends State<MypageScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 40 * scale),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16 * scale),
-                    child: Column(
-                      children: [
-                        // 1) 토글 Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      SizedBox(height: 40 * scale),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                        child: Column(
                           children: [
-                            Text(
-                              '일일 학습 알림',
-                              style: TextStyle(
-                                fontSize: 20 * scale,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                              ),
+                            // 1) 토글 Row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '일일 학습 알림',
+                                  style: TextStyle(
+                                    fontSize: 20 * scale,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Switch(
+                                  value: isDailyAlarmOn,
+                                  onChanged:
+                                      (v) => setState(() => isDailyAlarmOn = v),
+                                  activeColor: Colors.green,
+                                  activeTrackColor: Colors.grey.shade300,
+                                  inactiveThumbColor: Colors.grey.shade700,
+                                  inactiveTrackColor: Colors.grey.shade300,
+                                ),
+                              ],
                             ),
-                            Switch(
-                              value: isDailyAlarmOn,
-                              onChanged:
-                                  (v) => setState(() => isDailyAlarmOn = v),
-                              activeColor: Colors.green,
-                              activeTrackColor: Colors.grey.shade300,
-                              inactiveThumbColor: Colors.grey.shade700,
-                              inactiveTrackColor: Colors.grey.shade300,
+                            Divider(), // 토글 아래 구분선
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '다크 모드',
+                                  style: TextStyle(
+                                    fontSize: 20 * scale,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Switch(
+                                  value: isDailyAlarmOn,
+                                  onChanged:
+                                      (v) => setState(() => isDailyAlarmOn = v),
+                                  activeColor: Colors.green,
+                                  activeTrackColor: Colors.grey.shade300,
+                                  inactiveThumbColor: Colors.grey.shade700,
+                                  inactiveTrackColor: Colors.grey.shade300,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Divider(), // 토글 아래 구분선
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '다크 모드',
-                              style: TextStyle(
-                                fontSize: 20 * scale,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Switch(
-                              value: isDailyAlarmOn,
-                              onChanged:
-                                  (v) => setState(() => isDailyAlarmOn = v),
-                              activeColor: Colors.green,
-                              activeTrackColor: Colors.grey.shade300,
-                              inactiveThumbColor: Colors.grey.shade700,
-                              inactiveTrackColor: Colors.grey.shade300,
-                            ),
-                          ],
-                        ),
 
-                        Divider(), // 토글 아래 구분선
-                        SizedBox(height: 40 * scale),
-                        PracticeCard(
-                          title: '캐릭터 소개',
-                          subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
-                          imagePath: 'assets/character/bearTeacher.png',
-                          onTap: () {
-                            // 곰곰 카드 탭 로직
-                          },
+                            Divider(), // 토글 아래 구분선
+                            SizedBox(height: 40 * scale),
+                            PracticeCard(
+                              title: '캐릭터 소개',
+                              subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                              imagePath: 'assets/character/bearTeacher.png',
+                              onTap: () {
+                                // 곰곰 카드 탭 로직
+                              },
+                            ),
+                            SizedBox(height: 20 * scale),
+                            PracticeCard(
+                              title: '곰곰',
+                              subtitle:
+                                  '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
+                              imagePath: 'assets/character/bearTeacher.png',
+                              onTap: () {
+                                // 해당 페이지로 이동하는 로직
+                              },
+                            ),
+                            SizedBox(height: 20 * scale),
+                            PracticeCard(
+                              title: '토토',
+                              subtitle:
+                                  '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요. 지루할 틈 없이 신나게 따라와 보세요!',
+                              imagePath: 'assets/character/rabbitTeacher.png',
+                              onTap: () {},
+                            ),
+                            SizedBox(height: 20 * scale),
+                            PracticeCard(
+                              title: '다람',
+                              subtitle:
+                                  '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다. 섬세한 한 획까지 믿고 맡겨 보세요!',
+                              imagePath: 'assets/character/hamster.png',
+                              onTap: () {},
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 20 * scale),
-                        PracticeCard(
-                          title: '곰곰',
-                          subtitle:
-                              '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
-                          imagePath: 'assets/character/bearTeacher.png',
-                          onTap: () {
-                            // 해당 페이지로 이동하는 로직
-                          },
-                        ),
-                        SizedBox(height: 20 * scale),
-                        PracticeCard(
-                          title: '토토',
-                          subtitle:
-                              '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요. 지루할 틈 없이 신나게 따라와 보세요!',
-                          imagePath: 'assets/character/rabbitTeacher.png',
-                          onTap: () {},
-                        ),
-                        SizedBox(height: 20 * scale),
-                        PracticeCard(
-                          title: '다람',
-                          subtitle:
-                              '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다. 섬세한 한 획까지 믿고 맡겨 보세요!',
-                          imagePath: 'assets/character/hamster.png',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 80 * scale),
+                      ),
+                      SizedBox(height: 80 * scale),
+                    
+                  
                 ],
               ),
+              // 하단 버튼 영역을 위해 여백
             ),
-            // 하단 버튼 영역을 위해 여백
           ],
         ),
       ),
@@ -551,22 +685,68 @@ class _MypageScreenState extends State<MypageScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 40 * scale),
+            SizedBox(height: 20 * scale),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16 * scale, // 좌우 여백
+                    vertical: 8 * scale, // 상하 여백
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white, // 배경색
+                    border: Border.all(
+                      color: Colors.grey.shade400, // 테두리 색
+                      width: 1 * scale, // 테두리 두께
+                    ),
+                    borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
+                  ),
+                  child: Text(
+                    _profile != null
+                        ? _profile!.birthdate.toString().split(' ')[0]
+                        : (_loadingProfile ? '불러오는 중...' : '나이는 공부에 상관없죠!'),
+                    style: TextStyle(
+                      fontSize: 18 * scale,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 40 * scale),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16 * scale, // 좌우 여백
+                    vertical: 8 * scale, // 상하 여백
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white, // 배경색
+                    border: Border.all(
+                      color: Colors.grey.shade400, // 테두리 색
+                      width: 1 * scale, // 테두리 두께
+                    ),
+                    borderRadius: BorderRadius.circular(8 * scale), // 둥근 모서리
+                  ),
+                  child: Text(
+                    _profile != null
+                        ? _profile!.userType.name
+                        : (_loadingProfile ? '불러오는 중...' : '회원 유형을 알 수 없어요.'),
+                    style: TextStyle(
+                      fontSize: 18 * scale,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20 * scale),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // ── 로그아웃 버튼 ──
                 GestureDetector(
-                  onTap: () async {
-                    // 로그인 상태를 false 로 변경하면 main.dart 에서 자동으로 LoginScreen 으로 돌아갑니다.
-                    await api.logout();
-                    Provider.of<LoginStatus>(context, listen: false).logout();
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyApp()),
-                      (route) => false,
-                    );
-                  },
+                  onTap: _handleLogout,
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       vertical: 12 * scale,
@@ -592,11 +772,9 @@ class _MypageScreenState extends State<MypageScreen> {
 
                 SizedBox(width: 100 * scale),
 
-                // ── 회원탈퇴 버튼 ──
+                // ── 회원정보수정 버튼 ──
                 GestureDetector(
-                  onTap: () {
-                    // TODO: 회원탈퇴 다이얼로그 및 로직 구현
-                  },
+                  onTap: _showEditProfileDialog,
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       vertical: 12 * scale,
@@ -609,11 +787,11 @@ class _MypageScreenState extends State<MypageScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        '회원탈퇴',
+                        '회원정보수정',
                         style: TextStyle(
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w500,
-                          color: Colors.redAccent, // 탈퇴는 위험 표시 색상
+                          color: Colors.blueAccent, // 수정은 정보 표시 색상
                         ),
                       ),
                     ),
