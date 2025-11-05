@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/widget/mini_dialog.dart';
+import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart';
@@ -13,8 +13,8 @@ import 'package:aiwriting_collection/api.dart';
 import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:aiwriting_collection/widget/feedback_dialog.dart';
-import 'package:aiwriting_collection/widget/letter_feedback.dart';
+import 'package:aiwriting_collection/widget/dialog/feedback_dialog.dart';
+import 'package:aiwriting_collection/widget/dialog/letter_feedback.dart';
 
 class WritingPage extends StatefulWidget {
   final Steps nowStep;
@@ -23,7 +23,6 @@ class WritingPage extends StatefulWidget {
     super.key,
     required this.nowStep,
     this.showGuides = false,
-   
   });
 
   @override
@@ -31,6 +30,8 @@ class WritingPage extends StatefulWidget {
 }
 
 class _WritingPageState extends State<WritingPage> {
+  bool _isPoppingPage = false;
+  bool _isLoadingDialogShown = false;
   Map<String, List<int>> _stringKeyMap(Map<int, List<int>> src) {
     return src.map((key, value) => MapEntry(key.toString(), value));
   }
@@ -85,7 +86,8 @@ class _WritingPageState extends State<WritingPage> {
             );
           },
         ).then((_) {
-          if (!mounted) return;
+          if (!mounted || _isPoppingPage) return;
+          _isPoppingPage = true;
           Navigator.of(context).pop();
         });
       }
@@ -108,18 +110,6 @@ class _WritingPageState extends State<WritingPage> {
   Future<void> _showLetterFeedback(int index) async {
     if (index < 0 || index >= _letterResults.length) return;
     final item = _letterResults[index];
-
-    final String original = item['original_text']?.toString() ?? '';
-    final double? score = (item['score'] as num?)?.toDouble();
-    final String stage = item['stage']?.toString() ?? '0000';
-
-    // 글자 내부 피드백 배열(초성/중성/종성/전체 등)에서 null 제거
-    final List<dynamic> fbListRaw = (item['feedback'] as List?) ?? const [];
-    final List<String> fbList =
-        fbListRaw
-            .map((e) => e?.toString() ?? '')
-            .where((s) => s.isNotEmpty)
-            .toList();
 
     if (!mounted) return;
     await showModalBottomSheet(
@@ -235,8 +225,9 @@ class _WritingPageState extends State<WritingPage> {
       'detailed_strokecounts': _stringKeyMap(
         widget.nowStep.detailedStrokeCounts ?? {},
       ),
+      'user_type': context.read<LoginStatus>().userType?.name,
     };
-    print(resultCreate);
+    print(resultCreate['user_type']);
 
     // Save images locally (debug)
     final dir = await getApplicationDocumentsDirectory();
@@ -261,7 +252,6 @@ class _WritingPageState extends State<WritingPage> {
     }
     print('Saved raw stroke images to: ${saveDir.path}');
 
-    // Submit result to server
     // Submit result to server
     final res = await api.submitResult(resultCreate);
 
@@ -295,7 +285,7 @@ class _WritingPageState extends State<WritingPage> {
       });
 
       if (!mounted) return;
-      if (Navigator.of(context).canPop()) {
+      if (_isLoadingDialogShown) {
         Navigator.of(context).pop(); // Close the loading dialog
       }
       await showModalBottomSheet(
@@ -311,12 +301,25 @@ class _WritingPageState extends State<WritingPage> {
             ),
       );
     } else {
-      throw Exception('평가 전송 실패: ${res.statusCode}');
+      String errorMessage = '평가 서버에 접속할 수 없습니다. (코드: ${res.statusCode})';
+      try {
+        final decoded = utf8.decode(res.bodyBytes);
+        final Map<String, dynamic> errorData = jsonDecode(decoded);
+        if (errorData.containsKey('detail')) {
+          errorMessage = errorData['detail'];
+        } else if (errorData.containsKey('message')) {
+          errorMessage = errorData['message'];
+        }
+      } catch (_) {
+        // Ignore if body is not valid JSON or doesn't contain a message.
+      }
+      throw Exception(errorMessage);
     }
   }
 
   //제출버튼을 누른 후 과정을 처리하는 함수
   Future<void> _handleSubmit() async {
+    if (_isLoadingDialogShown || _isPoppingPage) return;
     _stopTimer();
     setState(() {
       _feedbackReady = false;
@@ -336,13 +339,16 @@ class _WritingPageState extends State<WritingPage> {
       return;
     }
 
+    _isLoadingDialogShown = true;
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) {
         return Center(child: CircularProgressIndicator());
       },
-    );
+    ).then((_) {
+      _isLoadingDialogShown = false;
+    });
 
     // Removed the showDialog for CircularProgressIndicator as it was causing an issue in the previous turn.
     // If needed, it can be added back with proper error handling.
@@ -350,7 +356,7 @@ class _WritingPageState extends State<WritingPage> {
       await _submitWritingData(rawImages, encodedImages);
     } catch (e) {
       if (mounted) {
-        if (Navigator.of(context).canPop()) {
+        if (_isLoadingDialogShown) {
           Navigator.of(context).pop(); // Close the loading dialog
         }
         showDialog(
@@ -361,7 +367,9 @@ class _WritingPageState extends State<WritingPage> {
                 content: Text('평가 전송 중 오류가 발생했습니다: $e'),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      if (mounted) Navigator.of(context).pop();
+                    },
                     child: const Text('확인'),
                   ),
                 ],
@@ -455,10 +463,7 @@ class _WritingPageState extends State<WritingPage> {
 
                   SpeechBubble(
                     text: widget.nowStep.stepMission,
-                    imageAsset:
-                        widget
-                            .nowStep
-                            .stepCharacter,
+                    imageAsset: widget.nowStep.stepCharacter,
                     scale: scaled(context, 0.65),
                     horizontalInset: scaled(context, 80),
                     imageRight: -30,
@@ -580,7 +585,10 @@ class _WritingPageState extends State<WritingPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () => _canvasKey.currentState?.undoLastStroke(),
+                        onTap: () {
+                          if (_isLoadingDialogShown || _isPoppingPage) return;
+                          _canvasKey.currentState?.undoLastStroke();
+                        },
                         child: Container(
                           width: scaled(context, 230),
                           height: scaled(context, 80),
@@ -610,6 +618,7 @@ class _WritingPageState extends State<WritingPage> {
                       SizedBox(width: scaled(context, 35)),
                       GestureDetector(
                         onTap: () {
+                          if (_isLoadingDialogShown || _isPoppingPage) return;
                           _stopTimer(); // 타이머 멈춤
                           _canvasKey.currentState?.clearAll(); // 글씨 지우기
                           setState(() {
@@ -675,34 +684,49 @@ class _WritingPageState extends State<WritingPage> {
                         ),
                       ),
                       SizedBox(width: scaled(context, 35)),
-                      Container(
-                        width: scaled(context, 230),
-                        height: scaled(context, 80),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFCEEF91),
-                          borderRadius: BorderRadius.circular(
-                            scaled(context, 12),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: scaled(context, 6),
-                              offset: Offset(0, scaled(context, 3)),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              final double dialogScale = scaled(context, 2);
+                              return MiniDialog(
+                                scale: dialogScale,
+                                title: '도움말',
+                                content: widget.nowStep.stepTip,
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: scaled(context, 230),
+                          height: scaled(context, 80),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFCEEF91),
+                            borderRadius: BorderRadius.circular(
+                              scaled(context, 12),
                             ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '도움말 보기',
-                          style: TextStyle(
-                            fontSize: scaled(context, 30),
-                            fontWeight: FontWeight.bold,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: scaled(context, 6),
+                                offset: Offset(0, scaled(context, 3)),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '도움말 보기',
+                            style: TextStyle(
+                              fontSize: scaled(context, 30),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
+                      SizedBox(height: scaled(context, 20)),
                     ],
                   ),
-                  SizedBox(height: scaled(context, 20)),
                 ],
               ),
             ),

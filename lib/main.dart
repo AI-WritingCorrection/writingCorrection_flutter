@@ -1,4 +1,5 @@
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/screen/home/home_screen.dart';
 import 'package:aiwriting_collection/screen/login/sign/login_screen.dart';
 import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
@@ -32,6 +33,7 @@ Future<void> main() async {
   int initialId = 0;
   String? initialUid;
   String? initialJwt;
+  UserType? initialUserType;
 
   if (firebaseUser != null) {
     try {
@@ -43,6 +45,9 @@ Future<void> main() async {
         initialId = body['user_id'];
         initialUid = firebaseUser.uid;
         initialJwt = body['jwt'];
+        if (body.containsKey('user_type')) {
+          initialUserType = UserType.values.byName(body['user_type'] as String);
+        }
       }
     } catch (e) {
       // network or parsing error
@@ -77,6 +82,7 @@ Future<void> main() async {
                 userId: initialId,
                 uid: initialUid,
                 jwt: initialJwt,
+                userType: initialUserType,
               );
             }
             return loginStatus;

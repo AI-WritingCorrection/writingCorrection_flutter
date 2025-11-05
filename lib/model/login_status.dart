@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -14,8 +15,6 @@ class LoginStatus extends ChangeNotifier {
 
   // 로그인 여부를 관리하는 변수 (초기값은 false)
   bool _isLoggedIn = false;
-
-  // 외부에서 로그인 상태를 읽을 수 있는 getter
   bool get isLoggedIn => _isLoggedIn;
 
   String? _firebaseIdToken;
@@ -23,12 +22,14 @@ class LoginStatus extends ChangeNotifier {
   String? _jwt;
   String? _provider;
   String? _email;
+  UserType? _userType;
 
   String? get firebaseIdToken => _firebaseIdToken;
   String? get uid => _firebaseUid;
   String? get jwt => _jwt;
   String? get lastProvider => _provider;
   String? get email => _email;
+  UserType? get userType => _userType;
 
   // 테스트용 게스트 로그인
   void loginAsGuest(String guestUid) {
@@ -43,11 +44,13 @@ class LoginStatus extends ChangeNotifier {
     required String uid,
     required String jwt,
     String? email,
+    UserType? userType,
   }) {
     _userId = userId;
     _firebaseUid = uid;
     _jwt = jwt;
     _email = email;
+    _userType = userType;
     _isLoggedIn = true;
     notifyListeners();
   }
@@ -219,6 +222,7 @@ class LoginStatus extends ChangeNotifier {
           uid: uid,
           jwt: body['jwt'],
           email: _email,
+          userType: UserType.values.byName(body['user_type'] as String),
         );
         print('User logged in successfully: ${body['user_id']}');
         return {'success': true, 'email': _email};
@@ -234,6 +238,7 @@ class LoginStatus extends ChangeNotifier {
     }
   }
 
+
   Future<void> logout() async {
     _userId = null;
     _firebaseUid = null;
@@ -241,6 +246,7 @@ class LoginStatus extends ChangeNotifier {
     _firebaseIdToken = null;
     _jwt = null;
     _email = null;
+    _userType = null;
 
     try {
       await FirebaseAuth.instance.signOut();

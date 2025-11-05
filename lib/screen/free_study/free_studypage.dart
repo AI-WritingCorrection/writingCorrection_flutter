@@ -1,10 +1,10 @@
 import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
+import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart';
 import 'package:flutter/material.dart';
-
 
 class FreeStudyPage extends StatefulWidget {
   final Practice nowPractice;
@@ -24,7 +24,6 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
   final GlobalKey<GridHandwritingCanvasState> _canvasKey =
       GlobalKey<GridHandwritingCanvasState>();
 
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +42,6 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
     return value * scale;
   }
 
-  
   @override
   Widget build(BuildContext context) {
     final double cellSize = switch (widget.nowPractice.practiceType) {
@@ -236,28 +234,43 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                         ),
                       ),
                       SizedBox(width: scaled(context, 35)),
-                      Container(
-                        width: scaled(context, 230),
-                        height: scaled(context, 80),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFCEEF91),
-                          borderRadius: BorderRadius.circular(
-                            scaled(context, 12),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: scaled(context, 6),
-                              offset: Offset(0, scaled(context, 3)),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              final double dialogScale = scaled(context, 2);
+                              return MiniDialog(
+                                scale: dialogScale,
+                                title: '도움말',
+                                content: widget.nowPractice.practiceTip,
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: scaled(context, 230),
+                          height: scaled(context, 80),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFCEEF91),
+                            borderRadius: BorderRadius.circular(
+                              scaled(context, 12),
                             ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '도움말 보기',
-                          style: TextStyle(
-                            fontSize: scaled(context, 30),
-                            fontWeight: FontWeight.bold,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: scaled(context, 6),
+                                offset: Offset(0, scaled(context, 3)),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '도움말 보기',
+                            style: TextStyle(
+                              fontSize: scaled(context, 30),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
