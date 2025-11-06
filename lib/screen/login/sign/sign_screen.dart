@@ -8,6 +8,7 @@ import 'dart:io';
 import '../../../model/login_status.dart';
 import '../../../api.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 class SignScreen extends StatefulWidget {
   // ✅ 디버그 프리뷰용(선택): 릴리즈 빌드에는 영향 없음
@@ -31,6 +32,7 @@ class _SignScreenState extends State<SignScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
+  final _dateFmt = DateFormat('yyyy.MM.dd'); // 2000.01.01 형식
   DateTime? _birthdate;
   File? _profileImage;
   String _provider = '';
@@ -252,8 +254,6 @@ class _SignScreenState extends State<SignScreen> {
                       : () async {
                         setState(() => _isLoading = true);
                         try {
-                          // ✅ 여기엔 네가 쓰던 기존 onPressed 로직(모의 성공 분기 + 실제 signup)이 그대로 들어감
-                          // (우리가 바꾼 건 '버튼 모양'뿐이야)
                           if (kDebugMode && widget.useMockApi) {
                             await Future.delayed(
                               const Duration(milliseconds: 300),
@@ -407,16 +407,39 @@ class _SignScreenState extends State<SignScreen> {
     final label =
         _birthdate == null
             ? '생년월일을 선택해주세요'
-            : '생년월일: ${_birthdate!.toLocal().toString().split(' ').first}';
+            : '생년월일: ${_dateFmt.format(_birthdate!.toLocal())}';
 
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () async {
         final date = await showDatePicker(
           context: context,
-          initialDate: DateTime(2000, 1, 1),
+          initialDate: _birthdate ?? DateTime(2000, 1, 1),
           firstDate: DateTime(1900, 1, 1),
           lastDate: DateTime.now(),
+          locale: const Locale('ko'),
+          helpText: '생년월일 선택',
+          cancelText: '취소',
+          confirmText: '확인',
+          builder: (context, child) {
+            final scheme = ColorScheme.fromSeed(
+              seedColor: const Color(0xFF7BB661),
+            );
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: scheme,
+                datePickerTheme: const DatePickerThemeData(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                  ),
+                  headerHeadlineStyle: TextStyle(fontWeight: FontWeight.w700),
+                  headerHelpStyle: TextStyle(fontWeight: FontWeight.w500),
+                  elevation: 2,
+                ),
+              ),
+              child: child!,
+            );
+          },
         );
         if (date != null) setState(() => _birthdate = date);
       },
