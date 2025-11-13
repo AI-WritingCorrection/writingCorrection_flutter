@@ -79,6 +79,7 @@ flutter:
     - assets/image/
     - assets/font/
     - assets/character/
+    - assets/stroke_guide.json
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
