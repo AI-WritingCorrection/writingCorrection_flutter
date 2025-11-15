@@ -26,9 +26,30 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   final List<String> _characterImages = [
     'assets/character/bearTeacher.png',
-    'assets/character/hamster.png',
     'assets/character/rabbitTeacher.png',
+    'assets/character/hamster.png',
   ];
+
+  final List<String> _chapterTitles = [
+    '~받침 없는 쉬운 글자 연습~',
+    '~받침 없는 글자 연습~',
+    '~받침 있는 쉬운 글자 연습~',
+    '~받침 있는 글자 연습~',
+    '~받침 있는 글자\n 빠르게 써보기~',
+    '~받침 없는 낱말 연습~',
+    '~받침 있는 낱말 연습~',
+    '~낱말 추가 연습~',
+    '~낱말을 빠르게 써보기~',
+    '~짧은 문장 연습~',
+    '~긴 문장 연습~',
+  ];
+
+  final TextStyle aiTextStyle = const TextStyle(
+    fontSize: 25, // Default font size, will be scaled
+    fontWeight: FontWeight.bold,
+    color: Colors.black87,
+  );
+
   @override
   void initState() {
     super.initState();
@@ -46,15 +67,24 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 const Text(
                   '스텝 활성화 규칙',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.green,
+                  ),
                 ),
+                const SizedBox(height: 8),
                 const Text(
-                  '이전 단계를 성공적으로 완료해야 다음 단계가 활성화됩니다. 차근차근 단계를 밟아가며 실력을 키워보세요!',
+                  '이전 단계를 성공적으로 완료해야 다음 단계가 활성화됩니다.\n차근차근 단계를 밟아가며 실력을 키워보세요!',
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   '색상 안내',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.green,
+                  ),
                 ),
                 Row(
                   children: const [
@@ -77,7 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   '이미지 버튼 기능',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.green,
+                  ),
                 ),
                 const Text(
                   '각 챕터의 마지막에 있는 동물 선생님 버튼을 누르면, 특별한 AI 추천 문제를 풀어볼 수 있습니다.',
@@ -122,18 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildPortrait(BuildContext context, double scale) {
     final Size screenSize = MediaQuery.of(context).size;
 
-    // 첫스텝 시작 y좌표
-    final double startY = 220 * scale;
-
-    // S-curve 좌표 생성
-    final double diameter = 80 * scale; //지름
-
-    //이미지 버튼 크기
-    final double separatorSize = diameter * 1.7;
-
-    final double marginX = 40 * scale; //가로 여백
-    final double stepGap = 140 * scale; //스텝들간의 수직 간격
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder<List<dynamic>>(
@@ -159,13 +181,107 @@ class _HomeScreenState extends State<HomeScreen> {
           final enableUpTo = maxCleared + 1;
 
           final int count = steps.length;
-          final int numBreaks = (count - 1) ~/ 5;
-          final int totalSlots = count + numBreaks;
+          final widgets = <Widget>[];
 
-          final List<Offset> positions = [];
-          for (int i = 0; i < totalSlots; i++) {
+          // --- 레이아웃 로직 수정 시작 ---
+
+          // S-curve 좌표용 변수
+          final double diameter = 80 * scale; //지름
+          final double separatorSize = diameter * 1.7; //이미지 버튼 크기
+          final double marginX = 40 * scale; //가로 여백
+
+          // 원하는 균일한 간격 (조절 가능)
+          final double uniformGap = 80 * scale;
+          // 챕터 제목 위젯의 예상 높이 (폰트 크기 + 상하 여백)
+          final double titleHeight = 80 * scale;
+
+          // 스크롤 위치 계산용: 각 스텝의 Y좌표 저장
+          final Map<int, double> stepTopPositions = {};
+
+          // 상단 여백으로 초기화
+          double currentY = 100 * scale;
+
+          int stepCounter = 0; // 현재 스텝 번호
+          int itemIndex = 0; // S-curve 위치 계산용 인덱스 (스텝 + 이미지 버튼)
+
+          // 1. 도움말 버튼 배치
+          final double searchButtonSize = separatorSize * 0.6;
+          widgets.add(
+            Positioned(
+              left: 0,
+              right: 0,
+              top: currentY, // 고정값이 아닌 currentY 사용
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CharacterButton(
+                    assetPath: 'assets/image/search.png',
+                    size: searchButtonSize,
+                    onTap: () {
+                      _showHelpDialog();
+                    },
+                  ),
+                  SizedBox(height: 10 * scale), // 간격 추가
+                  Text(
+                    '도움말 버튼을 눌러\n학습 방법을 확인하세요!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20 * scale,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+
+          // 2. Y좌표 갱신: 검색 버튼 높이 + 텍스트 높이 + 균일 간격
+          currentY +=
+              searchButtonSize + (10 * scale) + (40 * scale) + uniformGap;
+          while (stepCounter < count) {
+            // 1. 챕터 제목 추가 (5의 배수 스텝 시작 시)
+            if (stepCounter % 5 == 0 &&
+                stepCounter ~/ 5 < _chapterTitles.length) {
+              // 가로선 추가
+              final double lineHeight = 2 * scale;
+              widgets.add(
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: currentY,
+                  child: Container(height: lineHeight, color: Colors.grey[300]),
+                ),
+              );
+              currentY += lineHeight + uniformGap / 2; // 선 높이 + 여백
+
+              widgets.add(
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: currentY,
+                  child: Text(
+                    _chapterTitles[stepCounter ~/ 5],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30 * scale,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green[800],
+                    ),
+                  ),
+                ),
+              );
+              // Y좌표 갱신: 제목 높이 + 균일 간격
+              currentY += titleHeight + uniformGap / 2;
+            }
+
+            // 2. 스터디 스텝 추가
+            final bool isActive = stepCounter < enableUpTo;
+            final int currentStep = stepCounter; // 클로저 캡처용
+
+            // S-curve에 따른 X좌표 계산
             double x;
-            switch (i % 4) {
+            switch (itemIndex % 4) {
               case 0:
                 x = marginX;
                 break;
@@ -177,93 +293,14 @@ class _HomeScreenState extends State<HomeScreen> {
               default:
                 x = screenSize.width - marginX - diameter;
             }
-            double y = startY + i * stepGap;
-            positions.add(Offset(x, y));
-          }
 
-          // 스크롤 가능한 최대길이
-          final double maxDy = positions
-              .map((p) => p.dy)
-              .reduce((a, b) => a > b ? a : b);
-          final double contentHeight = maxDy + diameter + 100 * scale;
+            // 스크롤 타겟을 위해 Y좌표 저장
+            stepTopPositions[currentStep] = currentY;
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_scrollController.hasClients) {
-              final screenHeight = MediaQuery.of(context).size.height;
-              final targetY = positions[maxCleared].dy;
-              final scrollOffset =
-                  targetY - (screenHeight / 2) + (diameter / 2);
-              _scrollController.jumpTo(
-                scrollOffset.clamp(
-                  0,
-                  _scrollController.position.maxScrollExtent,
-                ),
-              );
-            }
-          });
-
-          final widgets = <Widget>[];
-
-          // 처음 이미지 버튼은 중간에 배치
-          widgets.add(
-            Positioned(
-              left: (screenSize.width - separatorSize * 0.9) / 2 + 20,
-              top: 100 * scale,
-              child: CharacterButton(
-                assetPath: 'assets/image/search.png',
-                size: separatorSize * 0.6,
-                onTap: () {
-                  _showHelpDialog();
-                },
-              ),
-            ),
-          );
-
-          //스텝5개 쌓이면 break걸고 이미지버튼추가
-          bool insertedChapterBreak = false;
-          int stepCounter = 0; // next step number to show
-
-          for (int i = 0; i < positions.length; i++) {
-            final pos = positions[i];
-
-            // Insert chapter break after every 5 steps (once)
-            if (!insertedChapterBreak &&
-                stepCounter > 0 &&
-                stepCounter % 5 == 0) {
-              final double sepX = pos.dx - (separatorSize - diameter) / 2;
-              widgets.add(
-                Positioned(
-                  left: sepX,
-                  top: pos.dy,
-                  child: CharacterButton(
-                    assetPath: 'assets/character/bearTeacher.png',
-                    size: separatorSize,
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return MiniDialog(
-                            scale: scale,
-                            title: '너무 작아!',
-                            content: '공부는 태블릿에서만 가능합니다!',
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              );
-              insertedChapterBreak = true;
-              continue;
-            }
-
-            // Always add the study step
-            final currentStep = stepCounter;
-            final bool isActive = currentStep < enableUpTo;
             widgets.add(
               Positioned(
-                left: pos.dx,
-                top: pos.dy,
+                left: x,
+                top: currentY,
                 child: StudyStep(
                   label: currentStep,
                   diameter: diameter,
@@ -300,13 +337,146 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             );
-            stepCounter++;
 
-            // Allow next image break after another 5 steps
-            if (stepCounter % 5 == 0) {
-              insertedChapterBreak = false;
+            // Y좌표 갱신: 스텝 높이 + 균일 간격
+            currentY += diameter + uniformGap;
+            stepCounter++;
+            itemIndex++; // S-curve 인덱스 증가
+
+            // 3. 이미지 버튼 추가 (5의 배수 스텝 완료 후)
+            if (stepCounter > 0 && stepCounter % 5 == 0) {
+              final int buttonIndex = stepCounter ~/ 5 - 1;
+              final bool imageActive = (stepCounter - 1) < enableUpTo;
+              // S-curve에 따른 X좌표 계산
+              double? imgX; // ⭐️ Nullable로 변경
+              CrossAxisAlignment colAlignment;
+              switch (itemIndex % 4) {
+                case 0: // Left
+                  imgX = marginX;
+                  colAlignment = CrossAxisAlignment.start;
+                  break;
+                case 1: // Center
+                case 3: // Center
+                  imgX = null; // ⭐️ Center일 땐 null
+                  colAlignment = CrossAxisAlignment.center;
+                  break;
+                case 2: // Right
+                default:
+                  // ⭐️ separatorSize 기준으로 오른쪽 여백 계산
+                  imgX = screenSize.width - marginX - separatorSize;
+                  colAlignment = CrossAxisAlignment.end;
+              }
+
+              widgets.add(
+                Positioned(
+                  left: (imgX == null) ? 0 : imgX,
+                  right: (imgX == null) ? 0 : null,
+                  top: currentY,
+                  // ⭐️ CharacterButton을 Column과 Stack으로 감싸기
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: colAlignment,
+                    children: [
+                      Stack(
+                        clipBehavior:
+                            Clip.antiAlias, // Allow children to overflow
+                        alignment: Alignment.topRight, // 전구를 우측 상단에 배치
+                        children: [
+                          CharacterButton(
+                            assetPath:
+                                _characterImages[buttonIndex %
+                                    _characterImages.length],
+                            size: separatorSize,
+                            onTap:
+                                imageActive
+                                    ? () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return MiniDialog(
+                                            scale: scale,
+                                            title: '너무 작아!',
+                                            content: '공부는 태블릿에서만 가능합니다!',
+                                          );
+                                        },
+                                      );
+                                    }
+                                    : () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return MiniDialog(
+                                            scale: scale,
+                                            title: '알림',
+                                            content: '아직 공부할 수 없어요!',
+                                          );
+                                        },
+                                      );
+                                    },
+                          ),
+                          // ⭐️ imageActive일 때만 전구 이미지 표시
+                          if (imageActive)
+                            Padding(
+                              padding: EdgeInsets.all(4.0 * scale),
+                              child: Image.asset(
+                                'assets/image/bulb.png', // 이미지 경로 확인!
+                                width: separatorSize * 0.33, // 전구 크기 조절
+                                height: separatorSize * 0.33,
+                              ),
+                            ),
+                        ],
+                      ),
+                      // ⭐️ imageActive일 때만 텍스트 표시
+                      if (imageActive) ...[
+                        SizedBox(height: 4 * scale),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12 * scale,
+                            vertical: 6 * scale,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade100,
+                            borderRadius: BorderRadius.circular(15 * scale),
+                          ),
+                          child: Text(
+                            'AI 추천 문제 풀기!',
+                            style: aiTextStyle.copyWith(fontSize: 20 * scale),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+              // Y좌표 갱신: 이미지 버튼 높이 + 텍스트 높이 + 균일 간격
+              currentY +=
+                  separatorSize +
+                  (imageActive ? (4 * scale + 20 * scale) : 0) +
+                  uniformGap;
+              itemIndex++; // S-curve 인덱스 증가
             }
           }
+
+          // 스크롤 가능한 전체 높이
+          final double contentHeight = currentY + 100 * scale; // 하단 여백
+
+          // --- 레이아웃 로직 수정 끝 ---
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollController.hasClients) {
+              final screenHeight = MediaQuery.of(context).size.height;
+              // 수정: 저장된 Y좌표 맵에서 maxCleared 스텝의 Y값을 가져옴
+              final targetY = stepTopPositions[maxCleared] ?? (220 * scale);
+              final scrollOffset =
+                  targetY - (screenHeight / 2) + (diameter / 2);
+              _scrollController.jumpTo(
+                scrollOffset.clamp(
+                  0,
+                  _scrollController.position.maxScrollExtent,
+                ),
+              );
+            }
+          });
 
           return SingleChildScrollView(
             controller: _scrollController,
@@ -323,18 +493,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildLandscape(BuildContext context, double scale) {
     final Size screenSize = MediaQuery.of(context).size;
-
-    // 첫스텝 시작 y좌표
-    final double startY = 240 * scale;
-
-    // S-curve 좌표 생성
-    final double diameter = 100 * scale; //지름
-
-    //이미지 버튼 크기
-    final double separatorSize = diameter * 1.7 * 1.3;
-
-    final double marginX = 130 * scale; //가로 여백
-    final double stepGap = 200 * scale; //스텝들간의 수직 간격
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -361,209 +519,130 @@ class _HomeScreenState extends State<HomeScreen> {
           final enableUpTo = maxCleared + 1;
 
           final int count = steps.length;
-          final int numBreaks = (count - 1) ~/ 5;
-          final int totalSlots = count + numBreaks;
-          int nowImageButtonNum = 0;
+          final widgets = <Widget>[];
 
-          final List<Offset> positions = [];
-          for (int i = 0; i < totalSlots; i++) {
+          // --- 레이아웃 로직 수정 시작 ---
+
+          // S-curve 좌표용 변수
+          final double diameter = 100 * scale; //지름
+          final double separatorSize = diameter * 1.7 * 1.3; //이미지 버튼 크기
+          final double marginX = 100 * scale; //가로 여백
+
+          // 원하는 균일한 간격 (조절 가능)
+          final double uniformGap = 80 * scale;
+          // 챕터 제목 위젯의 예상 높이 (폰트 크기 + 상하 여백)
+          final double titleHeight = 77 * scale;
+
+          // 스크롤 위치 계산용: 각 스텝의 Y좌표 저장
+          final Map<int, double> stepTopPositions = {};
+
+          // 상단 여백으로 초기화
+          double currentY = 100 * scale;
+
+          int stepCounter = 0; // 현재 스텝 번호
+          int itemIndex = 0; // S-curve 위치 계산용 인덱스 (스텝 + 이미지 버튼)
+
+          // 도움말 버튼은 중앙에 배치
+          final double searchButtonSize = separatorSize * 0.8;
+          widgets.add(
+            Positioned(
+              left: 0,
+              right: 0,
+              top: currentY, // 고정값이 아닌 currentY 사용
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CharacterButton(
+                    assetPath: 'assets/image/search.png',
+                    size: searchButtonSize,
+                    onTap: () {
+                      _showHelpDialog();
+                    },
+                  ),
+                  SizedBox(height: 10 * scale), // 간격 추가
+                  Text(
+                    '어떻게 손글손글을 통해\n 연습하는지 알려드릴게요!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20 * scale,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+
+          // (수정) 2. Y좌표 갱신: 검색 버튼 높이 + 텍스트 높이 + 균일 간격
+          currentY +=
+              searchButtonSize +
+              (10 * scale) +
+              (40 * scale) +
+              uniformGap; // 텍스트 높이 대략 40 * scale로 가정
+
+          while (stepCounter < count) {
+            // 1. 챕터 제목 추가 (5의 배수 스텝 시작 시)
+            if (stepCounter % 5 == 0 &&
+                stepCounter ~/ 5 < _chapterTitles.length) {
+              // 가로선 추가
+              final double lineHeight = 2 * scale;
+              widgets.add(
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: currentY,
+                  child: Container(height: lineHeight, color: Colors.grey[300]),
+                ),
+              );
+              currentY += lineHeight + uniformGap / 2; // 선 높이 + 여백
+
+              widgets.add(
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: currentY,
+                  child: Text(
+                    _chapterTitles[stepCounter ~/ 5],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 62 * scale,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green[800],
+                    ),
+                  ),
+                ),
+              );
+              // Y좌표 갱신: 제목 높이 + 균일 간격
+              currentY += titleHeight + uniformGap;
+            }
+
+            // 2. 스터디 스텝 추가
+            final bool isActive = stepCounter < enableUpTo;
+            final int currentStep = stepCounter; // 클로저 캡처용
+
+            // S-curve에 따른 X좌표 계산
             double x;
-            switch (i % 4) {
+            switch (itemIndex % 4) {
               case 0:
                 x = marginX;
                 break;
               case 1:
               case 3:
-                x = (screenSize.width - diameter) / 2;
+                x = (screenSize.width - diameter * 2) / 2;
                 break;
               case 2:
               default:
-                x = screenSize.width - marginX - diameter;
-            }
-            double y = startY + i * stepGap;
-            positions.add(Offset(x, y));
-          }
-
-          // 스크롤 가능한 최대길이
-          final double maxDy = positions
-              .map((p) => p.dy)
-              .reduce((a, b) => a > b ? a : b);
-          final double contentHeight = maxDy + diameter + 100 * scale;
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_scrollController.hasClients) {
-              final screenHeight = MediaQuery.of(context).size.height;
-              final targetY = positions[maxCleared].dy;
-              final scrollOffset =
-                  targetY - (screenHeight / 2) + (diameter / 2);
-              _scrollController.jumpTo(
-                scrollOffset.clamp(
-                  0,
-                  _scrollController.position.maxScrollExtent,
-                ),
-              );
-            }
-          });
-
-          final widgets = <Widget>[];
-
-          // 처음 이미지 버튼은 중앙에 배치
-          //좀 더 오른쪽으로 가게 수정
-          widgets.add(
-            Positioned(
-              left: (screenSize.width - separatorSize * 0.9) / 2 + 20,
-              top: 100 * scale,
-              child: CharacterButton(
-                assetPath: 'assets/image/search.png',
-                size: separatorSize * 0.8,
-                onTap: () {
-                  _showHelpDialog();
-                },
-              ),
-            ),
-          );
-
-          //스텝5개 쌓이면 break걸고 이미지버튼추가
-          bool insertedChapterBreak = false;
-          int stepCounter = 0; // next step number to show
-
-          for (int i = 0; i < positions.length; i++) {
-            final pos = positions[i];
-            final bool imageActive = (stepCounter - 1) < enableUpTo;
-            // Insert chapter break after every 5 steps (once)
-            if (!insertedChapterBreak &&
-                stepCounter > 0 &&
-                stepCounter % 5 == 0) {
-              final int capturedStepId = stepCounter;
-              final double sepX = pos.dx - (separatorSize - diameter) / 2;
-              final int buttonIndex = stepCounter ~/ 5 - 1;
-              widgets.add(
-                Positioned(
-                  left: sepX,
-                  top: pos.dy,
-                  child: CharacterButton(
-                    assetPath:
-                        _characterImages[buttonIndex % _characterImages.length],
-                    size: separatorSize,
-                    onTap:
-                        imageActive
-                            ? () async {
-                              // --- 🚀 디버깅 코드 1 시작 🚀 ---
-                              print('=======================================');
-                              print('[디버그 1] 이미지 버튼 탭!');
-                              print('버튼 인덱스 (buttonIndex): $buttonIndex');
-                              // --- 🚀 디버깅 코드 1 끝 🚀 ---
-                              final nowRequest =
-                                  generatedRequestList[buttonIndex];
-                              final form = nowRequest['form'];
-
-                              // 1. 로딩 다이얼로그 표시
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (context) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                              );
-
-                              try {
-                                // 2. API 호출
-                                final res = await api.requestAiText(nowRequest);
-
-                                // 3. (중요) 성공 시 로딩 다이얼로그 닫기
-                                if (Navigator.of(context).canPop()) {
-                                  Navigator.of(context).pop();
-                                }
-
-                                // 4. (중요) 모든 성공 로직을 try 블록 안으로 이동
-                                final decoded = utf8.decode(res.bodyBytes);
-                                final Map<String, dynamic> data = jsonDecode(
-                                  decoded,
-                                );
-                                final String requestedText =
-                                    (data['result'] as String) ?? '오류';
-                                Steps aiStep = Steps(
-                                  stepId: capturedStepId,
-                                  stepMission: '밑의 글자를 작성해보세요!',
-                                  stepCharacter:
-                                      'assets/character/bearTeacher.png',
-                                  stepType: WritingType.values.byName(form),
-                                  stepText: requestedText,
-                                );
-                                // --- 🚀 디버깅 코드 2 시작 🚀 ---
-                                print(
-                                  'WritingPage로 전달하는 aiStep.stepId: ${aiStep.stepId}',
-                                );
-                                print(
-                                  '=======================================',
-                                );
-                                // --- 🚀 디버깅 코드 2 끝 🚀 ---
-
-                                // 5. (중요) 페이지 이동
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            WritingPage(nowStep: aiStep),
-                                  ),
-                                );
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                              } catch (e) {
-                                // 6. (중요) 실패 시 로딩 다이얼로그 닫기
-                                if (Navigator.of(context).canPop()) {
-                                  Navigator.of(context).pop();
-                                }
-
-                                // 7. 실패 시 오류 다이얼로그 표시
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (context) => AlertDialog(
-                                        title: const Text('오류'),
-                                        content: Text('평가 전송 중 오류가 발생했습니다: $e'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed:
-                                                () =>
-                                                    Navigator.of(context).pop(),
-                                            child: const Text('확인'),
-                                          ),
-                                        ],
-                                      ),
-                                );
-                              }
-                            }
-                            : () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return MiniDialog(
-                                    scale: scale,
-                                    title: '알림',
-                                    content: '아직 공부할 수 없어요!',
-                                  );
-                                },
-                              );
-                            },
-                  ),
-                ),
-              );
-              insertedChapterBreak = true;
-              continue;
+                x = screenSize.width - marginX - diameter * 2;
             }
 
-            // Always add the study step
-            final currentStep = stepCounter;
-            final bool isActive = currentStep < enableUpTo;
+            // 스크롤 타겟을 위해 Y좌표 저장
+            stepTopPositions[currentStep] = currentY;
+
             widgets.add(
               Positioned(
-                left: pos.dx,
-                top: pos.dy,
+                left: x,
+                top: currentY,
                 child: StudyStep(
                   label: currentStep,
                   diameter: diameter,
@@ -602,13 +681,212 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             );
-            stepCounter++;
 
-            // Allow next image break after another 5 steps
-            if (stepCounter % 5 == 0) {
-              insertedChapterBreak = false;
+            // Y좌표 갱신: 스텝 높이 + 균일 간격
+            currentY += diameter * 2 + uniformGap;
+            stepCounter++;
+            itemIndex++; // S-curve 인덱스 증가
+
+            // 3. 이미지 버튼 추가 (5의 배수 스텝 완료 후)
+            if (stepCounter > 0 && stepCounter % 5 == 0) {
+              final int capturedStepId = stepCounter; // 캡처
+              final int buttonIndex = stepCounter ~/ 5 - 1;
+              final bool imageActive = (stepCounter - 1) < enableUpTo;
+
+              // S-curve에 따른 X좌표 계산
+              double? imgX; // ⭐️ Nullable로 변경
+              CrossAxisAlignment colAlignment;
+              switch (itemIndex % 4) {
+                case 0: // Left
+                  imgX = marginX;
+                  colAlignment = CrossAxisAlignment.start;
+                  break;
+                case 1: // Center
+                case 3: // Center
+                  imgX = null; // ⭐️ Center일 땐 null
+                  colAlignment = CrossAxisAlignment.center;
+                  break;
+                case 2: // Right
+                default:
+                  // ⭐️ separatorSize 기준으로 오른쪽 여백 계산
+                  imgX = screenSize.width - marginX - separatorSize;
+                  colAlignment = CrossAxisAlignment.end;
+              }
+
+              widgets.add(
+                Positioned(
+                  left: (imgX == null) ? 0 : imgX,
+                  right: (imgX == null) ? 0 : null,
+                  top: currentY,
+                  // ⭐️ CharacterButton을 Column과 Stack으로 감싸기
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: colAlignment,
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none, // Allow children to overflow
+                        alignment: Alignment.topRight, // 전구를 우측 상단에 배치
+                        children: [
+                          CharacterButton(
+                            assetPath:
+                                _characterImages[buttonIndex %
+                                    _characterImages.length],
+                            size: separatorSize,
+                            onTap:
+                                imageActive
+                                    ? () async {
+                                      final nowRequest =
+                                          generatedRequestList[buttonIndex];
+                                      final form = nowRequest['form'];
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder:
+                                            (context) => const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                      );
+                                      try {
+                                        final res = await api.requestAiText(
+                                          nowRequest,
+                                        );
+                                        if (Navigator.of(context).canPop()) {
+                                          Navigator.of(context).pop();
+                                        }
+                                        final decoded = utf8.decode(
+                                          res.bodyBytes,
+                                        );
+                                        final Map<String, dynamic> data =
+                                            jsonDecode(decoded);
+                                        final String requestedText =
+                                            (data['result'] as String);
+                                        Steps aiStep = Steps(
+                                          stepId: capturedStepId,
+                                          stepMission: '밑의 글자를 작성해보세요!',
+                                          stepCharacter:
+                                              _characterImages[buttonIndex %
+                                                  _characterImages.length],
+                                          stepType: WritingType.values.byName(
+                                            form,
+                                          ),
+                                          stepText: requestedText,
+                                        );
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => WritingPage(
+                                                  nowStep: aiStep,
+                                                ),
+                                          ),
+                                        );
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
+                                      } catch (e) {
+                                        if (Navigator.of(context).canPop()) {
+                                          Navigator.of(context).pop();
+                                        }
+                                        showDialog(
+                                          context: context,
+                                          builder:
+                                              (context) => AlertDialog(
+                                                title: const Text('오류'),
+                                                content: Text(
+                                                  'AI 추천 문제 생성 중 오류가 발생했습니다: $e',
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed:
+                                                        () =>
+                                                            Navigator.of(
+                                                              context,
+                                                            ).pop(),
+                                                    child: const Text('확인'),
+                                                  ),
+                                                ],
+                                              ),
+                                        );
+                                      }
+                                    }
+                                    : () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return MiniDialog(
+                                            scale: scale,
+                                            title: '알림',
+                                            content: '아직 공부할 수 없어요!',
+                                          );
+                                        },
+                                      );
+                                    },
+                          ),
+                          // ⭐️ imageActive일 때만 전구 이미지 표시
+                          if (imageActive)
+                            Padding(
+                              padding: EdgeInsets.all(12.0 * scale),
+                              child: Image.asset(
+                                'assets/image/bulb.png', // 이미지 경로 확인!
+                                width: separatorSize * 0.3, // 전구 크기 조절
+                                height: separatorSize * 0.3,
+                              ),
+                            ),
+                        ],
+                      ),
+                      // ⭐️ imageActive일 때만 텍스트 표시
+                      if (imageActive) ...[
+                        SizedBox(height: 8 * scale),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16 * scale,
+                            vertical: 8 * scale,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade100,
+                            borderRadius: BorderRadius.circular(20 * scale),
+                          ),
+                          child: Text(
+                            'AI 추천 문제 풀기!',
+                            style: aiTextStyle.copyWith(fontSize: 25 * scale),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+
+              // Y좌표 갱신: 이미지 버튼 높이 + 텍스트 높이 + 균일 간격
+              currentY +=
+                  separatorSize +
+                  (imageActive ? (8 * scale + 25 * scale) : 0) +
+                  uniformGap;
+              itemIndex++; // S-curve 인덱스 증가
             }
           }
+
+          // 스크롤 가능한 전체 높이
+          final double contentHeight = currentY + 100 * scale; // 하단 여백
+
+          // --- 레이아웃 로직 수정 끝 ---
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollController.hasClients) {
+              final screenHeight = MediaQuery.of(context).size.height;
+              // 수정: 저장된 Y좌표 맵에서 maxCleared 스텝의 Y값을 가져옴
+              final targetY = stepTopPositions[maxCleared] ?? (240 * scale);
+              final scrollOffset =
+                  targetY - (screenHeight / 2) + (diameter / 2);
+              _scrollController.jumpTo(
+                scrollOffset.clamp(
+                  0,
+                  _scrollController.position.maxScrollExtent,
+                ),
+              );
+            }
+          });
 
           return SingleChildScrollView(
             controller: _scrollController,

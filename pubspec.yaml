@@ -132,7 +132,10 @@ flutter:
         - asset: assets/font/MaruBuri/MaruBuri-SemiBold.otf
           weight: 600
         - asset: assets/font/MaruBuri/MaruBuri-Bold.otf
-          weight: 700          
+          weight: 700    
+    - family: Cafe24Ssurround
+      fonts:
+        - asset: assets/font/Cafe24Ssurround.otf
     
   
   # For details regarding fonts from package dependencies,

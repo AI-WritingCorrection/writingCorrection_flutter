@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:aiwriting_collection/api.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -61,7 +62,7 @@ class LoginStatus extends ChangeNotifier {
       final g = GoogleSignIn();
       if (forceAccountPicker) {
         // 기존 기본 계정 연결을 끊어 계정 선택 창을 강제로 띄움
-        await g.disconnect().catchError((_) {});
+        await g.disconnect().catchError((_) => null);
       }
       final GoogleSignInAccount? googleUser = await g.signIn();
 
@@ -94,7 +95,9 @@ class LoginStatus extends ChangeNotifier {
           FirebaseAuth.instance.currentUser?.email;
       return _firebaseUid;
     } catch (e) {
-      print('Google sign-in error: $e');
+      if (kDebugMode) {
+        print('Google sign-in error: $e');
+      }
       return null;
     }
   }

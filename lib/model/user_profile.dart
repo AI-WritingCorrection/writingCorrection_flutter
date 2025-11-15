@@ -1,5 +1,4 @@
 import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class UserProfile {
   final int userId;

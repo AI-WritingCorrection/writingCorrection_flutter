@@ -3,7 +3,6 @@ import 'package:aiwriting_collection/model/mission_record.dart';
 import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/model/stats.dart';
 import 'package:aiwriting_collection/model/steps.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';

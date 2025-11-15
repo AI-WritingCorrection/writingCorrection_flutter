@@ -39,7 +39,7 @@ class PillSection extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 18 * scale,
+                    fontSize: 24 * scale,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -49,7 +49,7 @@ class PillSection extends StatelessWidget {
             ),
           ),
           SizedBox(width: 8 * scale),
-          Image.asset(trailingImage, width: 48 * scale, height: 48 * scale),
+          //Image.asset(trailingImage, width: 48 * scale, height: 48 * scale),
         ],
       ),
     );
