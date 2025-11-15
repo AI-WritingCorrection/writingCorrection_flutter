@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'MyPen',
       theme: ThemeData(
-        fontFamily: 'Bazzi',
+        fontFamily: 'Cafe24Ssurround',
         brightness: Brightness.light,
         primaryColor: Color(0xFFCEEF91),
         canvasColor: Color(0xFFFFFBF3),

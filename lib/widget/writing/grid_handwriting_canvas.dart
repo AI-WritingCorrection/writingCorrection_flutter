@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:aiwriting_collection/model/stroke.dart';
 import 'package:aiwriting_collection/widget/writing/inactivecell_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/model/stroke_guide_model.dart';
@@ -55,9 +56,9 @@ class GridHandwritingCanvas extends StatefulWidget {
 
 class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   //획들의 모음
-  final List<List<Offset>> strokes = [];
+  final List<Stroke> strokes = [];
   //한 획
-  List<Offset> currentStroke = [];
+  List<Offset> currentStrokePath = [];
   //현재 활성화된 셀의 인덱스
   int activeCell = 0;
 
@@ -93,7 +94,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   }
 
   void _onPointerUp(PointerEvent e) {
-    if (currentStroke.isNotEmpty) {
+    if (currentStrokePath.isNotEmpty) {
       _addPoint(null); // 현재 획 마감
       _maybeAdvanceCell();
     }
@@ -114,7 +115,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
     // 이 셀에 속한 획 개수 집계
     final cellStrokes =
         strokes.where((stroke) {
-          final mid = stroke[stroke.length ~/ 2];
+          final mid = stroke.path[stroke.path.length ~/ 2];
           return _cellRect(activeCell).contains(mid);
         }).length;
 
@@ -196,7 +197,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
                         ),
                         foregroundPainter: HandwritingPainter(
                           strokes: strokes,
-                          currentStroke: currentStroke,
+                          currentStroke: currentStrokePath,
                           strokeColor: widget.penColor,
                           strokeWidth: widget.penStrokeWidth,
                         ),
@@ -205,7 +206,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
                         size: Size(width, height),
                         painter: HandwritingPainter(
                           strokes: strokes,
-                          currentStroke: currentStroke,
+                          currentStroke: currentStrokePath,
                           strokeColor: widget.penColor,
                           strokeWidth: widget.penStrokeWidth,
                         ),
@@ -220,11 +221,11 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   void _addPoint(Offset? point) {
     setState(() {
       if (point != null) {
-        currentStroke.add(point);
+        currentStrokePath.add(point);
       } else {
         //손을 뗐을 때: 하나의 획 종료
-        strokes.add(currentStroke);
-        currentStroke = [];
+        strokes.add(Stroke(path: currentStrokePath, strokeWidth: widget.penStrokeWidth));
+        currentStrokePath = [];
       }
     });
   }
@@ -236,7 +237,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
         // 가장 마지막 획 삭제
         final last = strokes.removeLast();
         // Determine the cell index of that stroke via its midpoint
-        final mid = last[last.length ~/ 2];
+        final mid = last.path[last.path.length ~/ 2];
         final int colCount =
             widget.charCount < widget.maxPerRow
                 ? widget.charCount
@@ -249,7 +250,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
         activeCell = cellIndex;
       }
       // Clear any in-progress stroke
-      currentStroke = [];
+      currentStrokePath = [];
     });
   }
 
@@ -257,7 +258,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   void clearAll() {
     setState(() {
       strokes.clear();
-      currentStroke = [];
+      currentStrokePath = [];
       activeCell = 0;
     });
   }
@@ -266,15 +267,15 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
   Map<int, List<Offset>> getFirstAndLastStrokes() {
     final Map<int, List<Offset>> firstAndLast = {};
     for (var stroke in strokes) {
-      if (stroke.isEmpty) continue;
-      final mid = stroke[stroke.length ~/ 2];
+      if (stroke.path.isEmpty) continue;
+      final mid = stroke.path[stroke.path.length ~/ 2];
       final int colIndex = (mid.dx ~/ widget.cellSize).clamp(0, cols - 1);
       final int rowIndex = (mid.dy ~/ widget.cellSize).clamp(0, rows - 1);
       final cellIndex = rowIndex * cols + colIndex;
 
       // 첫 점과 마지막 점을 저장
-      firstAndLast.putIfAbsent(cellIndex, () => []).add(stroke.first);
-      firstAndLast[cellIndex]?.add(stroke.last);
+      firstAndLast.putIfAbsent(cellIndex, () => []).add(stroke.path.first);
+      firstAndLast[cellIndex]?.add(stroke.path.last);
     }
     return firstAndLast;
   }
@@ -288,15 +289,15 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
             : widget.maxPerRow;
     final int rows = (widget.charCount / widget.maxPerRow).ceil();
 
-    // cellGroups 맵은 셀 인덱스, 그 셀에 속한 획(Offset 리스트) 모음을 저장.
-    final Map<int, List<List<Offset>>> cellGroups = {};
+    // cellGroups 맵은 셀 인덱스, 그 셀에 속한 획(Stroke 객체) 모음을 저장.
+    final Map<int, List<Stroke>> cellGroups = {};
 
     //획마다 셀 찾기&그룹화
     //획의 중간 좌표를 기준으로 셀 인덱스 계산
     //그 셀 키에 해당하는 리스트에 획 데이터를 추가하여 그룹화
     for (var stroke in strokes) {
-      if (stroke.isEmpty) continue;
-      final mid = stroke[stroke.length ~/ 2];
+      if (stroke.path.isEmpty) continue;
+      final mid = stroke.path[stroke.path.length ~/ 2];
       final int colIndex = (mid.dx ~/ widget.cellSize).clamp(0, cols - 1);
       final int rowIndex = (mid.dy ~/ widget.cellSize).clamp(0, rows - 1);
       final cellIndex = rowIndex * cols + colIndex;
@@ -320,7 +321,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
         final paint =
             Paint()
               ..color = widget.penColor
-              ..strokeWidth = widget.penStrokeWidth
+              ..strokeWidth = stroke.strokeWidth // Use the stroke's saved width
               ..strokeCap = StrokeCap.round;
 
         // Draw translated stroke so that the cell's origin is (0,0)
@@ -331,8 +332,8 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
         final dy = -cellRow * widget.cellSize;
         canvas.translate(dx, dy);
 
-        for (int i = 0; i < stroke.length - 1; i++) {
-          canvas.drawLine(stroke[i], stroke[i + 1], paint);
+        for (int i = 0; i < stroke.path.length - 1; i++) {
+          canvas.drawLine(stroke.path[i], stroke.path[i + 1], paint);
         }
 
         final picture = recorder.endRecording();

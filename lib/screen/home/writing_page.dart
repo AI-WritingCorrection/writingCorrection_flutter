@@ -32,6 +32,9 @@ class WritingPage extends StatefulWidget {
 class _WritingPageState extends State<WritingPage> {
   bool _isPoppingPage = false;
   bool _isLoadingDialogShown = false;
+  double _penStrokeWidth = 7.0; // Initial pen thickness
+  static const double _minPenStrokeWidth = 1.0;
+  static const double _maxPenStrokeWidth = 20.0;
   Map<String, List<int>> _stringKeyMap(Map<int, List<int>> src) {
     return src.map((key, value) => MapEntry(key.toString(), value));
   }
@@ -469,7 +472,7 @@ class _WritingPageState extends State<WritingPage> {
                     imageRight: -30,
                   ),
 
-                  SizedBox(height: scaled(context, 75)),
+                  SizedBox(height: scaled(context, 50)),
 
                   // 연습과제 박스
                   Align(
@@ -535,6 +538,7 @@ class _WritingPageState extends State<WritingPage> {
                                 cellSize: scaled(context, cellSize),
                                 showGuides: widget.showGuides,
                                 guideChar: widget.nowStep.stepText,
+                                penStrokeWidth: _penStrokeWidth,
                               ),
                             ),
                           ),
@@ -581,6 +585,41 @@ class _WritingPageState extends State<WritingPage> {
                             ? scaled(context, 81.75)
                             : scaled(context, 30),
                   ),
+
+                  // Pen thickness slider
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: scaled(context, 50),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          '펜 굵기: ${_penStrokeWidth.toStringAsFixed(1)}',
+                          style: TextStyle(fontSize: scaled(context, 20)),
+                        ),
+                        Expanded(
+                          child: Slider(
+                            value: _penStrokeWidth,
+                            min: _minPenStrokeWidth,
+                            max: _maxPenStrokeWidth,
+                            divisions:
+                                (_maxPenStrokeWidth - _minPenStrokeWidth)
+                                    .toInt() *
+                                2, // 0.5 increments
+                            label: _penStrokeWidth.toStringAsFixed(1),
+                            onChanged: (double value) {
+                              setState(() {
+                                _penStrokeWidth = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: scaled(context, 10)), // Add some spacing
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

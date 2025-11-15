@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -475,7 +473,6 @@ class _SignScreenState extends State<SignScreen> {
   Widget _buildPrimaryButton({
     required VoidCallback? onPressed,
     required bool isLoading,
-    String label = '회원가입 완료',
   }) {
     return ElevatedButton(
       onPressed: onPressed,

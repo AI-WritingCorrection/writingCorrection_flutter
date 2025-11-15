@@ -24,7 +24,7 @@ class FeedbackDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     // 화면 높이의 50% 사용
     final screenHeight = MediaQuery.of(context).size.height;
-    final dialogHeight = screenHeight * 0.5;
+    final dialogHeight = screenHeight * 0.55;
 
     // 스케일 계산
     final basePortrait = 390.0;
@@ -56,7 +56,13 @@ class FeedbackDialog extends StatelessWidget {
               ),
             ),
           ),
-
+          SizedBox(height: 10 * scale), // Spacing after drag handle
+          Text(
+            '글자를 누르면 글자별 상세 피드백을 확인할 수 있어요.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20 * scale, color: Colors.black87),
+          ),
+          SizedBox(height: 10 * scale), // Spacing after the new text
           // ── 섹션 1: 총점 ─────────────────────────────────────────────
           PillSection(
             label: '총점',
