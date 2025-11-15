@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:aiwriting_collection/widget/writing/inactivecell_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:aiwriting_collection/model/stroke_guide_model.dart';
 import 'grid_painter.dart';
 import 'handwriting_painter.dart';
 import 'guide_painter.dart';
@@ -28,10 +29,15 @@ class GridHandwritingCanvas extends StatefulWidget {
   /// 셀마다 그릴 가이드 문자. practiceText의 각 문자에 대응.
   final String? guideChar;
 
+  final bool showStrokeGuide;
+
+  final Map<String, StrokeCharGuide> strokeGuides;
+
   const GridHandwritingCanvas({
     super.key,
     required this.charCount,
     required this.essentialStrokeCounts,
+    this.strokeGuides = const <String, StrokeCharGuide>{},
     this.maxPerRow = 10,
     this.cellSize = 40,
     this.gridColor = Colors.black,
@@ -40,6 +46,7 @@ class GridHandwritingCanvas extends StatefulWidget {
     this.penStrokeWidth = 7.0,
     this.showGuides = false,
     this.guideChar,
+    this.showStrokeGuide = false,
   });
 
   @override
@@ -184,6 +191,8 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
                             color: Colors.grey.withOpacity(0.3),
                             fontSize: widget.cellSize * 0.7,
                           ),
+                          showStrokeGuide: widget.showStrokeGuide,
+                          strokeGuides: widget.strokeGuides,
                         ),
                         foregroundPainter: HandwritingPainter(
                           strokes: strokes,

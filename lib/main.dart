@@ -17,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart'; // kDebugMode
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -119,6 +120,12 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       //initialRoute: '/login',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en'), Locale('ko')],
       routes: {
         '/login': (context) => LoginScreen(),
         '/home':

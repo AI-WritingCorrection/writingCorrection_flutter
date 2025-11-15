@@ -5,6 +5,8 @@ import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart';
 import 'package:flutter/material.dart';
+import 'package:aiwriting_collection/model/stroke_guide_model.dart';
+import 'package:aiwriting_collection/model/stroke_guide_repository.dart';
 
 class FreeStudyPage extends StatefulWidget {
   final Practice nowPractice;
@@ -23,6 +25,9 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
   //GlobalKey를 이용해 GridHandwritingCanvas의 내부 상태에 직접 접근할 수 있도록
   final GlobalKey<GridHandwritingCanvasState> _canvasKey =
       GlobalKey<GridHandwritingCanvasState>();
+
+  final Future<Map<String, StrokeCharGuide>> _strokeGuidesFuture =
+      StrokeGuideRepository.load();
 
   @override
   void initState() {
@@ -146,23 +151,41 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                   Align(
                     alignment: Alignment.center,
                     child: GestureDetector(
-                      // behavior를 opaque로 주면, 자식 위 투명 영역에도 제스처를 잡습니다.
                       behavior: HitTestBehavior.opaque,
+                      onPanDown: (_) {},
+                      onVerticalDragUpdate: (_) {},
+                      child: FutureBuilder<Map<String, StrokeCharGuide>>(
+                        future: _strokeGuidesFuture,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const SizedBox(
+                              height: 100,
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
 
-                      // 이 두 콜백만 있어도 세로 드래그를 잡아서 스크롤로 넘어가지 않게 합니다.
-                      onPanDown: (_) {}, // 터치다운 이벤트를 먼저 소비
-                      onVerticalDragUpdate: (_) {}, // 세로 드래그가 시작되면 아무 것도 하지 않음
-                      child: GridHandwritingCanvas(
-                        key: _canvasKey,
-                        essentialStrokeCounts:
-                            widget.nowPractice.essentialStrokeCounts,
-                        charCount: widget.nowPractice.practiceText.length,
-                        gridColor: Color(0xFFFFCEEF),
-                        gridWidth: scaled(context, 3),
-                        cellSize: scaled(context, cellSize),
-                        // 가이드라인 표시 여부와 문자 전달
-                        showGuides: widget.showGuides,
-                        guideChar: widget.nowPractice.practiceText,
+                          // ★ 여기서 strokeGuides 변수를 정의해주고
+                          final strokeGuides = snapshot.data!;
+
+                          // ★ 이걸 GridHandwritingCanvas에 넘겨주는 구조
+                          return GridHandwritingCanvas(
+                            key: _canvasKey,
+                            essentialStrokeCounts:
+                                widget.nowPractice.essentialStrokeCounts,
+                            charCount: widget.nowPractice.practiceText.length,
+                            gridColor: const Color(0xFFFFCEEF),
+                            gridWidth: scaled(context, 3),
+                            cellSize: scaled(context, cellSize),
+
+                            showGuides: widget.showGuides,
+                            guideChar: widget.nowPractice.practiceText,
+                            showStrokeGuide:
+                                widget.nowPractice.practiceType ==
+                                WritingType.PHONEME,
+
+                            strokeGuides: strokeGuides,
+                          );
+                        },
                       ),
                     ),
                   ),

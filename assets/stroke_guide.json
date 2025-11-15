@@ -1,0 +1,1041 @@
+{
+  "ㄱ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.4, "y": 0.20},
+          {"x": 0.85, "y": 0.20},
+          {"x": 0.85, "y": 0.65}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.75, "y": 0.05}
+      }
+    ]
+  },
+  "ㄴ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.1, "y": 0.5},
+          {"x": 0.1, "y": 0.8},
+          {"x": 0.5, "y": 0.8}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": -0.05, "y": 0.65}
+      }
+    ]
+  },
+  "ㄷ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.15},
+          {"x": 0.8, "y": 0.15}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.02},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.1, "y": 0.45},
+          {"x": 0.1, "y": 0.85},
+          {"x": 0.65, "y": 0.85}
+        ],
+        "labelPos": {"x": -0.05, "y": 0.55},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㄹ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.4, "y": 0.20},
+          {"x": 0.85, "y": 0.20},
+          {"x": 0.85, "y": 0.4}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.50, "y": 0.05}
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.22, "y": 0.43},
+          {"x": 0.60, "y": 0.43}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.12, "y": 0.40}
+      },
+
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.15, "y": 0.6},
+          {"x": 0.15, "y": 0.8},
+          {"x": 0.6, "y": 0.8}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.00, "y": 0.7}
+      }
+    ]
+  },
+  "ㅁ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.15, "y": 0.4},
+          {"x": 0.15, "y": 0.7}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.0, "y": 0.55}
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.4, "y": 0.20},
+          {"x": 0.85, "y": 0.20},
+          {"x": 0.85, "y": 0.6}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.70, "y": 0.05}
+      },
+
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.4, "y": 0.78},
+          {"x": 0.7, "y": 0.78}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.5, "y": 0.9}
+      }
+    ]
+  },
+  "ㅂ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.15, "y": 0.4},
+          {"x": 0.15, "y": 0.7}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.0, "y": 0.55}
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.85, "y": 0.4},
+          {"x": 0.85, "y": 0.7}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 1, "y": 0.55}
+      },
+
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.4, "y": 0.4},
+          {"x": 0.65, "y": 0.4}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.5, "y": 0.25}
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.4, "y": 0.80},
+          {"x": 0.65, "y": 0.80}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.5, "y": 0.95}
+      }
+    ]
+  },
+  "ㅅ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.3, "y": 0.4},
+          {"x": 0.1, "y": 0.6}
+        ],
+        "labelPos": {"x": 0.15, "y": 0.35},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.6, "y": 0.4},
+          {"x": 0.9, "y": 0.6}
+        ],
+        "labelPos": {"x": 0.75, "y": 0.35},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+
+  "ㅇ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.25},
+          {"x": 0.1, "y": 0.5}
+        ],
+        "labelPos": {"x": 0.05, "y": 0.3},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅈ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.3, "y": 0.2},
+          {"x": 0.9, "y": 0.2},
+          {"x": 0.75, "y": 0.5}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.05},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.6, "y": 0.7},
+          {"x": 0.8, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.65, "y": 0.90},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅊ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.4, "y": 0.13},
+          {"x": 0.6, "y": 0.13}
+        ],
+        "labelPos": {"x": 0.50, "y": 0},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.3, "y": 0.3},
+          {"x": 0.9, "y": 0.3},
+          {"x": 0.75, "y": 0.5}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.15},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.6, "y": 0.7},
+          {"x": 0.8, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.65, "y": 0.90},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅋ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.3, "y": 0.2},
+          {"x": 0.9, "y": 0.2},
+          {"x": 0.88, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.9, "y": 0.05},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.2, "y": 0.65},
+          {"x": 0.6, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.3, "y": 0.8},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅌ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.3, "y": 0.2},
+          {"x": 0.75, "y": 0.2}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.05},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.33, "y": 0.42},
+          {"x": 0.75, "y": 0.42}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.42},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.15, "y": 0.42},
+          {"x": 0.15, "y": 0.8},
+          {"x": 0.7, "y": 0.80}
+        ],
+        "labelPos": {"x": 0, "y": 0.7},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅍ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.3, "y": 0.2},
+          {"x": 0.75, "y": 0.2}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.5, "y": 0.05}
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.25, "y": 0.4},
+          {"x": 0.25, "y": 0.6}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.1, "y": 0.55}
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.75, "y": 0.4},
+          {"x": 0.75, "y": 0.6}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.9, "y": 0.55}
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.3, "y": 0.80},
+          {"x": 0.75, "y": 0.80}
+        ],
+        "arrowAtEnd": true,
+        "labelPos": {"x": 0.5, "y": 0.95}
+      }
+    ]
+  },
+  "ㅎ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.4, "y": 0.1},
+          {"x": 0.6, "y": 0.1}
+        ],
+        "labelPos": {"x": 0.5, "y": 0},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.2, "y": 0.3},
+          {"x": 0.4, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.15, "y": 0.2},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.25, "y": 0.5},
+          {"x": 0.2, "y": 0.75}
+        ],
+        "labelPos": {"x": 0.1, "y": 0.6},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅏ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.35, "y": 0.2},
+          {"x": 0.35, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.2, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.6, "y": 0.3},
+          {"x": 0.8, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.7, "y": 0.15},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅐ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.25, "y": 0.2},
+          {"x": 0.25, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.10, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.45, "y": 0.3},
+          {"x": 0.55, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.15},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.75, "y": 0.2},
+          {"x": 0.75, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.9, "y": 0.4},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅑ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.35, "y": 0.2},
+          {"x": 0.35, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.2, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.6, "y": 0.15},
+          {"x": 0.8, "y": 0.15}
+        ],
+        "labelPos": {"x": 0.7, "y": 0},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.6, "y": 0.65},
+          {"x": 0.8, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.7, "y": 0.80},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅒ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.25, "y": 0.2},
+          {"x": 0.25, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.10, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.45, "y": 0.2},
+          {"x": 0.55, "y": 0.2}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.05},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.45, "y": 0.65},
+          {"x": 0.55, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.8},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.75, "y": 0.2},
+          {"x": 0.75, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.9, "y": 0.4},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅓ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.3, "y": 0.3},
+          {"x": 0.5, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.4, "y": 0.15},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.7, "y": 0.2},
+          {"x": 0.7, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.4},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅔ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.3},
+          {"x": 0.35, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.25, "y": 0.15},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.5, "y": 0.2},
+          {"x": 0.5, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.85},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.7, "y": 0.2},
+          {"x": 0.7, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅕ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.35, "y": 0.15},
+          {"x": 0.5, "y": 0.15}
+        ],
+        "labelPos": {"x": 0.4, "y": 0},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.35, "y": 0.65},
+          {"x": 0.5, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.4, "y": 0.8},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.7, "y": 0.2},
+          {"x": 0.7, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.4},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅖ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.25, "y": 0.2},
+          {"x": 0.4, "y": 0.2}
+        ],
+        "labelPos": {"x": 0.25, "y": 0.05},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.25, "y": 0.65},
+          {"x": 0.4, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.25, "y": 0.8},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.5, "y": 0.2},
+          {"x": 0.5, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.9},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.7, "y": 0.2},
+          {"x": 0.7, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.85, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅗ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.6, "y": 0.3},
+          {"x": 0.6, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.75, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.2, "y": 0.7},
+          {"x": 0.8, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.85},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅘ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.45, "y": 0.45},
+          {"x": 0.45, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.45, "y": 0.3},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.2, "y": 0.8},
+          {"x": 0.7, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.95},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.85, "y": 0.1},
+          {"x": 0.85, "y": 0.4}
+        ],
+        "labelPos": {"x": 1, "y": 0.2},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.85, "y": 0.55},
+          {"x": 1, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.95, "y": 0.7},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅙ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.45},
+          {"x": 0.2, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.05, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.15, "y": 0.8},
+          {"x": 0.55, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.3, "y": 0.95},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.72, "y": 0.1},
+          {"x": 0.72, "y": 0.4}
+        ],
+        "labelPos": {"x": 0.72, "y": 0},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.7, "y": 0.55},
+          {"x": 0.8, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.75, "y": 0.7},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 5,
+        "points": [
+          {"x": 0.95, "y": 0.3},
+          {"x": 0.95, "y": 0.7}
+        ],
+        "labelPos": {"x": 1.1, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅚ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.5, "y": 0.45},
+          {"x": 0.5, "y": 0.65}
+        ],
+        "labelPos": {"x": 0.65, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.15, "y": 0.8},
+          {"x": 0.55, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.3, "y": 0.95},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.95, "y": 0.3},
+          {"x": 0.95, "y": 0.7}
+        ],
+        "labelPos": {"x": 1.1, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅛ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.25, "y": 0.4},
+          {"x": 0.25, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.1, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.75, "y": 0.4},
+          {"x": 0.75, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.9, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.2, "y": 0.7},
+          {"x": 0.8, "y": 0.7}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.85},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅜ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.3},
+          {"x": 0.8, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.15},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.6, "y": 0.45},
+          {"x": 0.6, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.75, "y": 0.6},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅝ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.4},
+          {"x": 0.5, "y": 0.4}
+        ],
+        "labelPos": {"x": 0.35, "y": 0.25},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.25, "y": 0.6},
+          {"x": 0.25, "y": 0.85}
+        ],
+        "labelPos": {"x": 0.1, "y": 0.75},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.55, "y": 0.75},
+          {"x": 0.7, "y": 0.75}
+        ],
+        "labelPos": {"x": 0.6, "y": 0.9},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.9, "y": 0.2},
+          {"x": 0.9, "y": 0.8}
+        ],
+        "labelPos": {"x": 1.05, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅞ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.4},
+          {"x": 0.5, "y": 0.4}
+        ],
+        "labelPos": {"x": 0.35, "y": 0.25},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.2, "y": 0.6},
+          {"x": 0.2, "y": 0.85}
+        ],
+        "labelPos": {"x": 0.05, "y": 0.75},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.45, "y": 0.75},
+          {"x": 0.6, "y": 0.75}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.9},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 4,
+        "points": [
+          {"x": 0.75, "y": 0.2},
+          {"x": 0.75, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.75, "y": 0.9},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 5,
+        "points": [
+          {"x": 0.95, "y": 0.2},
+          {"x": 0.95, "y": 0.8}
+        ],
+        "labelPos": {"x": 1.1, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅟ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.4},
+          {"x": 0.5, "y": 0.4}
+        ],
+        "labelPos": {"x": 0.35, "y": 0.25},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.25, "y": 0.6},
+          {"x": 0.25, "y": 0.85}
+        ],
+        "labelPos": {"x": 0.1, "y": 0.75},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.9, "y": 0.2},
+          {"x": 0.9, "y": 0.8}
+        ],
+        "labelPos": {"x": 1.05, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅠ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.3},
+          {"x": 0.8, "y": 0.3}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.15},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.25, "y": 0.45},
+          {"x": 0.25, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.1, "y": 0.6},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 3,
+        "points": [
+          {"x": 0.75, "y": 0.45},
+          {"x": 0.75, "y": 0.8}
+        ],
+        "labelPos": {"x": 0.9, "y": 0.6},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅡ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.4},
+          {"x": 0.8, "y": 0.4}
+        ],
+        "labelPos": {"x": 0.5, "y": 0.25},
+        "arrowAtEnd": true
+      }
+    ]
+  },
+  "ㅢ": {
+    "paddingRatio": 0.18,
+    "strokes": [
+      {
+        "order": 1,
+        "points": [
+          {"x": 0.2, "y": 0.55},
+          {"x": 0.6, "y": 0.55}
+        ],
+        "labelPos": {"x": 0.4, "y": 0.4},
+        "arrowAtEnd": true
+      },
+      {
+        "order": 2,
+        "points": [
+          {"x": 0.9, "y": 0.2},
+          {"x": 0.9, "y": 0.8}
+        ],
+        "labelPos": {"x": 1.05, "y": 0.5},
+        "arrowAtEnd": true
+      }
+    ]
+  }
+}
