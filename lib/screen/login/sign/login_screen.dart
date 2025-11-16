@@ -61,26 +61,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     // 마스코트
                     Center(
                       child: Image.asset(
-                        'assets/character/bearTeacher.png',
+                        'assets/character/bearTeacher_noblank.png',
                         height: 220 * scale,
                         fit: BoxFit.contain,
                       ),
                     ),
 
-                    SizedBox(height: 16 * scale),
+                    SizedBox(height: 10 * scale),
 
                     // 제목 & 보조 카피
                     Text(
-                      'AI 손글씨 교정을 시작해요',
+                      '손글손글',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 22 * scale,
+                        fontSize: 60 * scale,
                         fontWeight: FontWeight.w800,
+                        color: const Color.fromARGB(255, 113, 45, 45),
+                        height: 0.6,
                       ),
                     ),
-                    SizedBox(height: 6 * scale),
+                    SizedBox(height: 20 * scale),
                     Text(
-                      '소셜 계정으로 간편하게 로그인',
+                      'AI 한글 손글씨 학습 서비스',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14 * scale,
@@ -235,13 +237,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Text(
                             '이용약관',
-                            style: TextStyle(fontSize: 12 * scale),
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
                         Text(
                           ' · ',
                           style: TextStyle(
-                            color: Colors.black26,
+                            color: Colors.black87,
                             fontSize: 12 * scale,
                           ),
                         ),
@@ -251,7 +256,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Text(
                             '개인정보처리방침',
-                            style: TextStyle(fontSize: 12 * scale),
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
                       ],
@@ -297,31 +305,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 24 * scale),
+                    SizedBox(height: 20 * scale),
 
                     // 마스코트
                     Center(
                       child: Image.asset(
-                        'assets/character/bearTeacher.png',
-                        height: 220 * scale,
+                        'assets/character/bearTeacher_noblank.png',
+                        height: 250 * scale,
                         fit: BoxFit.contain,
                       ),
                     ),
 
-                    SizedBox(height: 16 * scale),
-
                     // 제목 & 보조 카피
                     Text(
-                      'AI 손글씨 교정을 시작해요',
+                      '손글손글',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 22 * scale,
+                        color: const Color.fromARGB(255, 113, 45, 45),
+                        fontSize: 70 * scale,
                         fontWeight: FontWeight.w800,
+                        height: 0.6,
                       ),
                     ),
-                    SizedBox(height: 6 * scale),
+                    SizedBox(height: 30 * scale),
                     Text(
-                      '소셜 계정으로 간편하게 로그인',
+                      'AI 한글 손글씨 학습 서비스',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14 * scale,
@@ -478,13 +486,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Text(
                             '이용약관',
-                            style: TextStyle(fontSize: 12 * scale),
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
                         Text(
                           ' · ',
                           style: TextStyle(
-                            color: Colors.black26,
+                            color: Colors.black87,
                             fontSize: 12 * scale,
                           ),
                         ),
@@ -494,7 +505,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Text(
                             '개인정보처리방침',
-                            style: TextStyle(fontSize: 12 * scale),
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
                       ],

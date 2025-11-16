@@ -60,8 +60,8 @@ class StudyScreen extends StatelessWidget {
                         '손글씨 연습',
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          fontFamily: 'MaruBuri',
-                          fontWeight: FontWeight.bold,
+                          // fontFamily: 'MaruBuri',
+                          // fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
@@ -229,8 +229,8 @@ class StudyScreen extends StatelessWidget {
                     '손글씨 연습',
                     style: TextStyle(
                       fontSize: 33 * scale,
-                      fontFamily: 'MaruBuri',
-                      fontWeight: FontWeight.bold,
+                      // fontFamily: 'MaruBuri',
+                      // fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),

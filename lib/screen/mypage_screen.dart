@@ -1,5 +1,4 @@
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:aiwriting_collection/widget/dialog/edit_profile_dialog.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,8 +21,6 @@ class _MypageScreenState extends State<MypageScreen> {
   UserProfile? _profile;
   bool _loadingProfile = true;
 
-  // 프로필 정보가 서버로 전송되고 저장되는 동안 true가 됩니다.
-  bool _isUpdating = false;
   // 로그아웃 과정이 진행되는 동안 true가 됩니다.
   bool _isLoggingOut = false;
 
@@ -117,18 +114,17 @@ class _MypageScreenState extends State<MypageScreen> {
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => EditProfileDialog(
-        profile: _profile!,
-        userId: _lastLoadedUserId,
-      ),
+      builder:
+          (context) =>
+              EditProfileDialog(profile: _profile!, userId: _lastLoadedUserId),
     );
 
     if (result == true) {
       await _loadUserProfile(force: true);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('프로필이 업데이트되었습니다.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('프로필이 업데이트되었습니다.')));
       }
     } else if (result == false) {
       if (mounted) {
@@ -172,8 +168,7 @@ class _MypageScreenState extends State<MypageScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
       }
-    }
-    finally {
+    } finally {
       if (mounted) {
         setState(() {
           _isLoggingOut = false;
@@ -237,11 +232,11 @@ class _MypageScreenState extends State<MypageScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '마이 페이지',
+                        '마이 페이지/설정',
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          fontFamily: 'MaruBuri',
-                          fontWeight: FontWeight.bold,
+                          // fontFamily: 'MaruBuri',
+                          // fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
@@ -399,17 +394,11 @@ class _MypageScreenState extends State<MypageScreen> {
                         child: GestureDetector(
                           onTap: _handleLogout,
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12 * scale,
-                            ),
+                            padding: EdgeInsets.symmetric(vertical: 12 * scale),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              border: Border.all(
-                                color: Colors.grey.shade400,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                45 * scale,
-                              ),
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(45 * scale),
                             ),
                             child: Center(
                               child: Text(
@@ -429,17 +418,11 @@ class _MypageScreenState extends State<MypageScreen> {
                         child: GestureDetector(
                           onTap: _showEditProfileDialog,
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12 * scale,
-                            ),
+                            padding: EdgeInsets.symmetric(vertical: 12 * scale),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              border: Border.all(
-                                color: Colors.grey.shade400,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                45 * scale,
-                              ),
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(45 * scale),
                             ),
                             child: Center(
                               child: Text(
@@ -456,100 +439,95 @@ class _MypageScreenState extends State<MypageScreen> {
                       ),
                     ],
                   ),
-                      SizedBox(height: 40 * scale),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16 * scale),
-                        child: Column(
+                  SizedBox(height: 40 * scale),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                    child: Column(
+                      children: [
+                        // 1) 토글 Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // 1) 토글 Row
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '일일 학습 알림',
-                                  style: TextStyle(
-                                    fontSize: 20 * scale,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                Switch(
-                                  value: isDailyAlarmOn,
-                                  onChanged:
-                                      (v) => setState(() => isDailyAlarmOn = v),
-                                  activeColor: Colors.green,
-                                  activeTrackColor: Colors.grey.shade300,
-                                  inactiveThumbColor: Colors.grey.shade700,
-                                  inactiveTrackColor: Colors.grey.shade300,
-                                ),
-                              ],
+                            Text(
+                              '일일 학습 알림',
+                              style: TextStyle(
+                                fontSize: 20 * scale,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
                             ),
-                            Divider(), // 토글 아래 구분선
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '다크 모드',
-                                  style: TextStyle(
-                                    fontSize: 20 * scale,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                Switch(
-                                  value: isDailyAlarmOn,
-                                  onChanged:
-                                      (v) => setState(() => isDailyAlarmOn = v),
-                                  activeColor: Colors.green,
-                                  activeTrackColor: Colors.grey.shade300,
-                                  inactiveThumbColor: Colors.grey.shade700,
-                                  inactiveTrackColor: Colors.grey.shade300,
-                                ),
-                              ],
-                            ),
-
-                            Divider(), // 토글 아래 구분선
-                            SizedBox(height: 40 * scale),
-                            PracticeCard(
-                              title: '캐릭터 소개',
-                              subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
-                              imagePath: 'assets/character/bearTeacher.png',
-                              onTap: () {
-                                // 곰곰 카드 탭 로직
-                              },
-                            ),
-                            SizedBox(height: 20 * scale),
-                            PracticeCard(
-                              title: '곰곰',
-                              subtitle:
-                                  '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요. 함께라면 글씨가 포근한 마음을 담아 전달될 거예요!',
-                              imagePath: 'assets/character/bearTeacher.png',
-                              onTap: () {
-                                // 해당 페이지로 이동하는 로직
-                              },
-                            ),
-                            SizedBox(height: 20 * scale),
-                            PracticeCard(
-                              title: '토토',
-                              subtitle:
-                                  '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요. 지루할 틈 없이 신나게 따라와 보세요!',
-                              imagePath: 'assets/character/rabbitTeacher.png',
-                              onTap: () {},
-                            ),
-                            SizedBox(height: 20 * scale),
-                            PracticeCard(
-                              title: '다람',
-                              subtitle:
-                                  '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다. 섬세한 한 획까지 믿고 맡겨 보세요!',
-                              imagePath: 'assets/character/hamster.png',
-                              onTap: () {},
+                            Switch(
+                              value: isDailyAlarmOn,
+                              onChanged:
+                                  (v) => setState(() => isDailyAlarmOn = v),
+                              activeColor: Colors.green,
+                              activeTrackColor: Colors.grey.shade300,
+                              inactiveThumbColor: Colors.grey.shade700,
+                              inactiveTrackColor: Colors.grey.shade300,
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(height: 80 * scale),
-                    
-                  
+                        Divider(), // 토글 아래 구분선
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '다크 모드',
+                              style: TextStyle(
+                                fontSize: 20 * scale,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            Switch(
+                              value: isDailyAlarmOn,
+                              onChanged:
+                                  (v) => setState(() => isDailyAlarmOn = v),
+                              activeColor: Colors.green,
+                              activeTrackColor: Colors.grey.shade300,
+                              inactiveThumbColor: Colors.grey.shade700,
+                              inactiveTrackColor: Colors.grey.shade300,
+                            ),
+                          ],
+                        ),
+
+                        Divider(), // 토글 아래 구분선
+                        SizedBox(height: 40 * scale),
+                        PracticeCard(
+                          title: '캐릭터 소개',
+                          subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                          imagePath: '',
+                          onTap: () {
+                            // 곰곰 카드 탭 로직
+                          },
+                        ),
+                        SizedBox(height: 20 * scale),
+                        PracticeCard(
+                          title: '곰곰',
+                          subtitle: '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요.',
+                          imagePath: 'assets/character/bearTeacher.png',
+                          onTap: () {
+                            // 해당 페이지로 이동하는 로직
+                          },
+                        ),
+                        SizedBox(height: 20 * scale),
+                        PracticeCard(
+                          title: '토토',
+                          subtitle: '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요.',
+                          imagePath: 'assets/character/rabbitTeacher.png',
+                          onTap: () {},
+                        ),
+                        SizedBox(height: 20 * scale),
+                        PracticeCard(
+                          title: '다람',
+                          subtitle: '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다.',
+                          imagePath: 'assets/character/hamster.png',
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 80 * scale),
                 ],
               ),
               // 하단 버튼 영역을 위해 여백
@@ -593,11 +571,11 @@ class _MypageScreenState extends State<MypageScreen> {
                   top: 80 * scale,
                   left: 50 * scale,
                   child: Text(
-                    '마이 페이지',
+                    '마이 페이지/설정',
                     style: TextStyle(
                       fontSize: 33 * scale,
-                      fontFamily: 'MaruBuri',
-                      fontWeight: FontWeight.bold,
+                      // fontFamily: 'MaruBuri',
+                      // fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
@@ -853,7 +831,7 @@ class _MypageScreenState extends State<MypageScreen> {
                   PracticeCard(
                     title: '캐릭터 소개',
                     subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
-                    imagePath: 'assets/character/bearTeacher.png',
+                    imagePath: '',
                     onTap: () {
                       // 곰곰 카드 탭 로직
                     },

@@ -35,7 +35,7 @@ class Bottom extends StatelessWidget {
               child: Text(
                 '홈',
                 style: TextStyle(
-                  fontSize: barHeight * 0.24,
+                  fontSize: barHeight * 0.23,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
@@ -46,7 +46,7 @@ class Bottom extends StatelessWidget {
               child: Text(
                 '자유 공부',
                 style: TextStyle(
-                  fontSize: barHeight * 0.24,
+                  fontSize: barHeight * 0.23,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
@@ -57,7 +57,7 @@ class Bottom extends StatelessWidget {
               child: Text(
                 '기록',
                 style: TextStyle(
-                  fontSize: barHeight * 0.24,
+                  fontSize: barHeight * 0.23,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
@@ -66,9 +66,9 @@ class Bottom extends StatelessWidget {
             Tab(
               icon: Icon(Icons.person, size: barHeight * 0.40),
               child: Text(
-                '마이 페이지',
+                '설정',
                 style: TextStyle(
-                  fontSize: barHeight * 0.24,
+                  fontSize: barHeight * 0.23,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),

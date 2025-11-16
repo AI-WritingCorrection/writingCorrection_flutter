@@ -125,11 +125,12 @@ class PracticeCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Image.asset(
-                  imagePath,
-                  width: imageSizeAdjusted,
-                  height: imageSizeAdjusted,
-                ),
+                if (imagePath.isNotEmpty)
+                  Image.asset(
+                    imagePath,
+                    width: imageSizeAdjusted,
+                    height: imageSizeAdjusted,
+                  ),
               ],
             ),
           ),

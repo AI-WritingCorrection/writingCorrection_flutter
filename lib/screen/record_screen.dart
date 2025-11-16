@@ -58,8 +58,8 @@ class RecordScreen extends StatelessWidget {
                         '나의 기록',
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          fontFamily: 'MaruBuri',
-                          fontWeight: FontWeight.bold,
+                          // fontFamily: 'MaruBuri',
+                          // fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
@@ -182,8 +182,8 @@ class RecordScreen extends StatelessWidget {
                     '나의 기록',
                     style: TextStyle(
                       fontSize: 33 * scale,
-                      fontFamily: 'MaruBuri',
-                      fontWeight: FontWeight.bold,
+                      // fontFamily: 'MaruBuri',
+                      // fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
