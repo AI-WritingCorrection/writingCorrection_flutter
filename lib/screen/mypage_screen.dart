@@ -31,22 +31,44 @@ class _MypageScreenState extends State<MypageScreen> {
   final ImagePicker _imagePicker = ImagePicker();
 
   Future<void> _pickProfileImage() async {
-    final XFile? picked = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 50,
-    );
-    if (picked != null) {
+    try {
+      final XFile? picked = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality:
+            50, // This compresses the image, but doesn't guarantee size.
+      );
+      if (picked == null) return;
+
       final uid = _lastLoadedUserId;
+      // Show a loading indicator
+      if (mounted) {
+        setState(() {
+          _loadingProfile = true;
+        });
+      }
+
       await api.uploadProfileImage(picked.path, uid);
-      if (!mounted) return;
-      setState(() {
-        _loadingProfile = true; // 로딩 표시만 하고, 실제 데이터는 서버에서 재로딩
-      });
+
+      // Reload profile on success
       await _loadUserProfile(force: true);
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('프로필 이미지가 업데이트되었습니다.')));
+    } catch (e) {
+      if (!mounted) return;
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '업로드 실패: ${e.toString().replaceFirst("Exception: ", "")}',
+          ),
+        ),
+      );
+      // Revert loading state
+      setState(() {
+        _loadingProfile = false;
+      });
     }
   }
 
@@ -232,7 +254,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '마이 페이지/설정',
+                        '내 정보',
                         style: TextStyle(
                           fontSize: 23 * scale,
                           // fontFamily: 'MaruBuri',
@@ -441,58 +463,58 @@ class _MypageScreenState extends State<MypageScreen> {
                   ),
                   SizedBox(height: 40 * scale),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                    padding: EdgeInsets.symmetric(horizontal: 12 * scale),
                     child: Column(
                       children: [
                         // 1) 토글 Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '일일 학습 알림',
-                              style: TextStyle(
-                                fontSize: 20 * scale,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Switch(
-                              value: isDailyAlarmOn,
-                              onChanged:
-                                  (v) => setState(() => isDailyAlarmOn = v),
-                              activeColor: Colors.green,
-                              activeTrackColor: Colors.grey.shade300,
-                              inactiveThumbColor: Colors.grey.shade700,
-                              inactiveTrackColor: Colors.grey.shade300,
-                            ),
-                          ],
-                        ),
-                        Divider(), // 토글 아래 구분선
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '다크 모드',
-                              style: TextStyle(
-                                fontSize: 20 * scale,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Switch(
-                              value: isDailyAlarmOn,
-                              onChanged:
-                                  (v) => setState(() => isDailyAlarmOn = v),
-                              activeColor: Colors.green,
-                              activeTrackColor: Colors.grey.shade300,
-                              inactiveThumbColor: Colors.grey.shade700,
-                              inactiveTrackColor: Colors.grey.shade300,
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text(
+                        //       '일일 학습 알림',
+                        //       style: TextStyle(
+                        //         fontSize: 20 * scale,
+                        //         fontWeight: FontWeight.w500,
+                        //         color: Colors.black87,
+                        //       ),
+                        //     ),
+                        //     Switch(
+                        //       value: isDailyAlarmOn,
+                        //       onChanged:
+                        //           (v) => setState(() => isDailyAlarmOn = v),
+                        //       activeColor: Colors.green,
+                        //       activeTrackColor: Colors.grey.shade300,
+                        //       inactiveThumbColor: Colors.grey.shade700,
+                        //       inactiveTrackColor: Colors.grey.shade300,
+                        //     ),
+                        //   ],
+                        // ),
+                        // Divider(), // 토글 아래 구분선
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text(
+                        //       '다크 모드',
+                        //       style: TextStyle(
+                        //         fontSize: 20 * scale,
+                        //         fontWeight: FontWeight.w500,
+                        //         color: Colors.black87,
+                        //       ),
+                        //     ),
+                        //     Switch(
+                        //       value: isDailyAlarmOn,
+                        //       onChanged:
+                        //           (v) => setState(() => isDailyAlarmOn = v),
+                        //       activeColor: Colors.green,
+                        //       activeTrackColor: Colors.grey.shade300,
+                        //       inactiveThumbColor: Colors.grey.shade700,
+                        //       inactiveTrackColor: Colors.grey.shade300,
+                        //     ),
+                        //   ],
+                        // ),
 
-                        Divider(), // 토글 아래 구분선
-                        SizedBox(height: 40 * scale),
+                        // Divider(), // 토글 아래 구분선
+                        // SizedBox(height: 40 * scale),
                         PracticeCard(
                           title: '캐릭터 소개',
                           subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
@@ -571,7 +593,7 @@ class _MypageScreenState extends State<MypageScreen> {
                   top: 80 * scale,
                   left: 50 * scale,
                   child: Text(
-                    '마이 페이지/설정',
+                    '내 정보',
                     style: TextStyle(
                       fontSize: 33 * scale,
                       // fontFamily: 'MaruBuri',
@@ -783,51 +805,51 @@ class _MypageScreenState extends State<MypageScreen> {
               child: Column(
                 children: [
                   // 1) 토글 Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '일일 학습 알림',
-                        style: TextStyle(
-                          fontSize: 20 * scale,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Switch(
-                        value: isDailyAlarmOn,
-                        onChanged: (v) => setState(() => isDailyAlarmOn = v),
-                        activeColor: Colors.green,
-                        activeTrackColor: Colors.grey.shade300,
-                        inactiveThumbColor: Colors.grey.shade700,
-                        inactiveTrackColor: Colors.grey.shade300,
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '다크 모드',
-                        style: TextStyle(
-                          fontSize: 20 * scale,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Switch(
-                        value: isDailyAlarmOn,
-                        onChanged: (v) => setState(() => isDailyAlarmOn = v),
-                        activeColor: Colors.green,
-                        activeTrackColor: Colors.grey.shade300,
-                        inactiveThumbColor: Colors.grey.shade700,
-                        inactiveTrackColor: Colors.grey.shade300,
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                  SizedBox(height: 40 * scale),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       '일일 학습 알림',
+                  //       style: TextStyle(
+                  //         fontSize: 20 * scale,
+                  //         fontWeight: FontWeight.w500,
+                  //         color: Colors.black87,
+                  //       ),
+                  //     ),
+                  //     Switch(
+                  //       value: isDailyAlarmOn,
+                  //       onChanged: (v) => setState(() => isDailyAlarmOn = v),
+                  //       activeColor: Colors.green,
+                  //       activeTrackColor: Colors.grey.shade300,
+                  //       inactiveThumbColor: Colors.grey.shade700,
+                  //       inactiveTrackColor: Colors.grey.shade300,
+                  //     ),
+                  //   ],
+                  // ),
+                  // Divider(),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       '다크 모드',
+                  //       style: TextStyle(
+                  //         fontSize: 20 * scale,
+                  //         fontWeight: FontWeight.w500,
+                  //         color: Colors.black87,
+                  //       ),
+                  //     ),
+                  //     Switch(
+                  //       value: isDailyAlarmOn,
+                  //       onChanged: (v) => setState(() => isDailyAlarmOn = v),
+                  //       activeColor: Colors.green,
+                  //       activeTrackColor: Colors.grey.shade300,
+                  //       inactiveThumbColor: Colors.grey.shade700,
+                  //       inactiveTrackColor: Colors.grey.shade300,
+                  //     ),
+                  //   ],
+                  // ),
+                  // Divider(),
+                  //SizedBox(height: 40 * scale),
                   PracticeCard(
                     title: '캐릭터 소개',
                     subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
@@ -837,7 +859,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     },
                   ),
 
-                  SizedBox(height: 40 * scale),
+                  SizedBox(height: 10 * scale),
                 ],
               ),
             ),

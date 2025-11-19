@@ -1,7 +1,7 @@
 # 워크플로우 이름
 name: Android CI & Build
 
-# 실행 조건: main 브랜치에 push 이벤트가 발생했을 때
+# 실행 조건: development 브랜치에 push 이벤트가 발생했을 때 - 임시적 변경, 이후 main 브랜치로 변경 예정
 on:
   push:
     branches:

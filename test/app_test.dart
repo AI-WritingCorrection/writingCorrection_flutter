@@ -14,6 +14,6 @@ void main() {
     );
 
     // Verify that LoginScreen is shown by checking for a unique text.
-    expect(find.text('AI 손글씨 교정을 시작해요'), findsOneWidget);
+    expect(find.text('AI 한글 손글씨 학습 서비스'), findsOneWidget);
   });
 }

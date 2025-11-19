@@ -1,3 +1,4 @@
+import 'package:aiwriting_collection/screen/free_study/basic_handwriting_screen.dart';
 import 'package:aiwriting_collection/screen/free_study/letter_writing_screen.dart';
 import 'package:aiwriting_collection/screen/free_study/sentence_writing_screen.dart';
 import 'package:aiwriting_collection/screen/free_study/word_writing_screen.dart';
@@ -95,7 +96,11 @@ class StudyScreen extends StatelessWidget {
               subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
               imagePath: 'assets/character/bearTeacher.png',
               onTap: () {
-                // 해당 페이지로 이동하는 로직
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const BasicHandwritingScreen(),
+                  ),
+                );
               },
             ),
             PracticeCard(
@@ -152,7 +157,7 @@ class StudyScreen extends StatelessWidget {
             PracticeCard(
               title: '캘리그라피 연습',
               subtitle: '간단한 캘리그라피 연습을 통해 글씨체를 살려봐요',
-              imagePath: 'assets/character/bearTeacher.png',
+              imagePath: 'assets/character/rabbitTeacher.png',
               onTap: () {
                 showDialog(
                   context: context,
@@ -169,7 +174,7 @@ class StudyScreen extends StatelessWidget {
             PracticeCard(
               title: '무한 글씨 연습',
               subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-              imagePath: 'assets/character/bearTeacher.png',
+              imagePath: 'assets/character/hamster.png',
               onTap: () {
                 showDialog(
                   context: context,
@@ -271,10 +276,16 @@ class StudyScreen extends StatelessWidget {
                 childAspectRatio: 3, // width:height 비율 조정
                 children: [
                   PracticeCard(
-                    title: '손글씨 자세',
-                    subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
+                    title: '손글씨 기초',
+                    subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 개념',
                     imagePath: 'assets/character/bearTeacher.png',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BasicHandwritingScreen(),
+                        ),
+                      );
+                    },
                   ),
                   PracticeCard(
                     title: '자음과 모음 쓰기',
@@ -316,13 +327,35 @@ class StudyScreen extends StatelessWidget {
                     title: '캘리그라피 연습',
                     subtitle: '캘리그라피 연습을 통해 글씨체를 살려봐요',
                     imagePath: 'assets/character/bearTeacher.png',
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return MiniDialog(
+                            scale: scale * 1.5,
+                            title: '개발 진행중',
+                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                          );
+                        },
+                      );
+                    },
                   ),
                   PracticeCard(
                     title: '무한 글씨 연습',
                     subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
                     imagePath: 'assets/character/bearTeacher.png',
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return MiniDialog(
+                            scale: scale * 1.5,
+                            title: '개발 진행중',
+                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
