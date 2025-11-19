@@ -9,6 +9,8 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+const int maxProfileImageSize = 10 * 1024 * 1024; // 2MB
+
 //싱글톤 패턴 적용
 class Api {
   static const _baseUrl = 'http://52.78.166.204/api';
@@ -57,7 +59,7 @@ class Api {
     final p = path.toLowerCase();
     if (p.endsWith('.png')) return MediaType('image', 'png');
     if (p.endsWith('.webp')) return MediaType('image', 'webp');
-    if(p.endsWith('.heic') || p.endsWith('.heif')) {
+    if (p.endsWith('.heic') || p.endsWith('.heif')) {
       return MediaType('image', 'heic');
     }
     // default jpeg (includes .jpg / .jpeg / unknown)
@@ -241,6 +243,14 @@ class Api {
 
   // 프로필 이미지 수정 (멀티파트 업로드, URL 반환)
   Future<String> uploadProfileImage(String pickedPath, int userId) async {
+    final file = File(pickedPath);
+    final fileSize = await file.length();
+
+    if (fileSize > maxProfileImageSize) {
+      final sizeInMb = (maxProfileImageSize / (1024 * 1024)).toStringAsFixed(0);
+      throw Exception('이미지 파일이 너무 큽니다. ${sizeInMb}MB 이하의 파일을 선택해주세요.');
+    }
+
     final uri = Uri.parse('$_baseUrl/user/uploadProfileImage/$userId');
     final req = http.MultipartRequest('POST', uri);
 
@@ -254,7 +264,7 @@ class Api {
       await http.MultipartFile.fromPath(
         'file',
         pickedPath,
-        contentType: MediaType('image', 'jpeg'),
+        contentType: _inferContentType(pickedPath),
       ),
     );
 
@@ -289,7 +299,5 @@ class Api {
     );
   }
 }
-
-
 
 // 여기에 다른 /practice, /step 등 필요한 API 메서드를 계속 추가…

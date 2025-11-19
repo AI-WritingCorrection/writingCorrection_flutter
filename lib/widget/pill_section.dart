@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PillSection extends StatelessWidget {
-  final String label;
+  String? label;
   final String trailingImage; // asset 경로
   final Widget child;
   final double scale;
@@ -9,9 +9,9 @@ class PillSection extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final Color backgroundColor;
 
-  const PillSection({
+  PillSection({
     super.key,
-    required this.label,
+    this.label,
     required this.trailingImage,
     required this.child,
     required this.scale,
@@ -36,13 +36,14 @@ class PillSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 24 * scale,
-                    fontWeight: FontWeight.w800,
+                if (label != null)
+                  Text(
+                    label!,
+                    style: TextStyle(
+                      fontSize: 24 * scale,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                ),
                 SizedBox(height: 8 * scale),
                 child,
               ],
