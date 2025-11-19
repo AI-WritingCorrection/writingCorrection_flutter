@@ -5,7 +5,7 @@ name: Android CI & Build
 on:
   push:
     branches:
-      - development
+      - main
 
 jobs:
   build-android:

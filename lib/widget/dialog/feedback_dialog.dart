@@ -90,13 +90,13 @@ class FeedbackDialog extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _filterLine(context, scale, title: '1차 : ', filterIndex: 0),
+                _filterLine(context, scale, title: 'AI 글자 인식이 잘 안 된 글자: ', filterIndex: 0),
                 SizedBox(height: 8 * scale),
-                _filterLine(context, scale, title: '2차 : ', filterIndex: 1),
+                _filterLine(context, scale, title: '글자 크기가 적절하지 않은 글자: ', filterIndex: 1),
                 SizedBox(height: 8 * scale),
-                _filterLine(context, scale, title: '3차 : ', filterIndex: 2),
+                _filterLine(context, scale, title: '글자 획순이 적절하지 않은 글자: ', filterIndex: 2),
                 SizedBox(height: 8 * scale),
-                _filterLine(context, scale, title: '4차 : ', filterIndex: 3),
+                _filterLine(context, scale, title: '자음, 모음이 적절하지 않은 글자: ', filterIndex: 3),
               ],
             ),
           ),

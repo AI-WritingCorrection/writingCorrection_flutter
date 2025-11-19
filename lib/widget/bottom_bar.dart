@@ -66,7 +66,7 @@ class Bottom extends StatelessWidget {
             Tab(
               icon: Icon(Icons.person, size: barHeight * 0.40),
               child: Text(
-                '설정',
+                '내 정보',
                 style: TextStyle(
                   fontSize: barHeight * 0.23,
                   color: Colors.black87,

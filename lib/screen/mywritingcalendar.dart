@@ -214,7 +214,6 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                         '나만의 글씨 달력',
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          fontFamily: 'MaruBuri',
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),

@@ -64,7 +64,6 @@ class LetterFeedbackSheet extends StatelessWidget {
                 children: [
                   // ── 대상 ──
                   PillSection(
-                    label: '대상',
                     trailingImage: imagePath,
                     scale: scale,
                     child: Column(
@@ -100,7 +99,7 @@ class LetterFeedbackSheet extends StatelessWidget {
                               child: Text(
                                 '피드백 없음',
                                 style: TextStyle(
-                                  fontSize: 18 * scale,
+                                  fontSize: 20 * scale,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black87,
                                 ),
@@ -115,7 +114,7 @@ class LetterFeedbackSheet extends StatelessWidget {
                                     child: Text(
                                       '• $f',
                                       style: TextStyle(
-                                        fontSize: 18 * scale,
+                                        fontSize: 20 * scale,
                                         height: 1.3,
                                       ),
                                     ),
@@ -139,7 +138,7 @@ class LetterFeedbackSheet extends StatelessWidget {
           TextSpan(
             text: '$key: ',
             style: TextStyle(
-              fontSize: 16 * scale,
+              fontSize: 25 * scale,
               fontWeight: FontWeight.w800,
               color: Colors.black,
             ),
@@ -147,7 +146,7 @@ class LetterFeedbackSheet extends StatelessWidget {
           TextSpan(
             text: value,
             style: TextStyle(
-              fontSize: 16 * scale,
+              fontSize: 25 * scale,
               fontWeight: FontWeight.w600,
               color: Colors.black,
             ),

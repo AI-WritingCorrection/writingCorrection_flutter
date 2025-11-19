@@ -218,12 +218,12 @@ class LoginStatus extends ChangeNotifier {
       print('Login successful with $provider, uid: $uid');
       if (res.statusCode == 200) {
         final body = jsonDecode(res.body);
-        final jwt = jsonDecode(res.body)['jwt'];
+        final jwt = body['jwt'];
         api.setJwt(jwt);
         setUser(
           userId: body['user_id'],
           uid: uid,
-          jwt: body['jwt'],
+          jwt: jwt,
           email: _email,
           userType: UserType.values.byName(body['user_type'] as String),
         );
@@ -240,7 +240,6 @@ class LoginStatus extends ChangeNotifier {
       return null;
     }
   }
-
 
   Future<void> logout() async {
     _userId = null;
