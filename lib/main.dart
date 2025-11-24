@@ -1,4 +1,6 @@
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/data_provider.dart';
+import 'package:aiwriting_collection/model/language_provider.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/screen/home/home_screen.dart';
 import 'package:aiwriting_collection/screen/login/sign/login_screen.dart';
@@ -17,7 +19,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart'; // kDebugMode
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +59,15 @@ Future<void> main() async {
     }
   }
 
+  Locale? initialLocale;
+  if (initialUserType != null) {
+    if (initialUserType == UserType.FOREIGN) {
+      initialLocale = const Locale('en');
+    } else {
+      initialLocale = const Locale('ko');
+    }
+  }
+
   // Determine logical screen size in dp
   final physicalSize =
       WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
@@ -89,96 +100,119 @@ Future<void> main() async {
             return loginStatus;
           },
         ),
+        ChangeNotifierProvider(
+          create: (_) => LanguageProvider(initialLocale: initialLocale),
+        ),
+        ChangeNotifierProxyProvider<LoginStatus, DataProvider>(
+          create: (_) => DataProvider()..loadInitialData(),
+          update: (_, loginStatus, dataProvider) {
+            if (loginStatus.isLoggedIn && loginStatus.userId != null) {
+              dataProvider!.loadMissionRecords(loginStatus.userId!);
+            } else {
+              // User is logged out, clear their specific data
+              dataProvider!.clearUserRecords();
+            }
+            return dataProvider!;
+          },
+        ),
       ],
       child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyPen',
-      theme: ThemeData(
-        fontFamily: 'Cafe24Ssurround',
-        brightness: Brightness.light,
-        primaryColor: Color(0xFFCEEF91),
-        canvasColor: Color(0xFFFFFBF3),
-        colorScheme: const ColorScheme.light(
-          primary: Color(0xFFCEEF91),
-          secondary: Color(0xFFFFE5F2),
-          tertiary: Color(0xFFFFCEEF),
-        ),
-      ),
-      //initialRoute: '/login',
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('en'), Locale('ko')],
-      routes: {
-        '/login': (context) => LoginScreen(),
-        '/home':
-            (context) => DefaultTabController(
-              length: 4,
-              child: Scaffold(
-                body: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    HomeScreen(),
-                    StudyScreen(),
-                    RecordScreen(),
-                    MypageScreen(),
-                  ],
-                ),
-                bottomNavigationBar: Bottom(),
-              ),
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return MaterialApp(
+          locale: languageProvider.appLocale,
+          title: 'MyPen',
+          theme: ThemeData(
+            fontFamily: 'Cafe24Ssurround',
+            brightness: Brightness.light,
+            primaryColor: Color(0xFFCEEF91),
+            canvasColor: Color(0xFFFFFBF3),
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFCEEF91),
+              secondary: Color(0xFFFFE5F2),
+              tertiary: Color(0xFFFFCEEF),
             ),
-        '/study': (context) => StudyScreen(),
-        '/record': (context) => RecordScreen(),
-        '/mypage': (context) => MypageScreen(),
-        '/sign': (context) => SignScreen(),
-
-        // ✅ 개발용 프리뷰 라우트
-        if (kDebugMode)
-          '/sign_preview':
-              (context) => const SignScreen(
-                debugEmail: 'preview_user@example.com',
-                debugProvider: 'google',
-                useMockApi: true, // 서버호출 생략
-              ),
-      },
-      home: Consumer<LoginStatus>(
-        builder: (context, loginStatus, child) {
-          return loginStatus.isLoggedIn
-              ? DefaultTabController(
-                length: 4,
-                child: Scaffold(
-                  body: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      HomeScreen(),
-                      StudyScreen(),
-                      RecordScreen(),
-                      MypageScreen(),
-                    ],
+          ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routes: {
+            '/login': (context) => LoginScreen(),
+            '/home':
+                (context) => DefaultTabController(
+                  length: 4,
+                  child: Scaffold(
+                    body: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        HomeScreen(),
+                        StudyScreen(),
+                        RecordScreen(),
+                        MypageScreen(),
+                      ],
+                    ),
+                    bottomNavigationBar: Bottom(),
                   ),
-                  bottomNavigationBar: Bottom(),
                 ),
-              )
-              : LoginScreen();
-        },
-      ),
+            '/study': (context) => StudyScreen(),
+            '/record': (context) => RecordScreen(),
+            '/mypage': (context) => MypageScreen(),
+            '/sign': (context) => SignScreen(),
+            if (kDebugMode)
+              '/sign_preview':
+                  (context) => const SignScreen(
+                    debugEmail: 'preview_user@example.com',
+                    debugProvider: 'google',
+                    useMockApi: true, // 서버호출 생략
+                  ),
+          },
+          home: Consumer<LoginStatus>(
+            builder: (context, loginStatus, child) {
+              return loginStatus.isLoggedIn
+                  ? DefaultTabController(
+                    length: 4,
+                    child: Scaffold(
+                      body: TabBarView(
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          HomeScreen(),
+                          StudyScreen(),
+                          RecordScreen(),
+                          MypageScreen(),
+                        ],
+                      ),
+                      bottomNavigationBar: Bottom(),
+                    ),
+                  )
+                  : LoginScreen();
+            },
+          ),
+          builder: (context, child) {
+            return Consumer<LoginStatus>(
+              builder: (context, loginStatus, _) {
+                return Stack(
+                  children: [
+                    child!,
+                    if (loginStatus.isLoggingOut)
+                      const Scaffold(
+                        backgroundColor: Colors.black45,
+                        body: Center(child: CircularProgressIndicator()),
+                      ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

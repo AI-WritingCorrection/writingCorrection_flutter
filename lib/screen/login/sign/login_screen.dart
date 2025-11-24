@@ -1,8 +1,11 @@
+import 'package:aiwriting_collection/model/language_provider.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
 import 'package:flutter/foundation.dart'; // kDebugMode
 import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,6 +26,39 @@ class _LoginScreenState extends State<LoginScreen> {
     // print("isLoggedIn: ${login.isLoggedIn}");
   }
 
+  void _updateLanguageBasedOnUserType() {
+    final loginStatus = context.read<LoginStatus>();
+    final languageProvider = context.read<LanguageProvider>();
+
+    final userType = loginStatus.userType;
+    if (userType == UserType.FOREIGN) {
+      languageProvider.changeLanguage(const Locale('en'));
+    } else {
+      languageProvider.changeLanguage(const Locale('ko'));
+    }
+  }
+
+  Future<void> _handleLoginResult(Map<String, dynamic>? result) async {
+    if (!mounted || result == null) return;
+
+    final nav = Navigator.of(context);
+
+    if (result['success'] == true) {
+      // This is where the user is successfully logged in.
+      // I will update the language here.
+      _updateLanguageBasedOnUserType();
+      nav.pushReplacementNamed('/home');
+    } else {
+      nav.pushNamed(
+        '/sign',
+        arguments: {
+          'provider': context.read<LoginStatus>().lastProvider,
+          'email': result['email'],
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
@@ -38,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final double basePortrait = 390.0;
     final double scale = screenSize.width / basePortrait;
     final double horizontalPadding = 16 * scale;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFCEEF91),
@@ -71,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // 제목 & 보조 카피
                     Text(
-                      '손글손글',
+                      "손글손글",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 60 * scale,
@@ -82,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 20 * scale),
                     Text(
-                      'AI 한글 손글씨 학습 서비스',
+                      appLocalizations.loginSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14 * scale,
@@ -97,34 +134,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: 'Apple로 계속하기',
+                      label: appLocalizations.loginWithApple,
                       icon: Icons.apple,
                       background: Colors.black,
                       foreground: Colors.white,
                       border: null,
                       onPressed: () async {
-                        final nav = Navigator.of(context);
                         final result = await context
                             .read<LoginStatus>()
                             .loginWithProvider('APPLE');
-
-                        if (result == null) return; // User cancelled
-
-                        if (!mounted) return;
-
-                        if (result['success'] == true) {
-                          // 200 → 홈 화면으로
-                          nav.pushReplacementNamed('/home');
-                        } else {
-                          // 404 → 가입 페이지로
-                          nav.pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'APPLE',
-                              'email': result['email'],
-                            },
-                          );
-                        }
+                        await _handleLoginResult(result);
                       },
                     ),
                     SizedBox(height: 10 * scale),
@@ -132,34 +151,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: 'Google로 계속하기',
+                      label: appLocalizations.loginWithGoogle,
                       icon: Icons.g_mobiledata, // 필요시 G 로고 에셋으로 교체
                       background: Color(0xFF466437),
                       foreground: Colors.white,
                       border: const BorderSide(color: Colors.black12),
                       onPressed: () async {
-                        final nav = Navigator.of(context);
                         final result = await context
                             .read<LoginStatus>()
                             .loginWithProvider('GOOGLE');
-
-                        if (result == null) return; // User cancelled
-
-                        if (!mounted) return;
-
-                        if (result['success'] == true) {
-                          // 200 → 홈 화면으로
-                          nav.pushReplacementNamed('/home');
-                        } else {
-                          // 404 → 가입 페이지로
-                          nav.pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'GOOGLE',
-                              'email': result['email'],
-                            },
-                          );
-                        }
+                        await _handleLoginResult(result);
                       },
                     ),
                     SizedBox(height: 10 * scale),
@@ -167,34 +168,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: '카카오로 계속하기',
+                      label: appLocalizations.loginWithKakao,
                       icon: Icons.chat, // 필요시 카카오 로고 에셋으로 교체
                       background: const Color(0xFFFFE600),
                       foreground: Colors.black,
                       border: null,
                       onPressed: () async {
-                        final nav = Navigator.of(context);
                         final result = await context
                             .read<LoginStatus>()
                             .loginWithProvider('KAKAO');
-
-                        if (result == null) return; // User cancelled
-
-                        if (!mounted) return;
-
-                        if (result['success'] == true) {
-                          // 200 → 홈 화면으로
-                          nav.pushReplacementNamed('/home');
-                        } else {
-                          // 404 → 가입 페이지로
-                          nav.pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'KAKAO',
-                              'email': result['email'],
-                            },
-                          );
-                        }
+                        await _handleLoginResult(result);
                       },
                     ),
                     SizedBox(height: 10 * scale),
@@ -203,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: '게스트로 먼저 체험',
+                      label: appLocalizations.loginAsGuest,
                       icon: Icons.person_outline, // 필요시 G 로고 에셋으로 교체
                       background: Colors.white,
                       foreground: Colors.black87,
@@ -218,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // 약관 문구 (작게)
                     Text(
-                      '로그인 시 이용약관 및 개인정보처리방침에 동의합니다.',
+                      appLocalizations.termsAndConditions,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11 * scale,
@@ -236,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             /* TODO: 약관 화면 */
                           },
                           child: Text(
-                            '이용약관',
+                            appLocalizations.termsOfService,
                             style: TextStyle(
                               fontSize: 12 * scale,
                               color: Colors.black87,
@@ -255,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             /* TODO: 개인정보처리방침 */
                           },
                           child: Text(
-                            '개인정보처리방침',
+                            appLocalizations.privacyPolicy,
                             style: TextStyle(
                               fontSize: 12 * scale,
                               color: Colors.black87,
@@ -287,6 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final double baseLandscape = 844.0;
     final double scale = screenSize.height / baseLandscape; // 가로모드에서는 높이 기준
     final double horizontalPadding = 16 * scale;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFCEEF91),
@@ -318,7 +302,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // 제목 & 보조 카피
                     Text(
-                      '손글손글',
+                      "손글손글",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: const Color.fromARGB(255, 113, 45, 45),
@@ -329,7 +313,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 30 * scale),
                     Text(
-                      'AI 한글 손글씨 학습 서비스',
+                      appLocalizations.loginSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14 * scale,
@@ -344,34 +328,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: 'Apple로 계속하기',
+                      label: appLocalizations.loginWithApple,
                       icon: Icons.apple, // 필요시 브랜드 에셋으로 교체
                       background: Colors.black,
                       foreground: Colors.white,
                       border: null,
                       onPressed: () async {
-                        final nav = Navigator.of(context);
                         final result = await context
                             .read<LoginStatus>()
                             .loginWithProvider('APPLE');
-
-                        if (result == null) return; // User cancelled
-
-                        if (!mounted) return;
-
-                        if (result['success'] == true) {
-                          // 200 → 홈 화면으로
-                          nav.pushReplacementNamed('/home');
-                        } else {
-                          // 404 → 가입 페이지로
-                          nav.pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'APPLE',
-                              'email': result['email'],
-                            },
-                          );
-                        }
+                        await _handleLoginResult(result);
                       },
                     ),
                     SizedBox(height: 10 * scale),
@@ -379,34 +345,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: 'Google로 계속하기',
+                      label: appLocalizations.loginWithGoogle,
                       icon: Icons.g_mobiledata, // 필요시 G 로고 에셋으로 교체
                       background: Color(0xFF466437),
                       foreground: Colors.white,
                       border: const BorderSide(color: Colors.black12),
                       onPressed: () async {
-                        final nav = Navigator.of(context);
                         final result = await context
                             .read<LoginStatus>()
                             .loginWithProvider('GOOGLE');
-
-                        if (result == null) return; // User cancelled
-
-                        if (!mounted) return;
-
-                        if (result['success'] == true) {
-                          // 200 → 홈 화면으로
-                          nav.pushReplacementNamed('/home');
-                        } else {
-                          // 404 → 가입 페이지로
-                          nav.pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'GOOGLE',
-                              'email': result['email'],
-                            },
-                          );
-                        }
+                        await _handleLoginResult(result);
                       },
                     ),
                     SizedBox(height: 10 * scale),
@@ -414,34 +362,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: '카카오로 계속하기',
+                      label: appLocalizations.loginWithKakao,
                       icon: Icons.chat, // 필요시 카카오 로고 에셋으로 교체
                       background: const Color(0xFFFFE600),
                       foreground: Colors.black,
                       border: null,
                       onPressed: () async {
-                        final nav = Navigator.of(context);
                         final result = await context
                             .read<LoginStatus>()
                             .loginWithProvider('KAKAO');
-
-                        if (result == null) return; // User cancelled
-
-                        if (!mounted) return;
-
-                        if (result['success'] == true) {
-                          // 200 → 홈 화면으로
-                          nav.pushReplacementNamed('/home');
-                        } else {
-                          // 404 → 가입 페이지로
-                          nav.pushNamed(
-                            '/sign',
-                            arguments: {
-                              'provider': 'KAKAO',
-                              'email': result['email'],
-                            },
-                          );
-                        }
+                        await _handleLoginResult(result);
                       },
                     ),
                     SizedBox(height: 10 * scale),
@@ -450,7 +380,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     _socialBtn(
                       context,
                       scale: scale,
-                      label: '게스트로 먼저 체험',
+                      label: appLocalizations.loginAsGuest,
                       icon: Icons.person_outline, // 필요시 G 로고 에셋으로 교체
                       background: Colors.white,
                       foreground: Colors.black87,
@@ -465,7 +395,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // 약관 문구
                     Text(
-                      '로그인 시 이용약관 및 개인정보처리방침에 동의합니다.',
+                      appLocalizations.termsAndConditions,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11 * scale,
@@ -485,7 +415,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             /* TODO: 약관 화면 */
                           },
                           child: Text(
-                            '이용약관',
+                            appLocalizations.termsOfService,
                             style: TextStyle(
                               fontSize: 12 * scale,
                               color: Colors.black87,
@@ -504,7 +434,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             /* TODO: 개인정보처리방침 */
                           },
                           child: Text(
-                            '개인정보처리방침',
+                            appLocalizations.privacyPolicy,
                             style: TextStyle(
                               fontSize: 12 * scale,
                               color: Colors.black87,

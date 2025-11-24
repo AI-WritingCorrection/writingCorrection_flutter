@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:aiwriting_collection/model/data_provider.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
@@ -82,10 +84,8 @@ class _WritingPageState extends State<WritingPage> {
             final double dialogScale = scaled(context, 2);
             return MiniDialog(
               scale: dialogScale,
-              title: '실패😢',
-              content:
-                  '시간이 초과되었어요!\n'
-                  '다음에는 조금 더 빨리 써봐요~',
+              title: AppLocalizations.of(context)!.failure,
+              content: AppLocalizations.of(context)!.timeExpired,
             );
           },
         ).then((_) {
@@ -182,7 +182,11 @@ class _WritingPageState extends State<WritingPage> {
       context: context,
       builder: (context) {
         final double dialogScale = scaled(context, 2);
-        return MiniDialog(scale: dialogScale, title: '실패😢', content: content);
+        return MiniDialog(
+          scale: dialogScale,
+          title: AppLocalizations.of(context)!.failure,
+          content: content,
+        );
       },
     );
   }
@@ -195,10 +199,14 @@ class _WritingPageState extends State<WritingPage> {
     final actualStrokes = cellImages[lastIndex]?.length ?? 0;
 
     if (actualStrokes > requiredStrokes) {
-      await _showStrokeErrorDialog('획이 너무 많아요!\n획 수를 맞춰서 연습해보세요.');
+      await _showStrokeErrorDialog(
+        AppLocalizations.of(context)!.tooManyStrokes,
+      );
       return false;
     } else if (actualStrokes < requiredStrokes) {
-      await _showStrokeErrorDialog('획이 부족해요!\n획 수를 맞춰서 연습해보세요.');
+      await _showStrokeErrorDialog(
+        AppLocalizations.of(context)!.notEnoughStrokes,
+      );
       return false;
     }
     return true;
@@ -274,6 +282,14 @@ class _WritingPageState extends State<WritingPage> {
       // 1) 평균 점수(실수 그대로)
       final double? avgScore = (data['avg_score'] as num?)?.toDouble();
 
+      // If avgScore is over 60, refresh mission records
+      if (avgScore != null && avgScore > 60) {
+        if (mounted) {
+          Provider.of<DataProvider>(context, listen: false)
+              .refreshMissionRecords(context.read<LoginStatus>().userId!);
+        }
+      }
+
       // 2) 글자별 stage 목록 만들기
       final List<dynamic> results = (data['results'] as List?) ?? const [];
       // results 길이가 과제 글자 수와 다를 수 있으니 안전하게 패딩/자르기
@@ -322,6 +338,7 @@ class _WritingPageState extends State<WritingPage> {
 
   //제출버튼을 누른 후 과정을 처리하는 함수
   Future<void> _handleSubmit() async {
+    final appLocalizations = AppLocalizations.of(context)!;
     if (_isLoadingDialogShown || _isPoppingPage) return;
     _stopTimer();
     setState(() {
@@ -366,14 +383,14 @@ class _WritingPageState extends State<WritingPage> {
           context: context,
           builder:
               (context) => AlertDialog(
-                title: const Text('오류'),
+                title: Text(appLocalizations.error),
                 content: Text('평가 전송 중 오류가 발생했습니다: $e'),
                 actions: [
                   TextButton(
                     onPressed: () {
                       if (mounted) Navigator.of(context).pop();
                     },
-                    child: const Text('확인'),
+                    child: Text(appLocalizations.ok),
                   ),
                 ],
               ),
@@ -384,6 +401,8 @@ class _WritingPageState extends State<WritingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context)!;
+    final usertype = context.read<LoginStatus>().userType;
     final double cellSize = switch (widget.nowStep.stepType) {
       WritingType.SENTENCE => 103.5,
       WritingType.WORD => 200,
@@ -465,7 +484,10 @@ class _WritingPageState extends State<WritingPage> {
                   SizedBox(height: scaled(context, 20)),
 
                   SpeechBubble(
-                    text: widget.nowStep.stepMission,
+                    text:
+                        usertype == UserType.FOREIGN
+                            ? "Write the text within the time limit."
+                            : widget.nowStep.stepMission,
                     imageAsset: widget.nowStep.stepCharacter,
                     scale: scaled(context, 0.65),
                     horizontalInset: scaled(context, 80),
@@ -594,7 +616,7 @@ class _WritingPageState extends State<WritingPage> {
                     child: Row(
                       children: [
                         Text(
-                          '펜 굵기: ${_penStrokeWidth.toStringAsFixed(1)}',
+                          '${appLocalizations.penThickness} ${_penStrokeWidth.toStringAsFixed(1)}',
                           style: TextStyle(fontSize: scaled(context, 20)),
                         ),
                         Expanded(
@@ -620,151 +642,159 @@ class _WritingPageState extends State<WritingPage> {
 
                   SizedBox(height: scaled(context, 10)), // Add some spacing
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (_isLoadingDialogShown || _isPoppingPage) return;
-                          _canvasKey.currentState?.undoLastStroke();
-                        },
-                        child: Container(
-                          width: scaled(context, 230),
-                          height: scaled(context, 80),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFCEEF91),
-                            borderRadius: BorderRadius.circular(
-                              scaled(context, 12),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: scaled(context, 6),
-                                offset: Offset(0, scaled(context, 3)),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (_isLoadingDialogShown || _isPoppingPage) return;
+                            _canvasKey.currentState?.undoLastStroke();
+                          },
+                          child: Container(
+                            width: scaled(context, 230),
+                            height: scaled(context, 80),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFCEEF91),
+                              borderRadius: BorderRadius.circular(
+                                scaled(context, 12),
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '한 획 지우기',
-                            style: TextStyle(
-                              fontSize: scaled(context, 30),
-                              fontWeight: FontWeight.bold,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: scaled(context, 6),
+                                  offset: Offset(0, scaled(context, 3)),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              appLocalizations.eraseOneStroke,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: scaled(context, 30),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: scaled(context, 35)),
-                      GestureDetector(
-                        onTap: () {
-                          if (_isLoadingDialogShown || _isPoppingPage) return;
-                          _stopTimer(); // 타이머 멈춤
-                          _canvasKey.currentState?.clearAll(); // 글씨 지우기
-                          setState(() {
-                            _feedbackReady = false; // ⬅ 오버레이/탭 가로채기 비활성화
-                            _letterResults = []; // ⬅ (선택) 이전 결과도 비우기
-                            _remainingTime = widget.nowStep.stepTime; // 시간 초기화
-                          });
-                          _startTimer(); // 타이머 재시작
-                        },
-                        child: Container(
-                          width: scaled(context, 230),
-                          height: scaled(context, 80),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFCEEF91),
-                            borderRadius: BorderRadius.circular(
-                              scaled(context, 12),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: scaled(context, 6),
-                                offset: Offset(0, scaled(context, 3)),
+                        SizedBox(width: scaled(context, 35)),
+                        GestureDetector(
+                          onTap: () {
+                            if (_isLoadingDialogShown || _isPoppingPage) return;
+                            _stopTimer(); // 타이머 멈춤
+                            _canvasKey.currentState?.clearAll(); // 글씨 지우기
+                            setState(() {
+                              _feedbackReady = false; // ⬅ 오버레이/탭 가로채기 비활성화
+                              _letterResults = []; // ⬅ (선택) 이전 결과도 비우기
+                              _remainingTime =
+                                  widget.nowStep.stepTime; // 시간 초기화
+                            });
+                            _startTimer(); // 타이머 재시작
+                          },
+                          child: Container(
+                            width: scaled(context, 230),
+                            height: scaled(context, 80),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFCEEF91),
+                              borderRadius: BorderRadius.circular(
+                                scaled(context, 12),
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '글씨 지우기',
-                            style: TextStyle(
-                              fontSize: scaled(context, 30),
-                              fontWeight: FontWeight.bold,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: scaled(context, 6),
+                                  offset: Offset(0, scaled(context, 3)),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              appLocalizations.eraseAll,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: scaled(context, 30),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: scaled(context, 35)),
-                      GestureDetector(
-                        onTap: _handleSubmit,
-                        child: Container(
-                          width: scaled(context, 230),
-                          height: scaled(context, 80),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFCEEF91),
-                            borderRadius: BorderRadius.circular(
-                              scaled(context, 12),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: scaled(context, 6),
-                                offset: Offset(0, scaled(context, 3)),
+                        SizedBox(width: scaled(context, 35)),
+                        GestureDetector(
+                          onTap: _handleSubmit,
+                          child: Container(
+                            width: scaled(context, 230),
+                            height: scaled(context, 80),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFCEEF91),
+                              borderRadius: BorderRadius.circular(
+                                scaled(context, 12),
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '제출',
-                            style: TextStyle(
-                              fontSize: scaled(context, 30),
-                              fontWeight: FontWeight.bold,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: scaled(context, 6),
+                                  offset: Offset(0, scaled(context, 3)),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              appLocalizations.submit,
+                              style: TextStyle(
+                                fontSize: scaled(context, 30),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: scaled(context, 35)),
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              final double dialogScale = scaled(context, 2);
-                              return MiniDialog(
-                                scale: dialogScale,
-                                title: '도움말',
-                                content: widget.nowStep.stepTip,
-                              );
-                            },
-                          );
-                        },
-                        child: Container(
-                          width: scaled(context, 230),
-                          height: scaled(context, 80),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFCEEF91),
-                            borderRadius: BorderRadius.circular(
-                              scaled(context, 12),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: scaled(context, 6),
-                                offset: Offset(0, scaled(context, 3)),
+                        SizedBox(width: scaled(context, 35)),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                final double dialogScale = scaled(context, 2);
+                                return MiniDialog(
+                                  scale: dialogScale,
+                                  title: appLocalizations.help,
+                                  content:
+                                      usertype == UserType.FOREIGN
+                                          ? "Keep the shapes clear and balanced."
+                                          : widget.nowStep.stepTip,
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            width: scaled(context, 230),
+                            height: scaled(context, 80),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFCEEF91),
+                              borderRadius: BorderRadius.circular(
+                                scaled(context, 12),
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '도움말 보기',
-                            style: TextStyle(
-                              fontSize: scaled(context, 30),
-                              fontWeight: FontWeight.bold,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: scaled(context, 6),
+                                  offset: Offset(0, scaled(context, 3)),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              appLocalizations.viewHint,
+                              style: TextStyle(
+                                fontSize: scaled(context, 30),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: scaled(context, 20)),
-                    ],
+                        SizedBox(height: scaled(context, 20)),
+                      ],
+                    ),
                   ),
                 ],
               ),

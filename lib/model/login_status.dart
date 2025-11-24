@@ -2,7 +2,15 @@ import 'dart:convert';
 import 'package:aiwriting_collection/api.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+
+import 'dart:convert';
+import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -17,6 +25,9 @@ class LoginStatus extends ChangeNotifier {
   // 로그인 여부를 관리하는 변수 (초기값은 false)
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
+
+  bool _isLoggingOut = false;
+  bool get isLoggingOut => _isLoggingOut;
 
   String? _firebaseIdToken;
   String? _firebaseUid;
@@ -127,14 +138,22 @@ class LoginStatus extends ChangeNotifier {
   }
 
   Future<String?> _signInWithKakao() async {
-    print('[1] _signInWithKakao 진입');
+    if (kDebugMode) {
+      print('[1] _signInWithKakao 진입');
+    }
     try {
-      print('[2] Kakao sign-in 시작');
+      if (kDebugMode) {
+        print('[2] Kakao sign-in 시작');
+      }
       //final auth = FirebaseAuth.instance;
       // 1) OIDC 인증을 통해 액세스 토큰 및 ID 토큰을 발급받습니다
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-      print('[3] access token: ${token.accessToken}');
-      print('ID Token: ${token.idToken}');
+      if (kDebugMode) {
+        print('[3] access token: ${token.accessToken}');
+      }
+      if (kDebugMode) {
+        print('ID Token: ${token.idToken}');
+      }
       // 2)Firebase 크레덴셜 생성
       var provider = OAuthProvider('oidc.kakao');
       var credential = provider.credential(
@@ -142,11 +161,15 @@ class LoginStatus extends ChangeNotifier {
         // 카카오 로그인에서 발급된 idToken(카카오 설정에서 OpenID Connect가 활성화 되어있어야함)
         accessToken: token.accessToken, // 카카오 로그인에서 발급된 accessToken
       );
-      print('[4] Firebase 크레덴셜 생성 완료: $credential');
+      if (kDebugMode) {
+        print('[4] Firebase 크레덴셜 생성 완료: $credential');
+      }
       final userCredential = await FirebaseAuth.instance.signInWithCredential(
         credential,
       );
-      print('[5] 얻은 ID 토큰: ${userCredential.credential?.token}');
+      if (kDebugMode) {
+        print('[5] 얻은 ID 토큰: ${userCredential.credential?.token}');
+      }
       // 4) 로그인된 유저를 가져왔는지 확인
       final user = userCredential.user;
       if (user == null) {
@@ -158,29 +181,37 @@ class LoginStatus extends ChangeNotifier {
 
       // 5) Firebase ID 토큰을 가져와 저장
       final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
-      print('[6] 얻은 ID 토큰: $idToken');
+      if (kDebugMode) {
+        print('[6] 얻은 ID 토큰: $idToken');
+      }
       _firebaseIdToken = idToken;
       _firebaseUid = user.uid;
 
       // 카카오 사용자 정보 가져오기
       try {
         final kakaoUser = await UserApi.instance.me();
-        print('Kakao user object: ${kakaoUser.toString()}');
+        if (kDebugMode) {
+          print('Kakao user object: ${kakaoUser.toString()}');
+        }
         _email = kakaoUser.kakaoAccount?.email;
-        print('Kakao user email: $_email');
+        if (kDebugMode) {
+          print('Kakao user email: $_email');
+        }
       } catch (e) {
-        print('Failed to get Kakao user info: $e');
+        if (kDebugMode) {
+          print('Failed to get Kakao user info: $e');
+        }
       }
 
       // Firebase 유저의 이메일이 비어있을 경우를 대비
       if (_email == null || _email!.isEmpty) {
         _email = FirebaseAuth.instance.currentUser?.email;
       }
-
-      print('email=$_email');
       return _firebaseUid;
     } catch (e, st) {
-      print('[ERROR] 카카오 로그인 실패: $e\n$st');
+      if (kDebugMode) {
+        print('[ERROR] 카카오 로그인 실패: $e\n$st');
+      }
       return null;
     }
   }
@@ -242,29 +273,35 @@ class LoginStatus extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    _userId = null;
-    _firebaseUid = null;
-    _isLoggedIn = false;
-    _firebaseIdToken = null;
-    _jwt = null;
-    _email = null;
-    _userType = null;
+    if (_isLoggingOut) return;
 
-    try {
-      await FirebaseAuth.instance.signOut();
-    } catch (_) {}
-
-    try {
-      await GoogleSignIn().disconnect();
-    } catch (_) {}
-
-    try {
-      await UserApi.instance.logout();
-      print('Kakao 로그아웃 성공');
-    } catch (e) {
-      print('Kakao 로그아웃 실패: $e');
-    }
-
+    _isLoggingOut = true;
     notifyListeners();
+
+    try {
+      _userId = null;
+      _firebaseUid = null;
+      _isLoggedIn = false;
+      _firebaseIdToken = null;
+      _jwt = null;
+      _email = null;
+      _userType = null;
+
+      // Run sign-out attempts in parallel, converting them to Future<bool>
+      // to ensure Future.wait doesn't fail on a single logout error.
+      await Future.wait([
+        FirebaseAuth.instance.signOut().then((_) => true).catchError((_) => false),
+        GoogleSignIn().disconnect().then((_) => true).catchError((_) => false),
+        UserApi.instance.logout().then((_) => true).catchError((_) => false),
+      ]);
+      
+      print('로그아웃 성공');
+
+    } catch (e) {
+      print('로그아웃 실패: $e');
+    } finally {
+      _isLoggingOut = false;
+      notifyListeners();
+    }
   }
 }

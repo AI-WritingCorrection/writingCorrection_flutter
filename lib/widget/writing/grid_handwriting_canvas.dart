@@ -189,7 +189,7 @@ class GridHandwritingCanvasState extends State<GridHandwritingCanvas> {
                           textStyle: TextStyle(
                             fontFamily: 'Maruburi',
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Colors.grey[400],
                             fontSize: widget.cellSize * 0.7,
                           ),
                           showStrokeGuide: widget.showStrokeGuide,

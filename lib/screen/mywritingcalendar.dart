@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// 한 번의 연습 기록
 class WritingSession {
@@ -173,6 +174,7 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
     final trailing = rows * 7 - (lead + days);
     final agg = _aggregateByDay(_focusedMonth);
     final summary = _monthSummary(_focusedMonth);
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
@@ -211,7 +213,7 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                       ),
                       SizedBox(width: 8 * scale),
                       Text(
-                        '나만의 글씨 달력',
+                        appLocalizations.myWritingCalendarTitle,
                         style: TextStyle(
                           fontSize: 23 * scale,
                           fontWeight: FontWeight.bold,
@@ -246,7 +248,7 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                             icon: const Icon(Icons.chevron_left),
                           ),
                           Text(
-                            '${_focusedMonth.year}년 ${_focusedMonth.month}월',
+                            appLocalizations.yearMonth(_focusedMonth.year, _focusedMonth.month),
                             style: TextStyle(
                               fontSize: 20 * scale,
                               fontFamily: 'MaruBuri',
@@ -274,7 +276,7 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                         child: Row(
                           children: [
                             Text(
-                              '모든 연습',
+                              appLocalizations.allPractices,
                               style: TextStyle(
                                 fontSize: 14 * scale,
                                 color: Colors.black87,
@@ -293,18 +295,18 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                     runSpacing: 8 * scale,
                     children: [
                       _StatChip(
-                        label: '총 연습시간',
+                        label: appLocalizations.totalPracticeTime,
                         value: _fmtHm(summary.totalMin),
                         scale: scale,
                       ),
                       _StatChip(
-                        label: '평균 점수',
-                        value: '${summary.avgScore.toStringAsFixed(0)}점',
+                        label: appLocalizations.averageScore,
+                        value: '${summary.avgScore.toStringAsFixed(0)}${appLocalizations.scoreUnit}',
                         scale: scale,
                       ),
                       _StatChip(
-                        label: '세션 수',
-                        value: '${summary.count}회',
+                        label: appLocalizations.sessionCount,
+                        value: '${summary.count}${appLocalizations.sessionUnit}',
                         scale: scale,
                       ),
                     ],
@@ -321,7 +323,15 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
               ),
               child: Row(
                 children: List.generate(7, (i) {
-                  final labels = ['일', '월', '화', '수', '목', '금', '토'];
+                  final labels = [
+                    appLocalizations.daySun,
+                    appLocalizations.dayMon,
+                    appLocalizations.dayTue,
+                    appLocalizations.dayWed,
+                    appLocalizations.dayThu,
+                    appLocalizations.dayFri,
+                    appLocalizations.daySat
+                  ];
                   final isSunday = i == 0;
                   return Expanded(
                     child: Center(
@@ -441,6 +451,7 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
     ({int totalMin, double avgScore, int count, List<WritingSession> list})?
     data,
   ) {
+    final appLocalizations = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -476,7 +487,11 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '총 ${_fmtHm(data.totalMin)} • 평균 ${data.avgScore.toStringAsFixed(0)}점 • ${data.count}회',
+                        appLocalizations.dailySummary(
+                          _fmtHm(data.totalMin),
+                          data.avgScore.toStringAsFixed(0),
+                          data.count,
+                        ),
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.green,
@@ -487,11 +502,11 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
               ),
               const SizedBox(height: 12),
               if (data == null)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    '이 날의 연습 기록이 없어요.',
-                    style: TextStyle(color: Colors.black54),
+                    appLocalizations.noPracticeData,
+                    style: const TextStyle(color: Colors.black54),
                   ),
                 )
               else
@@ -521,8 +536,8 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
                                 color: Colors.black45,
                               ),
                             ),
-                    title: Text('연습 ${s.durationMin}분 • ${s.score}점'),
-                    subtitle: const Text('상세 보기(추후 연결)'),
+                    title: Text(appLocalizations.practiceSummary(s.durationMin, s.score)),
+                    subtitle: Text(appLocalizations.viewDetails),
                     onTap: () {}, // TODO: 상세 페이지로 이동
                   ),
                 ),

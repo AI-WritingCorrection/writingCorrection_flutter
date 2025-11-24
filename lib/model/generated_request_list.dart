@@ -2,6 +2,7 @@
 /// - `form (str)`: 생성할 텍스트의 형식 ('단어' 또는 '문장')
 /// - `length (int)`: 최대 글자 수
 /// - `con (str)`: 텍스트가 만족해야 할 조건 (단계 별로 구체적으로 기술)
+library;
 
 
 List<Map<String, dynamic>> generatedRequestList = [

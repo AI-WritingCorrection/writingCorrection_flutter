@@ -5,13 +5,14 @@ import 'package:aiwriting_collection/screen/free_study/free_studypage.dart';
 import 'package:aiwriting_collection/widget/word_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class WordWritingScreen extends StatelessWidget {
 
   const WordWritingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final api=Api();
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
@@ -24,9 +25,9 @@ class WordWritingScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('${appLocalizations.error}: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No data available'));
+            return Center(child: Text(appLocalizations.noDataAvailable));
           }
 
           List<Practice> wordPractices =
@@ -79,10 +80,9 @@ class WordWritingScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 8 * scale),
                               Text(
-                                '단어 쓰기',
+                                appLocalizations.wordWritingTitle,
                                 style: TextStyle(
                                   fontSize: 33 * scale,
-                                  fontFamily: 'Maruburi',
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
                                 ),
@@ -104,10 +104,9 @@ class WordWritingScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 단어를 골라 글자를 써보세요.',
+                      appLocalizations.wordWritingDescription,
                       style: TextStyle(
                         fontSize: 25 * scale,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
@@ -122,10 +121,9 @@ class WordWritingScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '단어 연습:',
+                      appLocalizations.wordPractice,
                       style: TextStyle(
                         fontSize: 30 * scale,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w700,
                         color: Colors.black87,
                       ),
@@ -139,7 +137,7 @@ class WordWritingScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 16 * scale),
                     child: Text(
-                      '$len글자 단어',
+                      '$len ${appLocalizations.characterWords}',
                       style: TextStyle(
                         fontSize: 30 * scale,
                         fontWeight: FontWeight.bold,

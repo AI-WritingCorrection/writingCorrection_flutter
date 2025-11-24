@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/data_provider.dart';
 import 'package:aiwriting_collection/model/generated_request_list.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/mission_record.dart';
@@ -11,6 +12,8 @@ import 'package:aiwriting_collection/widget/character_button.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/study_step.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:provider/provider.dart';
 
 /// 홈 탭용 나선형 레이아웃 페이지
@@ -27,22 +30,25 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> _characterImages = [
     'assets/character/bearTeacher.png',
     'assets/character/rabbitTeacher.png',
-    'assets/character/hamster.png',
   ];
 
-  final List<String> _chapterTitles = [
-    '~받침 없는 쉬운 글자 연습~',
-    '~받침 없는 글자 연습~',
-    '~받침 있는 쉬운 글자 연습~',
-    '~받침 있는 글자 연습~',
-    '~받침 있는 글자\n 빠르게 써보기~',
-    '~받침 없는 낱말 연습~',
-    '~받침 있는 낱말 연습~',
-    '~낱말 추가 연습~',
-    '~낱말을 빠르게 써보기~',
-    '~짧은 문장 연습~',
-    '~긴 문장 연습~',
-  ];
+  // 예: utils.dart 또는 해당 스크린 파일 내부
+  List<String> getChapterTitles(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.chapter1,
+      l10n.chapter2,
+      l10n.chapter3,
+      l10n.chapter4,
+      l10n.chapter5,
+      l10n.chapter6,
+      l10n.chapter7,
+      l10n.chapter8,
+      l10n.chapter9,
+      l10n.chapter10,
+      l10n.chapter11,
+    ];
+  }
 
   final TextStyle aiTextStyle = const TextStyle(
     fontSize: 25, // Default font size, will be scaled
@@ -57,71 +63,90 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showHelpDialog() {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('도움말'),
+          title: Text(
+            appLocalizations.help,
+            style: const TextStyle(color: Colors.black87, fontSize: 40),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text(
-                  '스텝 활성화 규칙',
-                  style: TextStyle(
+                Text(
+                  appLocalizations.stepActivationRule,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 30,
                     color: Colors.green,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  '이전 단계를 성공적으로 완료해야 다음 단계가 활성화됩니다.\n차근차근 단계를 밟아가며 실력을 키워보세요!',
+                Text(
+                  appLocalizations.stepActivationRuleDescription,
+                  style: const TextStyle(fontSize: 25),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  '색상 안내',
-                  style: TextStyle(
+                Text(
+                  appLocalizations.colorGuide,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 30,
                     color: Colors.green,
                   ),
                 ),
                 Row(
-                  children: const [
-                    Icon(
+                  children: [
+                    const Icon(
                       Icons.circle,
                       color: Color.fromARGB(255, 199, 246, 151),
                     ),
-                    SizedBox(width: 8),
-                    Expanded(child: Text('현재 학습할 수 있는 단계입니다.')),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        appLocalizations.colorGuideActive,
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Row(
-                  children: const [
-                    Icon(Icons.circle, color: Colors.grey),
-                    SizedBox(width: 8),
-                    Expanded(child: Text('아직 잠겨있는 단계입니다. 이전 단계를 먼저 완료해주세요.')),
+                  children: [
+                    const Icon(Icons.circle, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        appLocalizations.colorGuideInactive,
+                        style: const TextStyle(fontSize: 25),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  '이미지 버튼 기능',
-                  style: TextStyle(
+                Text(
+                  appLocalizations.imageButtonFunction,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 30,
                     color: Colors.green,
                   ),
                 ),
-                const Text(
-                  '각 챕터의 마지막에 있는 동물 선생님 버튼을 누르면, 특별한 AI 추천 문제를 풀어볼 수 있습니다.',
+                Text(
+                  appLocalizations.imageButtonFunctionDescription,
+                  style: const TextStyle(fontSize: 25),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('닫기', style: TextStyle(color: Colors.black87)),
+              child: Text(
+                appLocalizations.close,
+                style: const TextStyle(color: Colors.black87, fontSize: 30),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -154,35 +179,36 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPortrait(BuildContext context, double scale) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final Size screenSize = MediaQuery.of(context).size;
-
+    final chapterTitles = getChapterTitles(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder<List<dynamic>>(
-        future: Future.wait([
-          api.getStepList(),
-          api.getMissionRecords(context.read<LoginStatus>().userId ?? 0),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
+      body: Consumer<DataProvider>(
+        builder: (context, dataProvider, child) {
+          // Show loading indicator if initial steps aren't loaded,
+          // or if we are loading and user-specific records haven't arrived yet.
+          if (dataProvider.steps == null ||
+              (dataProvider.isLoading && dataProvider.missionRecords == null)) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError) {
-            return Center(child: Text('에러: ${snapshot.error}'));
+          if (dataProvider.error != null) {
+            return Center(
+              child: Text('${appLocalizations.error}: ${dataProvider.error}'),
+            );
           }
-          final steps = snapshot.data![0] as List<Steps>;
-          final records = snapshot.data![1] as List<MissionRecord>;
+          final steps = dataProvider.steps ?? [];
+          final records = dataProvider.missionRecords ?? [];
           // Determine highest cleared step index
-          final cleared =
-              records.where((r) => r.isCleared).map((r) => r.stepId).toList();
-          final maxCleared =
-              cleared.isEmpty ? 0 : cleared.reduce((a, b) => a > b ? a : b);
+          final maxCleared = records
+              .where((r) => r.isCleared)
+              .map((r) => r.stepId)
+              .fold(0, (prev, curr) => curr > prev ? curr : prev);
           print('Max cleared step: $maxCleared');
           final enableUpTo = maxCleared + 1;
 
           final int count = steps.length;
           final widgets = <Widget>[];
-
           // --- 레이아웃 로직 수정 시작 ---
 
           // S-curve 좌표용 변수
@@ -224,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10 * scale), // 간격 추가
                   Text(
-                    '도움말 버튼을 눌러\n학습 방법을 확인하세요!',
+                    appLocalizations.helpButtonText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20 * scale,
@@ -242,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
           while (stepCounter < count) {
             // 1. 챕터 제목 추가 (5의 배수 스텝 시작 시)
             if (stepCounter % 5 == 0 &&
-                stepCounter ~/ 5 < _chapterTitles.length) {
+                stepCounter ~/ 5 < chapterTitles.length) {
               // 가로선 추가
               final double lineHeight = 2 * scale;
               widgets.add(
@@ -261,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   right: 0,
                   top: currentY,
                   child: Text(
-                    _chapterTitles[stepCounter ~/ 5],
+                    chapterTitles[stepCounter ~/ 5],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 30 * scale,
@@ -312,8 +338,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               builder: (BuildContext context) {
                                 return MiniDialog(
                                   scale: scale,
-                                  title: '너무 작아!',
-                                  content: '공부는 태블릿에서만 가능합니다!',
+                                  title: appLocalizations.dialogTitleTooSmall,
+                                  content:
+                                      appLocalizations.dialogContentTabletOnly,
                                 );
                               },
                             );
@@ -324,8 +351,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               builder: (BuildContext context) {
                                 return MiniDialog(
                                   scale: scale,
-                                  title: '알림',
-                                  content: '아직 공부할 수 없어요!',
+                                  title: appLocalizations.notification,
+                                  content: appLocalizations.cannotStudyYet,
                                 );
                               },
                             );
@@ -395,8 +422,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         builder: (BuildContext context) {
                                           return MiniDialog(
                                             scale: scale,
-                                            title: '너무 작아!',
-                                            content: '공부는 태블릿에서만 가능합니다!',
+                                            title:
+                                                appLocalizations
+                                                    .dialogTitleTooSmall,
+                                            content:
+                                                appLocalizations
+                                                    .dialogContentTabletOnly,
                                           );
                                         },
                                       );
@@ -407,8 +438,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         builder: (BuildContext context) {
                                           return MiniDialog(
                                             scale: scale,
-                                            title: '알림',
-                                            content: '아직 공부할 수 없어요!',
+                                            title:
+                                                appLocalizations.notification,
+                                            content:
+                                                appLocalizations.cannotStudyYet,
                                           );
                                         },
                                       );
@@ -439,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(15 * scale),
                           ),
                           child: Text(
-                            'AI 추천 문제 풀기!',
+                            appLocalizations.aiRecommendation,
                             style: aiTextStyle.copyWith(fontSize: 20 * scale),
                           ),
                         ),
@@ -492,24 +525,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLandscape(BuildContext context, double scale) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final Size screenSize = MediaQuery.of(context).size;
+    final chapterTitles = getChapterTitles(context);
+    final loginStatus = context.read<LoginStatus>();
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder<List<dynamic>>(
-        future: Future.wait([
-          api.getStepList(),
-          api.getMissionRecords(context.read<LoginStatus>().userId ?? 0),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
+      body: Consumer<DataProvider>(
+        builder: (context, dataProvider, child) {
+          if (dataProvider.isLoading && dataProvider.steps == null) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError) {
-            return Center(child: Text('에러: ${snapshot.error}'));
+          if (dataProvider.error != null) {
+            return Center(
+              child: Text('${appLocalizations.error}: ${dataProvider.error}'),
+            );
           }
-          final steps = snapshot.data![0] as List<Steps>;
-          final records = snapshot.data![1] as List<MissionRecord>;
+          final steps = dataProvider.steps ?? [];
+          final records = dataProvider.missionRecords ?? [];
           // Determine highest cleared step index
           final cleared =
               records.where((r) => r.isCleared).map((r) => r.stepId).toList();
@@ -562,7 +596,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10 * scale), // 간격 추가
                   Text(
-                    '어떻게 손글손글을 통해\n 연습하는지 알려드릴게요!',
+                    appLocalizations.helpButtonText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20 * scale,
@@ -584,7 +618,7 @@ class _HomeScreenState extends State<HomeScreen> {
           while (stepCounter < count) {
             // 1. 챕터 제목 추가 (5의 배수 스텝 시작 시)
             if (stepCounter % 5 == 0 &&
-                stepCounter ~/ 5 < _chapterTitles.length) {
+                stepCounter ~/ 5 < chapterTitles.length) {
               // 가로선 추가
               final double lineHeight = 2 * scale;
               widgets.add(
@@ -603,7 +637,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   right: 0,
                   top: currentY,
                   child: Text(
-                    _chapterTitles[stepCounter ~/ 5],
+                    chapterTitles[stepCounter ~/ 5],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 62 * scale,
@@ -658,9 +692,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                               ),
                             );
-                            if (mounted) {
-                              setState(() {});
-                            }
                           }
                           : () {
                             showDialog(
@@ -668,8 +699,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               builder: (BuildContext context) {
                                 return MiniDialog(
                                   scale: scale,
-                                  title: '알림',
-                                  content: '아직 공부할 수 없어요!',
+                                  title: appLocalizations.notification,
+                                  content: appLocalizations.cannotStudyYet,
                                 );
                               },
                             );
@@ -763,7 +794,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             (data['result'] as String);
                                         Steps aiStep = Steps(
                                           stepId: capturedStepId,
-                                          stepMission: '밑의 글자를 작성해보세요!',
+                                          stepMission: appLocalizations
+                                              .aiwritingMission,
                                           stepCharacter:
                                               _characterImages[buttonIndex %
                                                   _characterImages.length],
@@ -781,9 +813,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                           ),
                                         );
-                                        if (mounted) {
-                                          setState(() {});
-                                        }
                                       } catch (e) {
                                         if (Navigator.of(context).canPop()) {
                                           Navigator.of(context).pop();
@@ -792,9 +821,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           context: context,
                                           builder:
                                               (context) => AlertDialog(
-                                                title: const Text('오류'),
+                                                title: Text(
+                                                  appLocalizations.error,
+                                                ),
                                                 content: Text(
-                                                  'AI 추천 문제 생성 중 오류가 발생했습니다: $e',
+                                                  '${appLocalizations.aiError}$e',
                                                 ),
                                                 actions: [
                                                   TextButton(
@@ -803,7 +834,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             Navigator.of(
                                                               context,
                                                             ).pop(),
-                                                    child: const Text('확인'),
+                                                    child: Text(
+                                                      appLocalizations.ok,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -816,8 +849,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         builder: (BuildContext context) {
                                           return MiniDialog(
                                             scale: scale,
-                                            title: '알림',
-                                            content: '아직 공부할 수 없어요!',
+                                            title:
+                                                appLocalizations.notification,
+                                            content:
+                                                appLocalizations.cannotStudyYet,
                                           );
                                         },
                                       );
@@ -848,7 +883,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(20 * scale),
                           ),
                           child: Text(
-                            'AI 추천 문제 풀기!',
+                            appLocalizations.aiRecommendation,
                             style: aiTextStyle.copyWith(fontSize: 25 * scale),
                           ),
                         ),

@@ -1,7 +1,7 @@
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
-import 'package:aiwriting_collection/screen/mywritingcalendar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecordScreen extends StatelessWidget {
   const RecordScreen({super.key});
@@ -27,6 +27,7 @@ class RecordScreen extends StatelessWidget {
         isLandscape
             ? screenSize.height / baseLandscape
             : screenSize.width / basePortrait;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
@@ -55,11 +56,9 @@ class RecordScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '나의 기록',
+                        appLocalizations.myRecordTitle,
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          // fontFamily: 'MaruBuri',
-                          // fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
@@ -76,7 +75,7 @@ class RecordScreen extends StatelessWidget {
                 vertical: 16 * scale,
               ),
               child: Text(
-                '나의 연습 기록들을 다양한 방법으로 확인해보세요!',
+                appLocalizations.myRecordDescription,
                 style: TextStyle(
                   fontSize: 15 * scale,
                   fontFamily: 'MaruBuri',
@@ -89,8 +88,8 @@ class RecordScreen extends StatelessWidget {
 
             // 기능 목록 (카드 형태)
             PracticeCard(
-              title: '글씨 점수 통계',
-              subtitle: '내가 연습한 글씨 점수를 통계로 확인해볼까요?',
+              title: appLocalizations.writingScoreStatsTitle,
+              subtitle: appLocalizations.writingScoreStatsSubtitle,
               imagePath: 'assets/image/graph.png',
               onTap: () {
                 // 해당 페이지로 이동하는 로직
@@ -99,16 +98,16 @@ class RecordScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '개발 진행중',
-                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                      title: appLocalizations.dialogTitleInProgress,
+                      content: appLocalizations.dialogContentInProgress,
                     );
                   },
                 );
               },
             ),
             PracticeCard(
-              title: '나만의 글씨 달력',
-              subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
+              title: appLocalizations.myWritingCalendarCardTitle,
+              subtitle: appLocalizations.myWritingCalendarCardSubtitle,
               imagePath: 'assets/image/dailyCalendar.png',
               onTap: () {
                 showDialog(
@@ -116,8 +115,8 @@ class RecordScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale * 1.5,
-                      title: '개발 진행중',
-                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                      title: appLocalizations.dialogTitleInProgress,
+                      content: appLocalizations.dialogContentInProgress,
                     );
                   },
                 );
@@ -130,8 +129,8 @@ class RecordScreen extends StatelessWidget {
               },
             ),
             PracticeCard(
-              title: '글씨 포토카트 만들기',
-              subtitle: '오늘을 기념하는 사진과 함께 문장 하나를 남겨보세요',
+              title: appLocalizations.createPhotocardTitle,
+              subtitle: appLocalizations.createPhotocardSubtitle,
               imagePath: 'assets/image/photocard.png',
               onTap: () {
                 showDialog(
@@ -139,8 +138,8 @@ class RecordScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '개발 진행중',
-                      content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                      title: appLocalizations.dialogTitleInProgress,
+                      content: appLocalizations.dialogContentInProgress,
                     );
                   },
                 );
@@ -165,6 +164,7 @@ class RecordScreen extends StatelessWidget {
         isLandscape
             ? screenSize.height / baseLandscape
             : screenSize.width / basePortrait;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
@@ -189,11 +189,9 @@ class RecordScreen extends StatelessWidget {
                   top: 80 * scale,
                   left: 50 * scale,
                   child: Text(
-                    '나의 기록',
+                    appLocalizations.myRecordTitle,
                     style: TextStyle(
                       fontSize: 33 * scale,
-                      // fontFamily: 'MaruBuri',
-                      // fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
@@ -209,7 +207,7 @@ class RecordScreen extends StatelessWidget {
                 8 * scale,
               ),
               child: Text(
-                '나의 연습 기록들을 다양한 방법으로 확인해보세요!',
+                appLocalizations.myRecordDescription,
                 style: TextStyle(
                   fontFamily: 'MaruBuri',
                   fontSize: 20 * scale,
@@ -234,8 +232,8 @@ class RecordScreen extends StatelessWidget {
                 childAspectRatio: 3, // width:height 비율 조정
                 children: [
                   PracticeCard(
-                    title: '글씨 점수 통계',
-                    subtitle: '내가 연습한 글씨 점수를 통계로 확인해볼까요?',
+                    title: appLocalizations.writingScoreStatsTitle,
+                    subtitle: appLocalizations.writingScoreStatsSubtitle,
                     imagePath: 'assets/image/graph.png',
                     onTap: () {
                       // 개발진행중이라는 다이얼로그
@@ -244,16 +242,16 @@ class RecordScreen extends StatelessWidget {
                         builder: (BuildContext context) {
                           return MiniDialog(
                             scale: scale * 1.5,
-                            title: '개발 진행중',
-                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                            title: appLocalizations.dialogTitleInProgress,
+                            content: appLocalizations.dialogContentInProgress,
                           );
                         },
                       );
                     },
                   ),
                   PracticeCard(
-                    title: '나만의 글씨 달력',
-                    subtitle: '하루하루마다 연습한 글씨를 달력으로 확인해보세요',
+                    title: appLocalizations.myWritingCalendarCardTitle,
+                    subtitle: appLocalizations.myWritingCalendarCardSubtitle,
                     imagePath: 'assets/image/dailyCalendar.png',
                     onTap: () {
                       showDialog(
@@ -261,8 +259,8 @@ class RecordScreen extends StatelessWidget {
                         builder: (BuildContext context) {
                           return MiniDialog(
                             scale: scale * 1.5,
-                            title: '개발 진행중',
-                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                            title: appLocalizations.dialogTitleInProgress,
+                            content: appLocalizations.dialogContentInProgress,
                           );
                         },
                       );
@@ -275,8 +273,8 @@ class RecordScreen extends StatelessWidget {
                     },
                   ),
                   PracticeCard(
-                    title: '글씨 포토카트 만들기',
-                    subtitle: '오늘을 기념하는 사진과 함께 문장 하나를 남겨보세요',
+                    title: appLocalizations.createPhotocardTitle,
+                    subtitle: appLocalizations.createPhotocardSubtitle,
                     imagePath: 'assets/image/photocard.png',
                     onTap: () {
                       showDialog(
@@ -284,8 +282,8 @@ class RecordScreen extends StatelessWidget {
                         builder: (BuildContext context) {
                           return MiniDialog(
                             scale: scale * 1.5,
-                            title: '개발 진행중',
-                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                            title: appLocalizations.dialogTitleInProgress,
+                            content: appLocalizations.dialogContentInProgress,
                           );
                         },
                       );
