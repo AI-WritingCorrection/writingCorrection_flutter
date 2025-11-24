@@ -7,6 +7,7 @@ import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/model/stroke_guide_model.dart';
 import 'package:aiwriting_collection/model/stroke_guide_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FreeStudyPage extends StatefulWidget {
   final Practice nowPractice;
@@ -49,6 +50,7 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final double cellSize = switch (widget.nowPractice.practiceType) {
       WritingType.SENTENCE => 103.5,
       WritingType.WORD => 200,
@@ -99,7 +101,7 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                   SizedBox(height: scaled(context, 20)),
 
                   SpeechBubble(
-                    text: '천천히 연습해보세요!',
+                    text: appLocalizations.takeYourTime,
                     imageAsset: widget.nowPractice.practiceCharacter,
                     scale: scaled(context, 0.65),
                     horizontalInset: scaled(context, 80),
@@ -219,7 +221,8 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '한 획 지우기',
+                            textAlign: TextAlign.center,
+                            appLocalizations.eraseOneStroke,
                             style: TextStyle(
                               fontSize: scaled(context, 30),
                               fontWeight: FontWeight.bold,
@@ -248,7 +251,7 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '글씨 지우기',
+                            appLocalizations.eraseAll,
                             style: TextStyle(
                               fontSize: scaled(context, 30),
                               fontWeight: FontWeight.bold,
@@ -265,7 +268,7 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                               final double dialogScale = scaled(context, 2);
                               return MiniDialog(
                                 scale: dialogScale,
-                                title: '도움말',
+                                title: appLocalizations.help,
                                 content: widget.nowPractice.practiceTip,
                               );
                             },
@@ -289,7 +292,7 @@ class _FreeStudyPageState extends State<FreeStudyPage> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '도움말 보기',
+                            appLocalizations.viewHint,
                             style: TextStyle(
                               fontSize: scaled(context, 30),
                               fontWeight: FontWeight.bold,

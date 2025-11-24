@@ -5,6 +5,7 @@ import 'package:aiwriting_collection/screen/free_study/word_writing_screen.dart'
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StudyScreen extends StatelessWidget {
   const StudyScreen({super.key});
@@ -30,6 +31,7 @@ class StudyScreen extends StatelessWidget {
         isLandscape
             ? screenSize.height / baseLandscape
             : screenSize.width / basePortrait;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -58,11 +60,9 @@ class StudyScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '손글씨 연습',
+                        appLocalizations.studyTitle,
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          // fontFamily: 'MaruBuri',
-                          // fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
@@ -79,7 +79,7 @@ class StudyScreen extends StatelessWidget {
                 vertical: 16 * scale,
               ),
               child: Text(
-                '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을\n차근차근 알려드립니다.',
+                appLocalizations.studyDescription,
                 style: TextStyle(
                   fontSize: 15 * scale,
                   color: Colors.black87,
@@ -92,8 +92,8 @@ class StudyScreen extends StatelessWidget {
 
             // 기능 목록 (카드 형태)
             PracticeCard(
-              title: '손글씨 자세',
-              subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 도구',
+              title: appLocalizations.handwritingPostureTitle,
+              subtitle: appLocalizations.handwritingPostureSubtitle,
               imagePath: 'assets/character/bearTeacher.png',
               onTap: () {
                 Navigator.of(context).push(
@@ -104,8 +104,8 @@ class StudyScreen extends StatelessWidget {
               },
             ),
             PracticeCard(
-              title: '자음과 모음 쓰기',
-              subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
+              title: appLocalizations.consonantsAndVowelsTitle,
+              subtitle: appLocalizations.consonantsAndVowelsSubtitle,
               imagePath: 'assets/character/rabbitTeacher.png',
               onTap: () {
                 showDialog(
@@ -113,16 +113,16 @@ class StudyScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '너무 작아!',
-                      content: '공부는 태블릿에서만 가능합니다!',
+                      title: appLocalizations.dialogTitleTooSmall,
+                      content: appLocalizations.dialogContentTabletOnly,
                     );
                   },
                 );
               },
             ),
             PracticeCard(
-              title: '단어 쓰기',
-              subtitle: '쌍자음, 겹받침 등 조금 더 복잡한 글자 연습',
+              title: appLocalizations.wordWritingTitle,
+              subtitle: appLocalizations.wordWritingSubtitle,
               imagePath: 'assets/character/hamster.png',
               onTap: () {
                 showDialog(
@@ -130,16 +130,16 @@ class StudyScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '너무 작아!',
-                      content: '공부는 태블릿에서만 가능합니다!',
+                      title: appLocalizations.dialogTitleTooSmall,
+                      content: appLocalizations.dialogContentTabletOnly,
                     );
                   },
                 );
               },
             ),
             PracticeCard(
-              title: '문장 쓰기',
-              subtitle: '문장 단위로 글씨를 또박또박 쓰는 연습',
+              title: appLocalizations.sentenceWritingTitle,
+              subtitle: appLocalizations.sentenceWritingSubtitle,
               imagePath: 'assets/character/bearTeacher.png',
               onTap: () {
                 showDialog(
@@ -147,16 +147,16 @@ class StudyScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '너무 작아!',
-                      content: '공부는 태블릿에서만 가능합니다!',
+                      title: appLocalizations.dialogTitleTooSmall,
+                      content: appLocalizations.dialogContentTabletOnly,
                     );
                   },
                 );
               },
             ),
             PracticeCard(
-              title: '캘리그라피 연습',
-              subtitle: '간단한 캘리그라피 연습을 통해 글씨체를 살려봐요',
+              title: appLocalizations.calligraphyPracticeTitle,
+              subtitle: appLocalizations.calligraphyPracticeSubtitle,
               imagePath: 'assets/character/rabbitTeacher.png',
               onTap: () {
                 showDialog(
@@ -164,16 +164,16 @@ class StudyScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '너무 작아!',
-                      content: '공부는 태블릿에서만 가능합니다!',
+                      title: appLocalizations.dialogTitleTooSmall,
+                      content: appLocalizations.dialogContentTabletOnly,
                     );
                   },
                 );
               },
             ),
             PracticeCard(
-              title: '무한 글씨 연습',
-              subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
+              title: appLocalizations.infiniteWritingPracticeTitle,
+              subtitle: appLocalizations.infiniteWritingPracticeSubtitle,
               imagePath: 'assets/character/hamster.png',
               onTap: () {
                 showDialog(
@@ -181,8 +181,8 @@ class StudyScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     return MiniDialog(
                       scale: scale,
-                      title: '너무 작아!',
-                      content: '공부는 태블릿에서만 가능합니다!',
+                      title: appLocalizations.dialogTitleTooSmall,
+                      content: appLocalizations.dialogContentTabletOnly,
                     );
                   },
                 );
@@ -207,6 +207,7 @@ class StudyScreen extends StatelessWidget {
         isLandscape
             ? screenSize.height / baseLandscape
             : screenSize.width / basePortrait;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
@@ -231,7 +232,7 @@ class StudyScreen extends StatelessWidget {
                   top: 80 * scale,
                   left: 50 * scale,
                   child: Text(
-                    '손글씨 연습',
+                    appLocalizations.studyTitle,
                     style: TextStyle(
                       fontSize: 33 * scale,
                       // fontFamily: 'MaruBuri',
@@ -251,7 +252,7 @@ class StudyScreen extends StatelessWidget {
                 8 * scale,
               ),
               child: Text(
-                '자음, 모음, 받침, 문장들을 올바르게 쓰는 연습법을 차근차근 알려드립니다.',
+                appLocalizations.studyDescription,
                 style: TextStyle(
                   fontSize: 23 * scale,
                   color: Colors.black87,
@@ -276,8 +277,8 @@ class StudyScreen extends StatelessWidget {
                 childAspectRatio: 3, // width:height 비율 조정
                 children: [
                   PracticeCard(
-                    title: '손글씨 기초',
-                    subtitle: '손글씨를 잘 쓰기 위한 기본 자세와 개념',
+                    title: appLocalizations.handwritingBasicsTitle,
+                    subtitle: appLocalizations.handwritingBasicsSubtitle,
                     imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {
                       Navigator.of(context).push(
@@ -288,8 +289,8 @@ class StudyScreen extends StatelessWidget {
                     },
                   ),
                   PracticeCard(
-                    title: '자음과 모음 쓰기',
-                    subtitle: '자음, 모음 등 기본 글자를 바르게 쓰는 연습',
+                    title: appLocalizations.consonantsAndVowelsTitle,
+                    subtitle: appLocalizations.consonantsAndVowelsSubtitle,
                     imagePath: 'assets/character/rabbitTeacher.png',
                     onTap: () {
                       Navigator.of(context).push(
@@ -300,8 +301,8 @@ class StudyScreen extends StatelessWidget {
                     },
                   ),
                   PracticeCard(
-                    title: '단어 쓰기',
-                    subtitle: '쌍자음, 겹받침 등 복잡한 글자 연습',
+                    title: appLocalizations.wordWritingTitle,
+                    subtitle: appLocalizations.wordWritingSubtitle,
                     imagePath: 'assets/character/hamster.png',
                     onTap: () {
                       Navigator.of(context).push(
@@ -312,8 +313,8 @@ class StudyScreen extends StatelessWidget {
                     },
                   ),
                   PracticeCard(
-                    title: '문장 쓰기',
-                    subtitle: '문장 단위로 또박또박 쓰는 연습',
+                    title: appLocalizations.sentenceWritingTitle,
+                    subtitle: appLocalizations.sentenceWritingSubtitle,
                     imagePath: 'assets/character/bearTeacher.png',
                     onTap: () {
                       Navigator.of(context).push(
@@ -324,34 +325,34 @@ class StudyScreen extends StatelessWidget {
                     },
                   ),
                   PracticeCard(
-                    title: '캘리그라피 연습',
-                    subtitle: '캘리그라피 연습을 통해 글씨체를 살려봐요',
-                    imagePath: 'assets/character/bearTeacher.png',
+                    title: appLocalizations.calligraphyPracticeTitle,
+                    subtitle: appLocalizations.calligraphyPracticeSubtitle,
+                    imagePath: 'assets/character/rabbitTeacher.png',
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return MiniDialog(
                             scale: scale * 1.5,
-                            title: '개발 진행중',
-                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                            title: appLocalizations.dialogTitleInProgress,
+                            content: appLocalizations.dialogContentInProgress,
                           );
                         },
                       );
                     },
                   ),
                   PracticeCard(
-                    title: '무한 글씨 연습',
-                    subtitle: '원하는 만큼 원고지에 글씨를 적어보세요',
-                    imagePath: 'assets/character/bearTeacher.png',
+                    title: appLocalizations.infiniteWritingPracticeTitle,
+                    subtitle: appLocalizations.infiniteWritingPracticeSubtitle,
+                    imagePath: 'assets/character/hamster.png',
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return MiniDialog(
                             scale: scale * 1.5,
-                            title: '개발 진행중',
-                            content: '해당 기능은 개발중이니 조금만 기다려주세요!',
+                            title: appLocalizations.dialogTitleInProgress,
+                            content: appLocalizations.dialogContentInProgress,
                           );
                         },
                       );

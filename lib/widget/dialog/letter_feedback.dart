@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/widget/pill_section.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LetterFeedbackSheet extends StatelessWidget {
   final String targetChar; // 대상 글자
@@ -69,10 +70,10 @@ class LetterFeedbackSheet extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _infoLine('대상 글자', targetChar, scale),
+                        _infoLine(AppLocalizations.of(context)!.targetCharacter, targetChar, scale),
                         SizedBox(height: 6 * scale),
                         _infoLine(
-                          '점수',
+                          AppLocalizations.of(context)!.score,
                           score != null ? '${score!}' : '-',
                           scale,
                         ),
@@ -83,7 +84,7 @@ class LetterFeedbackSheet extends StatelessWidget {
 
                   // ── 피드백 ──
                   PillSection(
-                    label: '피드백',
+                    label: AppLocalizations.of(context)!.feedback,
                     trailingImage: imagePath,
                     scale: scale,
                     contentPadding: EdgeInsets.symmetric(
@@ -97,7 +98,7 @@ class LetterFeedbackSheet extends StatelessWidget {
                                 vertical: 8 * scale,
                               ),
                               child: Text(
-                                '피드백 없음',
+                                AppLocalizations.of(context)!.noFeedback,
                                 style: TextStyle(
                                   fontSize: 20 * scale,
                                   fontWeight: FontWeight.w600,

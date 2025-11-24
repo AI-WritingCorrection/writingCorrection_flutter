@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MiniDialog extends StatelessWidget {
   final double scale;
@@ -13,6 +14,7 @@ class MiniDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16 * scale),
@@ -47,7 +49,7 @@ class MiniDialog extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(6.0),
             child: Text(
-              '확인',
+              appLocalizations.ok,
               style: TextStyle(
                 color: Colors.red.shade400,
                 fontFamily: 'Pretendard',

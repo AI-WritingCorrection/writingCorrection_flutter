@@ -1,12 +1,19 @@
+import 'dart:typed_data';
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/data_provider.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:aiwriting_collection/widget/dialog/edit_profile_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:aiwriting_collection/model/login_status.dart';
 import 'package:aiwriting_collection/main.dart';
 import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MypageScreen extends StatefulWidget {
   const MypageScreen({super.key});
@@ -15,14 +22,21 @@ class MypageScreen extends StatefulWidget {
   State<MypageScreen> createState() => _MypageScreenState();
 }
 
+// Helper function to run in a separate isolate
+Uint8List _decodeResizeEncode(Uint8List data) {
+  final image = img.decodeImage(data);
+  if (image == null) {
+    throw Exception("Failed to decode image");
+  }
+  final resized = img.copyResize(image, width: 512);
+  return Uint8List.fromList(img.encodeJpg(resized, quality: 85));
+}
+
 class _MypageScreenState extends State<MypageScreen> {
   bool isDailyAlarmOn = false;
   final api = Api();
   UserProfile? _profile;
   bool _loadingProfile = true;
-
-  // 로그아웃 과정이 진행되는 동안 true가 됩니다.
-  bool _isLoggingOut = false;
 
   // 로그인 상태 변경에 반응해 프로필을 재로딩하기 위한 상태
   int _lastLoadedUserId = 0;
@@ -30,12 +44,26 @@ class _MypageScreenState extends State<MypageScreen> {
 
   final ImagePicker _imagePicker = ImagePicker();
 
+  String _getUserTypeName(UserType type, AppLocalizations appLocalizations) {
+    switch (type) {
+      case UserType.CHILD:
+        return appLocalizations.userTypeChild;
+      case UserType.ADULT:
+        return appLocalizations.userTypeAdult;
+      case UserType.FOREIGN:
+        return appLocalizations.userTypeForeign;
+    }
+  }
+
+  Future<Uint8List> _resizeImage(Uint8List data) async {
+    return await compute(_decodeResizeEncode, data);
+  }
+
   Future<void> _pickProfileImage() async {
+    final appLocalizations = AppLocalizations.of(context)!;
     try {
       final XFile? picked = await _imagePicker.pickImage(
         source: ImageSource.gallery,
-        imageQuality:
-            50, // This compresses the image, but doesn't guarantee size.
       );
       if (picked == null) return;
 
@@ -47,21 +75,24 @@ class _MypageScreenState extends State<MypageScreen> {
         });
       }
 
-      await api.uploadProfileImage(picked.path, uid);
+      final bytes = await picked.readAsBytes();
+      final resizedBytes = await _resizeImage(bytes);
+
+      await api.uploadProfileImage(resizedBytes, uid);
 
       // Reload profile on success
       await _loadUserProfile(force: true);
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('프로필 이미지가 업데이트되었습니다.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(appLocalizations.profileImageUpdateSuccess)),
+      );
     } catch (e) {
       if (!mounted) return;
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '업로드 실패: ${e.toString().replaceFirst("Exception: ", "")}',
+            '${appLocalizations.profileImageUpdateFailed}${e.toString().replaceFirst("Exception: ", "")}',
           ),
         ),
       );
@@ -133,6 +164,7 @@ class _MypageScreenState extends State<MypageScreen> {
 
   void _showEditProfileDialog() async {
     if (_profile == null) return;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     final result = await showDialog<bool>(
       context: context,
@@ -144,58 +176,28 @@ class _MypageScreenState extends State<MypageScreen> {
     if (result == true) {
       await _loadUserProfile(force: true);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('프로필이 업데이트되었습니다.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(appLocalizations.profileUpdateSuccess)),
+        );
       }
     } else if (result == false) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('프로필 업데이트가 취소되었거나 실패했습니다.')),
+          SnackBar(content: Text(appLocalizations.profileUpdateCancelled)),
         );
       }
     }
   }
 
   Future<void> _handleLogout() async {
-    if (_isLoggingOut) return;
-    setState(() {
-      _isLoggingOut = true;
-    });
+    final loginStatus = context.read<LoginStatus>();
+    final appLocalizations = AppLocalizations.of(context)!;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
+    // Perform logout
+    final success = await loginStatus.logout();
 
-    try {
-      await api.logout();
-      if (!mounted) return;
-
-      Provider.of<LoginStatus>(context, listen: false).logout();
-
-      Navigator.of(context).pop(); // Close the loading dialog
-
-      if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const MyApp()),
-        (route) => false,
-      );
-    } catch (e) {
-      if (mounted) {
-        Navigator.of(context).pop(); // Close the loading dialog
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoggingOut = false;
-        });
-      }
+    if (mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     }
   }
 
@@ -227,6 +229,7 @@ class _MypageScreenState extends State<MypageScreen> {
         isLandscape
             ? screenSize.height / baseLandscape
             : screenSize.width / basePortrait;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -254,11 +257,9 @@ class _MypageScreenState extends State<MypageScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '내 정보',
+                        appLocalizations.myPageTitle,
                         style: TextStyle(
                           fontSize: 23 * scale,
-                          // fontFamily: 'MaruBuri',
-                          // fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
@@ -280,7 +281,6 @@ class _MypageScreenState extends State<MypageScreen> {
                     clipBehavior: Clip.none,
                     children: [
                       GestureDetector(
-                        onTap: _pickProfileImage,
                         child:
                             _loadingProfile
                                 ? CircleAvatar(
@@ -293,7 +293,9 @@ class _MypageScreenState extends State<MypageScreen> {
                                   radius: 70 * scale,
                                   backgroundImage:
                                       _profile?.profilePic != null
-                                          ? NetworkImage(_profile!.profilePic!)
+                                          ? CachedNetworkImageProvider(
+                                            _profile!.profilePic!,
+                                          )
                                           : null,
                                   child:
                                       _profile?.profilePic == null
@@ -305,22 +307,25 @@ class _MypageScreenState extends State<MypageScreen> {
                                           : null,
                                 ),
                       ),
-
-                      Positioned(
-                        bottom: -4 * scale,
-                        right: -4 * scale,
-                        child: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.edit,
-                            size: 30 * scale,
-                            color: Colors.black54,
+                      GestureDetector(
+                        onTap: _pickProfileImage,
+                        child: Positioned(
+                          bottom: -4 * scale,
+                          right: -4 * scale,
+                          child: CircleAvatar(
+                            radius: 26 * scale,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.edit,
+                              size: 30 * scale,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
+
                   SizedBox(height: 20 * scale),
                   Container(
                     padding: EdgeInsets.symmetric(
@@ -338,7 +343,9 @@ class _MypageScreenState extends State<MypageScreen> {
                     child: Text(
                       _profile != null
                           ? _profile!.nickname
-                          : (_loadingProfile ? '불러오는 중...' : '게스트'),
+                          : (_loadingProfile
+                              ? appLocalizations.loading
+                              : appLocalizations.guest),
                       style: TextStyle(
                         fontSize: 18 * scale,
                         fontWeight: FontWeight.w500,
@@ -369,8 +376,8 @@ class _MypageScreenState extends State<MypageScreen> {
                           _profile != null
                               ? _profile!.birthdate.toString().split(' ')[0]
                               : (_loadingProfile
-                                  ? '불러오는 중...'
-                                  : '나이는 공부에 상관없죠!'),
+                                  ? appLocalizations.loading
+                                  : appLocalizations.ageIsJustANumber),
                           style: TextStyle(
                             fontSize: 18 * scale,
                             fontWeight: FontWeight.w500,
@@ -396,10 +403,13 @@ class _MypageScreenState extends State<MypageScreen> {
                         ),
                         child: Text(
                           _profile != null
-                              ? _profile!.userType.name
+                              ? _getUserTypeName(
+                                _profile!.userType,
+                                appLocalizations,
+                              )
                               : (_loadingProfile
-                                  ? '불러오는 중...'
-                                  : '회원 유형을 알 수 없어요.'),
+                                  ? appLocalizations.loading
+                                  : appLocalizations.unknownUserType),
                           style: TextStyle(
                             fontSize: 18 * scale,
                             fontWeight: FontWeight.w500,
@@ -424,7 +434,7 @@ class _MypageScreenState extends State<MypageScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                '로그아웃',
+                                appLocalizations.logout,
                                 style: TextStyle(
                                   fontSize: 16 * scale,
                                   fontWeight: FontWeight.w500,
@@ -448,7 +458,7 @@ class _MypageScreenState extends State<MypageScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                '회원정보수정',
+                                appLocalizations.editProfile,
                                 style: TextStyle(
                                   fontSize: 16 * scale,
                                   fontWeight: FontWeight.w500,
@@ -516,8 +526,9 @@ class _MypageScreenState extends State<MypageScreen> {
                         // Divider(), // 토글 아래 구분선
                         // SizedBox(height: 40 * scale),
                         PracticeCard(
-                          title: '캐릭터 소개',
-                          subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                          title: appLocalizations.characterIntroductionTitle,
+                          subtitle:
+                              appLocalizations.characterIntroductionSubtitle,
                           imagePath: '',
                           onTap: () {
                             // 곰곰 카드 탭 로직
@@ -525,8 +536,8 @@ class _MypageScreenState extends State<MypageScreen> {
                         ),
                         SizedBox(height: 20 * scale),
                         PracticeCard(
-                          title: '곰곰',
-                          subtitle: '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요.',
+                          title: appLocalizations.gomgomTitle,
+                          subtitle: appLocalizations.gomgomSubtitle,
                           imagePath: 'assets/character/bearTeacher.png',
                           onTap: () {
                             // 해당 페이지로 이동하는 로직
@@ -534,15 +545,15 @@ class _MypageScreenState extends State<MypageScreen> {
                         ),
                         SizedBox(height: 20 * scale),
                         PracticeCard(
-                          title: '토토',
-                          subtitle: '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요.',
+                          title: appLocalizations.totoTitle,
+                          subtitle: appLocalizations.totoSubtitle,
                           imagePath: 'assets/character/rabbitTeacher.png',
                           onTap: () {},
                         ),
                         SizedBox(height: 20 * scale),
                         PracticeCard(
-                          title: '다람',
-                          subtitle: '다람이는 작은 손으로 도토리를 모으듯 꼼꼼하게 글씨를 완성시켜 준답니다.',
+                          title: appLocalizations.daramTitle,
+                          subtitle: appLocalizations.daramSubtitle,
                           imagePath: 'assets/character/hamster.png',
                           onTap: () {},
                         ),
@@ -552,6 +563,7 @@ class _MypageScreenState extends State<MypageScreen> {
                   SizedBox(height: 80 * scale),
                 ],
               ),
+
               // 하단 버튼 영역을 위해 여백
             ),
           ],
@@ -571,6 +583,7 @@ class _MypageScreenState extends State<MypageScreen> {
         isLandscape
             ? screenSize.height / baseLandscape
             : screenSize.width / basePortrait;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
@@ -593,11 +606,9 @@ class _MypageScreenState extends State<MypageScreen> {
                   top: 80 * scale,
                   left: 50 * scale,
                   child: Text(
-                    '내 정보',
+                    appLocalizations.myPageTitle,
                     style: TextStyle(
                       fontSize: 33 * scale,
-                      // fontFamily: 'MaruBuri',
-                      // fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
@@ -616,7 +627,6 @@ class _MypageScreenState extends State<MypageScreen> {
                     clipBehavior: Clip.none,
                     children: [
                       GestureDetector(
-                        onTap: _pickProfileImage,
                         child:
                             _loadingProfile
                                 ? CircleAvatar(
@@ -629,7 +639,9 @@ class _MypageScreenState extends State<MypageScreen> {
                                   radius: 70 * scale,
                                   backgroundImage:
                                       _profile?.profilePic != null
-                                          ? NetworkImage(_profile!.profilePic!)
+                                          ? CachedNetworkImageProvider(
+                                            _profile!.profilePic!,
+                                          )
                                           : null,
                                   child:
                                       _profile?.profilePic == null
@@ -641,17 +653,20 @@ class _MypageScreenState extends State<MypageScreen> {
                                           : null,
                                 ),
                       ),
+                      GestureDetector(
+                        onTap: _pickProfileImage,
+                        child: Positioned(
+                          bottom: -4 * scale,
+                          right: -4 * scale,
+                          child: CircleAvatar(
+                            radius: 26 * scale,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.edit,
+                              size: 30 * scale,
 
-                      Positioned(
-                        bottom: -4 * scale,
-                        right: -4 * scale,
-                        child: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.edit,
-                            size: 30 * scale,
-                            color: Colors.black54,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ),
@@ -674,7 +689,9 @@ class _MypageScreenState extends State<MypageScreen> {
                     child: Text(
                       _profile != null
                           ? _profile!.nickname
-                          : (_loadingProfile ? '불러오는 중...' : '게스트'),
+                          : (_loadingProfile
+                              ? appLocalizations.loading
+                              : appLocalizations.guest),
                       style: TextStyle(
                         fontSize: 18 * scale,
                         fontWeight: FontWeight.w500,
@@ -705,7 +722,9 @@ class _MypageScreenState extends State<MypageScreen> {
                   child: Text(
                     _profile != null
                         ? _profile!.birthdate.toString().split(' ')[0]
-                        : (_loadingProfile ? '불러오는 중...' : '나이는 공부에 상관없죠!'),
+                        : (_loadingProfile
+                            ? appLocalizations.loading
+                            : appLocalizations.ageIsJustANumber),
                     style: TextStyle(
                       fontSize: 18 * scale,
                       fontWeight: FontWeight.w500,
@@ -729,8 +748,10 @@ class _MypageScreenState extends State<MypageScreen> {
                   ),
                   child: Text(
                     _profile != null
-                        ? _profile!.userType.name
-                        : (_loadingProfile ? '불러오는 중...' : '회원 유형을 알 수 없어요.'),
+                        ? _getUserTypeName(_profile!.userType, appLocalizations)
+                        : (_loadingProfile
+                            ? appLocalizations.loading
+                            : appLocalizations.unknownUserType),
                     style: TextStyle(
                       fontSize: 18 * scale,
                       fontWeight: FontWeight.w500,
@@ -759,7 +780,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        '로그아웃',
+                        appLocalizations.logout,
                         style: TextStyle(
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w500,
@@ -787,7 +808,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        '회원정보수정',
+                        appLocalizations.editProfile,
                         style: TextStyle(
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w500,
@@ -851,8 +872,8 @@ class _MypageScreenState extends State<MypageScreen> {
                   // Divider(),
                   //SizedBox(height: 40 * scale),
                   PracticeCard(
-                    title: '캐릭터 소개',
-                    subtitle: '손글씨 연습을 도와줄 귀여운 동물 친구들을 소개할게요.',
+                    title: appLocalizations.characterIntroductionTitle,
+                    subtitle: appLocalizations.characterIntroductionSubtitle,
                     imagePath: '',
                     onTap: () {
                       // 곰곰 카드 탭 로직
@@ -872,24 +893,24 @@ class _MypageScreenState extends State<MypageScreen> {
               childAspectRatio: 3, // 카드 가로:세로 비율 (필요시 조정)
               children: [
                 PracticeCard(
-                  title: '곰곰',
-                  subtitle: '곰곰이는 부드러운 솜결 같은 한 획 한 획을 좋아해요.',
+                  title: appLocalizations.gomgomTitle,
+                  subtitle: appLocalizations.gomgomSubtitle,
                   imagePath: 'assets/character/bearTeacher.png',
                   onTap: () {
                     // 곰곰 카드 탭 로직
                   },
                 ),
                 PracticeCard(
-                  title: '토토',
-                  subtitle: '토토는 껑충껑충 경쾌한 리듬으로 글씨 연습을 즐겨요.',
+                  title: appLocalizations.totoTitle,
+                  subtitle: appLocalizations.totoSubtitle,
                   imagePath: 'assets/character/rabbitTeacher.png',
                   onTap: () {
                     // 토토 카드 탭 로직
                   },
                 ),
                 PracticeCard(
-                  title: '다람',
-                  subtitle: '다람이는 작은 손으로 꼼꼼하게 글씨를 완성시켜 준답니다.',
+                  title: appLocalizations.daramTitle,
+                  subtitle: appLocalizations.daramSubtitle,
                   imagePath: 'assets/character/hamster.png',
                   onTap: () {
                     // 다람 카드 탭 로직

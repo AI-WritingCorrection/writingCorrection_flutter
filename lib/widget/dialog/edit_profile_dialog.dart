@@ -1,7 +1,10 @@
 import 'package:aiwriting_collection/api.dart';
+import 'package:aiwriting_collection/model/language_provider.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileDialog extends StatefulWidget {
   final UserProfile profile;
@@ -38,6 +41,17 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     super.dispose();
   }
 
+  String _getUserTypeName(UserType type, AppLocalizations appLocalizations) {
+    switch (type) {
+      case UserType.CHILD:
+        return appLocalizations.userTypeChild;
+      case UserType.ADULT:
+        return appLocalizations.userTypeAdult;
+      case UserType.FOREIGN:
+        return appLocalizations.userTypeForeign;
+    }
+  }
+
   Future<void> _handleUpdate() async {
     if (_isUpdating) return;
 
@@ -55,6 +69,15 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     try {
       await _api.updateProfile(update, widget.userId);
       success = true;
+
+      // Language change logic
+      final languageProvider =
+          Provider.of<LanguageProvider>(context, listen: false);
+      if (_selectedUserType == UserType.FOREIGN) {
+        languageProvider.changeLanguage(const Locale('en'));
+      } else {
+        languageProvider.changeLanguage(const Locale('ko'));
+      }
     } catch (e) {
       print('Profile update failed: $e');
       success = false;
@@ -77,9 +100,10 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     final double scale = isPortrait
         ? screenSize.width / basePortrait
         : screenSize.height / baseLandscape;
+    final appLocalizations = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text('회원 정보 수정', style: TextStyle(fontSize: 20 * scale)),
+      title: Text(appLocalizations.editProfileTitle, style: TextStyle(fontSize: 20 * scale)),
       content: SizedBox(
         width: dialogWidth,
         child: SingleChildScrollView(
@@ -90,7 +114,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 controller: _nicknameController,
                 style: TextStyle(fontSize: 18 * scale),
                 decoration: InputDecoration(
-                  labelText: '닉네임',
+                  labelText: appLocalizations.nickname,
                   labelStyle: TextStyle(fontSize: 20 * scale),
                 ),
               ),
@@ -98,7 +122,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
               Row(
                 children: [
                   Text(
-                    '생년월일: ${_selectedDate.toLocal()}'.split(' ')[0],
+                    '${appLocalizations.birthdate}${_selectedDate.toLocal()}'.split(' ')[0],
                     style: TextStyle(fontSize: 20 * scale),
                   ),
                   IconButton(
@@ -126,14 +150,14 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   color: Colors.black87,
                 ),
                 decoration: InputDecoration(
-                  labelText: '사용자 유형',
+                  labelText: appLocalizations.userType,
                   labelStyle: TextStyle(fontSize: 20 * scale),
                 ),
                 items: UserType.values.map((UserType type) {
                   return DropdownMenuItem<UserType>(
                     value: type,
                     child: Text(
-                      type.name,
+                      _getUserTypeName(type, appLocalizations),
                       style: TextStyle(fontSize: 20 * scale),
                     ),
                   );
@@ -154,7 +178,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
-            '취소',
+            appLocalizations.cancel,
             style: TextStyle(
               color: Colors.black87,
               fontSize: 20 * scale,
@@ -170,7 +194,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : Text(
-                  '저장',
+                  appLocalizations.save,
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 20 * scale,

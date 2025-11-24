@@ -106,8 +106,6 @@ class PracticeCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
                       ),
                       SizedBox(height: spacing),
                       Flexible(
