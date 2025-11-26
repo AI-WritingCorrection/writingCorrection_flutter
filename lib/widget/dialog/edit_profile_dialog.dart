@@ -1,9 +1,10 @@
 import 'package:aiwriting_collection/api.dart';
 import 'package:aiwriting_collection/model/language_provider.dart';
+import 'package:aiwriting_collection/model/login_status.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/model/user_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileDialog extends StatefulWidget {
@@ -70,9 +71,13 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       await _api.updateProfile(update, widget.userId);
       success = true;
 
+      context.read<LoginStatus>().updateUserType(_selectedUserType);
+
       // Language change logic
-      final languageProvider =
-          Provider.of<LanguageProvider>(context, listen: false);
+      final languageProvider = Provider.of<LanguageProvider>(
+        context,
+        listen: false,
+      );
       if (_selectedUserType == UserType.FOREIGN) {
         languageProvider.changeLanguage(const Locale('en'));
       } else {
@@ -91,19 +96,24 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     final dialogWidth =
         isPortrait ? screenSize.width * 0.8 : screenSize.width * 0.5;
 
     final double basePortrait = 390.0;
     final double baseLandscape = 844.0;
-    final double scale = isPortrait
-        ? screenSize.width / basePortrait
-        : screenSize.height / baseLandscape;
+    final double scale =
+        isPortrait
+            ? screenSize.width / basePortrait
+            : screenSize.height / baseLandscape;
     final appLocalizations = AppLocalizations.of(context)!;
 
     return AlertDialog(
-      title: Text(appLocalizations.editProfileTitle, style: TextStyle(fontSize: 20 * scale)),
+      title: Text(
+        appLocalizations.editProfileTitle,
+        style: TextStyle(fontSize: 20 * scale),
+      ),
       content: SizedBox(
         width: dialogWidth,
         child: SingleChildScrollView(
@@ -122,7 +132,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
               Row(
                 children: [
                   Text(
-                    '${appLocalizations.birthdate}${_selectedDate.toLocal()}'.split(' ')[0],
+                    '${appLocalizations.birthdate}${_selectedDate.toLocal()}'
+                        .split(' ')[0],
                     style: TextStyle(fontSize: 20 * scale),
                   ),
                   IconButton(
@@ -145,23 +156,21 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
               ),
               DropdownButtonFormField<UserType>(
                 value: _selectedUserType,
-                style: TextStyle(
-                  fontSize: 18 * scale,
-                  color: Colors.black87,
-                ),
+                style: TextStyle(fontSize: 18 * scale, color: Colors.black87),
                 decoration: InputDecoration(
                   labelText: appLocalizations.userType,
                   labelStyle: TextStyle(fontSize: 20 * scale),
                 ),
-                items: UserType.values.map((UserType type) {
-                  return DropdownMenuItem<UserType>(
-                    value: type,
-                    child: Text(
-                      _getUserTypeName(type, appLocalizations),
-                      style: TextStyle(fontSize: 20 * scale),
-                    ),
-                  );
-                }).toList(),
+                items:
+                    UserType.values.map((UserType type) {
+                      return DropdownMenuItem<UserType>(
+                        value: type,
+                        child: Text(
+                          _getUserTypeName(type, appLocalizations),
+                          style: TextStyle(fontSize: 20 * scale),
+                        ),
+                      );
+                    }).toList(),
                 onChanged: (UserType? newValue) {
                   if (newValue != null) {
                     setState(() {
@@ -179,27 +188,25 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             appLocalizations.cancel,
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 20 * scale,
-            ),
+            style: TextStyle(color: Colors.black87, fontSize: 20 * scale),
           ),
         ),
         TextButton(
           onPressed: _handleUpdate,
-          child: _isUpdating
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(
-                  appLocalizations.save,
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 20 * scale,
+          child:
+              _isUpdating
+                  ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                  : Text(
+                    appLocalizations.save,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 20 * scale,
+                    ),
                   ),
-                ),
         ),
       ],
     );

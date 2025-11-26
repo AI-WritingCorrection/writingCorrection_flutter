@@ -7,7 +7,7 @@ import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/model/stroke_guide_model.dart';
 import 'package:aiwriting_collection/model/stroke_guide_repository.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class FreeStudyPage extends StatefulWidget {
   final Practice nowPractice;

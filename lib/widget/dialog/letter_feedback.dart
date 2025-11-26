@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/widget/pill_section.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class LetterFeedbackSheet extends StatelessWidget {
   final String targetChar; // 대상 글자
