@@ -31,7 +31,7 @@ class LetterFeedbackSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final scale = _scaleOf(context);
     final screenHeight = MediaQuery.of(context).size.height;
-    final dialogHeight = screenHeight * 0.4;
+    final dialogHeight = screenHeight * 0.5;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return Container(
@@ -140,7 +140,7 @@ class LetterFeedbackSheet extends StatelessWidget {
             text: '$key: ',
             style: TextStyle(
               fontSize: 25 * scale,
-              fontWeight: FontWeight.w800,
+              fontFamily: 'Cafe24Ssurround',
               color: Colors.black,
             ),
           ),
@@ -148,7 +148,7 @@ class LetterFeedbackSheet extends StatelessWidget {
             text: value,
             style: TextStyle(
               fontSize: 25 * scale,
-              fontWeight: FontWeight.w600,
+              fontFamily: 'Cafe24Ssurround',
               color: Colors.black,
             ),
           ),

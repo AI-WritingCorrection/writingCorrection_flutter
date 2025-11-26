@@ -43,6 +43,9 @@ if [ -n "${MARKETING_VERSION:-}" ]; then
   )
 fi
 
+# Generate localization files
+flutter gen-l10n
+
 # 2) Prepare Flutter iOS outputs (no codesign) --------------------------------
 FLAVOR_ARG=""
 if [ -n "${FLAVOR:-}" ]; then

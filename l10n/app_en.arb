@@ -133,6 +133,7 @@
     "colorGuideInactive": "This step is still locked. Please complete the previous step first.",
     "imageButtonFunction": "Image Button Function",
     "imageButtonFunctionDescription": "Press the animal teacher button at the end of each chapter to solve a special AI-recommended problem.",
+    "feedbackFormDescription": "The feedback form varies depending on your user type (Child, Adult, Foreigner).",
     "close": "Close",
     "loadingError": "Error: ",
     "helpButtonText": "Press the help button to\ncheck the learning method!",

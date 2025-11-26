@@ -1120,6 +1120,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'밑의 문제를 풀어보세요!'**
   String get aiwritingMission;
+
+  /// No description provided for @feedbackFormDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용자 유형(어린이, 성인, 외국인)에 따라 피드백 양식이 달라집니다.'**
+  String get feedbackFormDescription;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

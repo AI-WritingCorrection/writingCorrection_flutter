@@ -133,6 +133,7 @@
     "colorGuideInactive": "아직 잠겨있는 단계입니다. 이전 단계를 먼저 완료해주세요.",
     "imageButtonFunction": "이미지 버튼 기능",
     "imageButtonFunctionDescription": "각 챕터의 마지막에 있는 동물 선생님 버튼을 누르면, 특별한 AI 추천 문제를 풀어볼 수 있습니다.",
+    "feedbackFormDescription": "사용자 유형(어린이, 성인, 외국인)에 따라 피드백 양식이 달라집니다.",
     "close": "닫기",
     "loadingError": "에러: ",
     "helpButtonText": "도움말 버튼을 눌러\n학습 방법을 확인하세요!",
