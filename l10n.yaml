@@ -2,5 +2,4 @@
 arb-dir: l10n # .arb 파일들을 모아둘 폴더
 template-arb-file: app_ko.arb # 기본이 될 언어 파일
 output-localization-file: app_localizations.dart # 자동 생성될 Dart 파일 이름
-synthetic-package: false
 output-dir: lib/generated

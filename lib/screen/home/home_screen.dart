@@ -138,6 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   appLocalizations.imageButtonFunctionDescription,
                   style: const TextStyle(fontSize: 25),
                 ),
+                const SizedBox(height: 20),
+                Text(
+                  appLocalizations.feedbackFormDescription,
+                  style: const TextStyle(fontSize: 25),
+                ),
               ],
             ),
           ),
