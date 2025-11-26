@@ -64,6 +64,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate Localizations
+        run: flutter gen-l10n  
+
       # 8. 코드 품질 검사 (테스트 실행)
       - name: Run tests
         run: flutter test

@@ -67,6 +67,11 @@ class LoginStatus extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateUserType(UserType newUserType) {
+    _userType = newUserType;
+    notifyListeners();
+  }
+
   Future<String?> _signInWithGoogle({bool forceAccountPicker = false}) async {
     try {
       // Trigger the Google Sign-In flow
