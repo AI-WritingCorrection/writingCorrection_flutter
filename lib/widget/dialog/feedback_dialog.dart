@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:characters/characters.dart';
 import 'package:aiwriting_collection/widget/pill_section.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// AI 피드백 결과를 보여주는 모달 다이얼로그 (총점 + 요약만)
 class FeedbackDialog extends StatelessWidget {
@@ -22,9 +22,10 @@ class FeedbackDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 화면 높이의 50% 사용
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    // 화면 높이의 60% 사용
     final screenHeight = MediaQuery.of(context).size.height;
-    final dialogHeight = screenHeight * 0.55;
+    final dialogHeight = screenHeight * 0.60;
 
     // 스케일 계산
     final basePortrait = 390.0;
@@ -41,66 +42,92 @@ class FeedbackDialog extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24 * scale)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 드래그 핸들
-          Center(
-            child: Container(
-              width: 40 * scale,
-              height: 4 * scale,
-              margin: EdgeInsets.only(bottom: 16 * scale),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2 * scale),
+      child: Scrollbar(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 드래그 핸들
+              Center(
+                child: Container(
+                  width: 40 * scale,
+                  height: 4 * scale,
+                  margin: EdgeInsets.only(bottom: 16 * scale),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2 * scale),
+                  ),
+                ),
               ),
-            ),
-          ),
-          SizedBox(height: 10 * scale), // Spacing after drag handle
-          Text(
-            '글자를 누르면 글자별 상세 피드백을 확인할 수 있어요.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20 * scale, color: Colors.black87),
-          ),
-          SizedBox(height: 10 * scale), // Spacing after the new text
-          // ── 섹션 1: 총점 ─────────────────────────────────────────────
-          PillSection(
-            label: '총점',
-            trailingImage: imagePath,
-            scale: scale,
-            child: Text(
-              (avgScore != null) ? '${avgScore!} 점' : '- 점',
-              style: TextStyle(
-                fontSize: 25 * scale,
-                fontWeight: FontWeight.w700,
+              SizedBox(height: 10 * scale), // Spacing after drag handle
+              Text(
+                appLocalizations.feedbackDialogInstruction,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20 * scale, color: Colors.black87),
               ),
-            ),
-          ),
-          SizedBox(height: 12 * scale),
+              SizedBox(height: 10 * scale), // Spacing after the new text
+              // ── 섹션 1: 총점 ─────────────────────────────────────────────
+              PillSection(
+                label: appLocalizations.feedbackDialogTotalScore,
+                trailingImage: imagePath,
+                scale: scale,
+                child: Text(
+                  (avgScore != null)
+                      ? '${avgScore!} ${appLocalizations.points}'
+                      : '- ${appLocalizations.points}',
+                  style: TextStyle(
+                    fontSize: 25 * scale,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              SizedBox(height: 12 * scale),
 
-          // ── 섹션 2: 요약(1~4차), 실패 글자만 빨강 ─────────────────────
-          PillSection(
-            label: '요약',
-            trailingImage: imagePath,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16 * scale,
-              vertical: 20 * scale,
-            ),
-            scale: scale,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _filterLine(context, scale, title: 'AI 글자 인식이 잘 안 된 글자: ', filterIndex: 0),
-                SizedBox(height: 8 * scale),
-                _filterLine(context, scale, title: '글자 크기가 적절하지 않은 글자: ', filterIndex: 1),
-                SizedBox(height: 8 * scale),
-                _filterLine(context, scale, title: '글자 획순이 적절하지 않은 글자: ', filterIndex: 2),
-                SizedBox(height: 8 * scale),
-                _filterLine(context, scale, title: '자음, 모음이 적절하지 않은 글자: ', filterIndex: 3),
-              ],
-            ),
+              // ── 섹션 2: 요약(1~4차), 실패 글자만 빨강 ─────────────────────
+              PillSection(
+                label: appLocalizations.feedbackDialogSummary,
+                trailingImage: imagePath,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16 * scale,
+                  vertical: 20 * scale,
+                ),
+                scale: scale,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _filterLine(
+                      context,
+                      scale,
+                      title: appLocalizations.feedbackDialogSummaryStage1,
+                      filterIndex: 0,
+                    ),
+                    SizedBox(height: 8 * scale),
+                    _filterLine(
+                      context,
+                      scale,
+                      title: appLocalizations.feedbackDialogSummaryStage2,
+                      filterIndex: 1,
+                    ),
+                    SizedBox(height: 8 * scale),
+                    _filterLine(
+                      context,
+                      scale,
+                      title: appLocalizations.feedbackDialogSummaryStage3,
+                      filterIndex: 2,
+                    ),
+                    SizedBox(height: 8 * scale),
+                    _filterLine(
+                      context,
+                      scale,
+                      title: appLocalizations.feedbackDialogSummaryStage4,
+                      filterIndex: 3,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -1,8 +1,12 @@
+import 'package:aiwriting_collection/model/login_status.dart';
 import 'package:aiwriting_collection/model/steps.dart';
+import 'package:aiwriting_collection/model/typeEnum.dart';
 import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class DetailStudyPage extends StatelessWidget {
   final Steps nowStep;
@@ -10,6 +14,11 @@ class DetailStudyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appLocalizations = AppLocalizations.of(context)!;
+    final usertype =
+        context
+            .read<LoginStatus>()
+            .userType; // Example assignment, replace with actual user type logic
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
       body: Builder(
@@ -51,7 +60,10 @@ class DetailStudyPage extends StatelessWidget {
 
                     //말풍선 + 캐릭터 이미지
                     SpeechBubble(
-                      text: step.stepMission,
+                      text:
+                          usertype == UserType.FOREIGN
+                              ? "Write the text within the time limit."
+                              : step.stepMission,
                       imageAsset: step.stepCharacter,
                       scale: scale,
                       horizontalInset: horizontalInset,
@@ -137,7 +149,7 @@ class DetailStudyPage extends StatelessWidget {
                                 vertical: 12 * scale,
                               ),
                               child: Text(
-                                '연습 과제',
+                                appLocalizations.practiceTask,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: const Color(0xFF151514),
@@ -183,7 +195,7 @@ class DetailStudyPage extends StatelessWidget {
                             vertical: 24 * scale,
                           ),
                           child: Text(
-                            '연습 시작!',
+                            appLocalizations.startPractice,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 35 * scale),
                           ),

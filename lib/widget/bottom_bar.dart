@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Bottom extends StatelessWidget {
   const Bottom({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     // Calculate scale based on orientation
     final Size screenSize = MediaQuery.of(context).size;
     const double basePortrait = 390.0;
@@ -33,9 +35,9 @@ class Bottom extends StatelessWidget {
             Tab(
               icon: Icon(Icons.home, size: barHeight * 0.40),
               child: Text(
-                '홈',
+                appLocalizations.home,
                 style: TextStyle(
-                  fontSize: barHeight * 0.23,
+                  fontSize: barHeight * 0.22,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
@@ -44,9 +46,9 @@ class Bottom extends StatelessWidget {
             Tab(
               icon: Icon(Icons.school, size: barHeight * 0.40),
               child: Text(
-                '자유 공부',
+                appLocalizations.freeStudy,
                 style: TextStyle(
-                  fontSize: barHeight * 0.23,
+                  fontSize: barHeight * 0.22,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
@@ -55,9 +57,9 @@ class Bottom extends StatelessWidget {
             Tab(
               icon: Icon(Icons.history, size: barHeight * 0.40),
               child: Text(
-                '기록',
+                appLocalizations.history,
                 style: TextStyle(
-                  fontSize: barHeight * 0.23,
+                  fontSize: barHeight * 0.22,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
@@ -66,9 +68,9 @@ class Bottom extends StatelessWidget {
             Tab(
               icon: Icon(Icons.person, size: barHeight * 0.40),
               child: Text(
-                '내 정보',
+                appLocalizations.myInfo,
                 style: TextStyle(
-                  fontSize: barHeight * 0.23,
+                  fontSize: barHeight * 0.22,
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),

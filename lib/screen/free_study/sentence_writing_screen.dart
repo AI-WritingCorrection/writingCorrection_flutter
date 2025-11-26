@@ -5,12 +5,14 @@ import 'package:aiwriting_collection/screen/free_study/free_studypage.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/word_tile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SentenceWritingScreen extends StatelessWidget {
   const SentenceWritingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final api = Api();
     final size = MediaQuery.of(context).size;
     final scale = size.height / 844.0;
@@ -30,9 +32,9 @@ class SentenceWritingScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('${appLocalizations.error}: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No data available'));
+            return Center(child: Text(appLocalizations.noDataAvailable));
           }
 
           List<Practice> shortSentences =
@@ -85,10 +87,9 @@ class SentenceWritingScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 8 * scale),
                               Text(
-                                '문장 쓰기',
+                                appLocalizations.sentenceWritingTitle,
                                 style: TextStyle(
                                   fontSize: 33 * scale,
-                                  fontFamily: 'Maruburi',
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
                                 ),
@@ -110,10 +111,9 @@ class SentenceWritingScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '자음과 모음의 모양을 올바르게 잡고 글씨의 크기와 간격을 일정하게 맞춰\n내 마음에 드는 글을 써보세요.',
+                      appLocalizations.sentenceWritingDescription,
                       style: TextStyle(
                         fontSize: 18 * scale,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
@@ -128,10 +128,9 @@ class SentenceWritingScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '짧은 문장 연습:',
+                      appLocalizations.shortSentencePractice,
                       style: TextStyle(
                         fontSize: 20 * scale,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w700,
                         color: Colors.black87,
                       ),
@@ -180,10 +179,9 @@ class SentenceWritingScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '긴 문장 연습:',
+                      appLocalizations.longSentencePractice,
                       style: TextStyle(
                         fontSize: 20 * scale,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w700,
                         color: Colors.black87,
                       ),

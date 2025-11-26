@@ -288,8 +288,9 @@ class _SignScreenState extends State<SignScreen> {
                               context.read<LoginStatus>().firebaseIdToken;
                           _provider =
                               context.read<LoginStatus>().lastProvider ?? '';
-                          if (idToken == null || idToken.isEmpty)
+                          if (idToken == null || idToken.isEmpty) {
                             throw Exception('No ID token');
+                          }
 
                           final payload = {
                             'id_token': idToken,
@@ -302,8 +303,9 @@ class _SignScreenState extends State<SignScreen> {
 
                           await api.signup(payload);
                           debugPrint('회원 가입 성공: $payload');
-                          if (mounted)
+                          if (mounted) {
                             Navigator.pushReplacementNamed(context, '/home');
+                          }
                         } catch (e) {
                           await FirebaseAuth.instance.signOut();
                           context.read<LoginStatus>().logout();

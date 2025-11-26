@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:aiwriting_collection/model/mission_record.dart';
 import 'package:aiwriting_collection/model/practice.dart';
 import 'package:aiwriting_collection/model/stats.dart';
@@ -125,7 +126,7 @@ class Api {
     if (path != null && path.trim().isNotEmpty) {
       // 존재 확인 (fromPath 에서 던지기 전에 미리 명확한 에러를 주자)
       if (!File(path).existsSync()) {
-        throw Exception('프로필 이미지 파일을 찾을 수 없습니다: ' + path);
+        throw Exception('프로필 이미지 파일을 찾을 수 없습니다: $path');
       }
       req.files.add(
         await http.MultipartFile.fromPath(
@@ -242,11 +243,8 @@ class Api {
   }
 
   // 프로필 이미지 수정 (멀티파트 업로드, URL 반환)
-  Future<String> uploadProfileImage(String pickedPath, int userId) async {
-    final file = File(pickedPath);
-    final fileSize = await file.length();
-
-    if (fileSize > maxProfileImageSize) {
+  Future<String> uploadProfileImage(Uint8List imageBytes, int userId) async {
+    if (imageBytes.lengthInBytes > maxProfileImageSize) {
       final sizeInMb = (maxProfileImageSize / (1024 * 1024)).toStringAsFixed(0);
       throw Exception('이미지 파일이 너무 큽니다. ${sizeInMb}MB 이하의 파일을 선택해주세요.');
     }
@@ -254,17 +252,16 @@ class Api {
     final uri = Uri.parse('$_baseUrl/user/uploadProfileImage/$userId');
     final req = http.MultipartRequest('POST', uri);
 
-    // JWT가 있다면 Authorization만 추가 (Content-Type은 MultipartRequest가 자동 설정)
     if (_jwt != null) {
       req.headers['Authorization'] = 'Bearer $_jwt';
     }
 
-    // 필드명은 서버와 합의된 'file' 이어야 함
     req.files.add(
-      await http.MultipartFile.fromPath(
+      http.MultipartFile.fromBytes(
         'file',
-        pickedPath,
-        contentType: _inferContentType(pickedPath),
+        imageBytes,
+        filename: 'profile.jpg', // 서버에서 파일명을 사용하지 않더라도 명시해주는 것이 좋습니다.
+        contentType: MediaType('image', 'jpeg'),
       ),
     );
 
