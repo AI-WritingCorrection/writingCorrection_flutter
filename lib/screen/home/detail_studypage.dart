@@ -5,7 +5,7 @@ import 'package:aiwriting_collection/screen/home/writing_page.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class DetailStudyPage extends StatelessWidget {

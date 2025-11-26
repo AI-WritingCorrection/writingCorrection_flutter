@@ -19,7 +19,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart'; // kDebugMode
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

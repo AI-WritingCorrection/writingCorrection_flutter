@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../model/login_status.dart';
 import 'package:flutter/foundation.dart'; // kDebugMode
 import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

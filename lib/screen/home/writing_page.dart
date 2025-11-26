@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:aiwriting_collection/model/data_provider.dart';
 import 'package:aiwriting_collection/model/steps.dart';
 import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:aiwriting_collection/widget/speech_bubble.dart';

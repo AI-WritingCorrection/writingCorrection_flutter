@@ -1,7 +1,7 @@
 import 'package:aiwriting_collection/widget/back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class BasicHandwritingScreen extends StatelessWidget {
   const BasicHandwritingScreen({super.key});
