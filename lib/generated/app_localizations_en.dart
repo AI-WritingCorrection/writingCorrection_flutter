@@ -528,4 +528,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiwritingMission => 'Write the text below!';
+  
+  @override
+  // TODO: implement feedbackFormDescription
+  String get feedbackFormDescription => throw UnimplementedError();
 }

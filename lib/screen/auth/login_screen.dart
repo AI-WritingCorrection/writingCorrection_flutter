@@ -1,10 +1,10 @@
-import 'package:aiwriting_collection/model/language_provider.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/provider/language_provider.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../model/login_status.dart';
+import '../../model/provider/login_status.dart';
 import 'package:flutter/foundation.dart'; // kDebugMode
-import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
+import 'package:aiwriting_collection/screen/auth/sign_screen.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {

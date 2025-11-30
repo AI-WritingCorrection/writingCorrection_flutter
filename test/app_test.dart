@@ -1,7 +1,7 @@
 import 'package:aiwriting_collection/main.dart';
-import 'package:aiwriting_collection/model/data_provider.dart';
-import 'package:aiwriting_collection/model/language_provider.dart';
-import 'package:aiwriting_collection/model/login_status.dart';
+import 'package:aiwriting_collection/model/provider/data_provider.dart';
+import 'package:aiwriting_collection/model/provider/language_provider.dart';
+import 'package:aiwriting_collection/model/provider/login_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

@@ -1,8 +1,8 @@
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/language_provider.dart';
-import 'package:aiwriting_collection/model/login_status.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:aiwriting_collection/model/provider/language_provider.dart';
+import 'package:aiwriting_collection/model/provider/login_status.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
+import 'package:aiwriting_collection/model/content/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -71,6 +71,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       await _api.updateProfile(update, widget.userId);
       success = true;
 
+      if (!mounted) return;
       context.read<LoginStatus>().updateUserType(_selectedUserType);
 
       // Language change logic
@@ -185,7 +186,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(
             appLocalizations.cancel,
             style: TextStyle(color: Colors.black87, fontSize: 20 * scale),

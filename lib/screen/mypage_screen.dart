@@ -1,17 +1,14 @@
-import 'dart:typed_data';
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/data_provider.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
+import 'package:aiwriting_collection/model/content/user_profile.dart';
+import 'package:aiwriting_collection/model/provider/login_status.dart';
 import 'package:aiwriting_collection/widget/dialog/edit_profile_dialog.dart';
+import 'package:aiwriting_collection/widget/practice/practice_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:aiwriting_collection/model/login_status.dart';
-import 'package:aiwriting_collection/main.dart';
-import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
@@ -61,19 +58,26 @@ class _MypageScreenState extends State<MypageScreen> {
 
   Future<void> _pickProfileImage() async {
     final appLocalizations = AppLocalizations.of(context)!;
+
+    // Set loading state immediately
+    setState(() {
+      _loadingProfile = true;
+    });
+
     try {
       final XFile? picked = await _imagePicker.pickImage(
         source: ImageSource.gallery,
       );
-      if (picked == null) return;
+
+      // If user cancels, turn off loading state
+      if (picked == null) {
+        setState(() {
+          _loadingProfile = false;
+        });
+        return;
+      }
 
       final uid = _lastLoadedUserId;
-      // Show a loading indicator
-      if (mounted) {
-        setState(() {
-          _loadingProfile = true;
-        });
-      }
 
       final bytes = await picked.readAsBytes();
       final resizedBytes = await _resizeImage(bytes);
@@ -96,10 +100,12 @@ class _MypageScreenState extends State<MypageScreen> {
           ),
         ),
       );
-      // Revert loading state
-      setState(() {
-        _loadingProfile = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingProfile = false;
+        });
+      }
     }
   }
 
@@ -175,11 +181,6 @@ class _MypageScreenState extends State<MypageScreen> {
 
     if (result == true) {
       await _loadUserProfile(force: true);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(appLocalizations.profileUpdateSuccess)),
-        );
-      }
     } else if (result == false) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -191,10 +192,9 @@ class _MypageScreenState extends State<MypageScreen> {
 
   Future<void> _handleLogout() async {
     final loginStatus = context.read<LoginStatus>();
-    final appLocalizations = AppLocalizations.of(context)!;
 
     // Perform logout
-    final success = await loginStatus.logout();
+    await loginStatus.logout();
 
     if (mounted) {
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
@@ -307,11 +307,11 @@ class _MypageScreenState extends State<MypageScreen> {
                                           : null,
                                 ),
                       ),
-                      GestureDetector(
-                        onTap: _pickProfileImage,
-                        child: Positioned(
-                          bottom: -4 * scale,
-                          right: -4 * scale,
+                      Positioned(
+                        bottom: -4 * scale,
+                        right: -4 * scale,
+                        child: GestureDetector(
+                          onTap: _pickProfileImage,
                           child: CircleAvatar(
                             radius: 26 * scale,
                             backgroundColor: Colors.white,
@@ -448,7 +448,7 @@ class _MypageScreenState extends State<MypageScreen> {
                       SizedBox(width: 16 * scale),
                       Expanded(
                         child: GestureDetector(
-                          onTap: _showEditProfileDialog,
+                          onTap: _loadingProfile ? null : _showEditProfileDialog,
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12 * scale),
                             decoration: BoxDecoration(
@@ -457,14 +457,20 @@ class _MypageScreenState extends State<MypageScreen> {
                               borderRadius: BorderRadius.circular(45 * scale),
                             ),
                             child: Center(
-                              child: Text(
-                                appLocalizations.editProfile,
-                                style: TextStyle(
-                                  fontSize: 16 * scale,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blueAccent, // 수정은 정보 표시 색상
-                                ),
-                              ),
+                              child: _loadingProfile
+                                  ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                  : Text(
+                                    appLocalizations.editProfile,
+                                    style: TextStyle(
+                                      color: Colors.blueAccent,
+                                      fontSize: 16 * scale,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                             ),
                           ),
                         ),
@@ -653,11 +659,11 @@ class _MypageScreenState extends State<MypageScreen> {
                                           : null,
                                 ),
                       ),
-                      GestureDetector(
-                        onTap: _pickProfileImage,
-                        child: Positioned(
-                          bottom: -4 * scale,
-                          right: -4 * scale,
+                      Positioned(
+                        bottom: -4 * scale,
+                        right: -4 * scale,
+                        child: GestureDetector(
+                          onTap: _pickProfileImage,
                           child: CircleAvatar(
                             radius: 26 * scale,
                             backgroundColor: Colors.white,
@@ -795,7 +801,7 @@ class _MypageScreenState extends State<MypageScreen> {
 
                 // ── 회원정보수정 버튼 ──
                 GestureDetector(
-                  onTap: _showEditProfileDialog,
+                  onTap: _loadingProfile ? null : _showEditProfileDialog,
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       vertical: 12 * scale,
@@ -807,14 +813,20 @@ class _MypageScreenState extends State<MypageScreen> {
                       borderRadius: BorderRadius.circular(45 * scale),
                     ),
                     child: Center(
-                      child: Text(
-                        appLocalizations.editProfile,
-                        style: TextStyle(
-                          fontSize: 16 * scale,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.blueAccent, // 수정은 정보 표시 색상
-                        ),
-                      ),
+                      child: _loadingProfile
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : Text(
+                            appLocalizations.editProfile,
+                            style: TextStyle(
+                              fontSize: 16 * scale,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blueAccent, // 수정은 정보 표시 색상
+                            ),
+                          ),
                     ),
                   ),
                 ),

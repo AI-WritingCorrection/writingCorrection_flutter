@@ -1,4 +1,4 @@
-import 'package:aiwriting_collection/widget/back_button.dart';
+import 'package:aiwriting_collection/widget/common/back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
