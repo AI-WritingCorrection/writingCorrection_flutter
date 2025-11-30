@@ -1,10 +1,10 @@
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/practice.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/content/practice.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 import 'package:aiwriting_collection/screen/free_study/free_studypage.dart';
-import 'package:aiwriting_collection/widget/word_tile.dart';
+import 'package:aiwriting_collection/widget/practice/word_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:aiwriting_collection/widget/back_button.dart';
+import 'package:aiwriting_collection/widget/common/back_button.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 class WordWritingScreen extends StatelessWidget {
 

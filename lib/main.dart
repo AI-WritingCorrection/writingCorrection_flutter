@@ -1,20 +1,20 @@
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/data_provider.dart';
-import 'package:aiwriting_collection/model/language_provider.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/provider/data_provider.dart';
+import 'package:aiwriting_collection/model/provider/language_provider.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 import 'package:aiwriting_collection/screen/home/home_screen.dart';
-import 'package:aiwriting_collection/screen/login/sign/login_screen.dart';
-import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
+import 'package:aiwriting_collection/screen/auth/login_screen.dart';
+import 'package:aiwriting_collection/screen/auth/sign_screen.dart';
 import 'package:aiwriting_collection/screen/record_screen.dart';
 import 'package:aiwriting_collection/screen/free_study/study_screen.dart';
 import 'package:aiwriting_collection/screen/mypage_screen.dart';
-import 'package:aiwriting_collection/widget/bottom_bar.dart';
+import 'package:aiwriting_collection/widget/common/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'model/login_status.dart';
+import 'model/provider/login_status.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
@@ -112,7 +112,7 @@ Future<void> main() async {
               // User is logged out, clear their specific data
               dataProvider!.clearUserRecords();
             }
-            return dataProvider!;
+            return dataProvider;
           },
         ),
       ],

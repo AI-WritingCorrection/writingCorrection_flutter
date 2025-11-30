@@ -1,5 +1,5 @@
-import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/model/util.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
+import 'package:aiwriting_collection/model/common/util.dart';
 
 class Practice {
   final int practiceId;

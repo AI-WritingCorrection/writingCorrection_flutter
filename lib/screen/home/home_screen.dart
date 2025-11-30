@@ -1,16 +1,14 @@
 import 'dart:convert';
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/data_provider.dart';
-import 'package:aiwriting_collection/model/generated_request_list.dart';
-import 'package:aiwriting_collection/model/steps.dart';
-import 'package:aiwriting_collection/model/mission_record.dart';
-import 'package:aiwriting_collection/model/login_status.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/provider/data_provider.dart';
+import 'package:aiwriting_collection/model/content/generated_request_list.dart';
+import 'package:aiwriting_collection/model/content/steps.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 import 'package:aiwriting_collection/screen/home/detail_studypage.dart';
 import 'package:aiwriting_collection/screen/home/writing_page.dart';
-import 'package:aiwriting_collection/widget/character_button.dart';
+import 'package:aiwriting_collection/widget/home/character_button.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
-import 'package:aiwriting_collection/widget/study_step.dart';
+import 'package:aiwriting_collection/widget/home/study_step.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
@@ -28,8 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final api = Api();
   final ScrollController _scrollController = ScrollController();
   final List<String> _characterImages = [
-    'assets/character/bearTeacher.png',
+    'assets/character/bearTeacher_noblank.png',
     'assets/character/rabbitTeacher.png',
+    'assets/character/hamster.png',
   ];
 
   // 예: utils.dart 또는 해당 스크린 파일 내부
@@ -533,7 +532,6 @@ class _HomeScreenState extends State<HomeScreen> {
     AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     final Size screenSize = MediaQuery.of(context).size;
     final chapterTitles = getChapterTitles(context);
-    final loginStatus = context.read<LoginStatus>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -774,6 +772,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       final nowRequest =
                                           generatedRequestList[buttonIndex];
                                       final form = nowRequest['form'];
+                                      final navigator = Navigator.of(context);
                                       showDialog(
                                         context: context,
                                         barrierDismissible: false,
@@ -787,8 +786,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         final res = await api.requestAiText(
                                           nowRequest,
                                         );
-                                        if (Navigator.of(context).canPop()) {
-                                          Navigator.of(context).pop();
+                                        if (!mounted) return;
+                                        if (navigator.canPop()) {
+                                          navigator.pop();
                                         }
                                         final decoded = utf8.decode(
                                           res.bodyBytes,
@@ -799,8 +799,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             (data['result'] as String);
                                         Steps aiStep = Steps(
                                           stepId: capturedStepId,
-                                          stepMission: appLocalizations
-                                              .aiwritingMission,
+                                          stepMission:
+                                              appLocalizations.aiwritingMission,
                                           stepCharacter:
                                               _characterImages[buttonIndex %
                                                   _characterImages.length],
@@ -809,8 +809,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           stepText: requestedText,
                                         );
-                                        await Navigator.push(
-                                          context,
+                                        await navigator.push(
                                           MaterialPageRoute(
                                             builder:
                                                 (context) => WritingPage(
@@ -819,9 +818,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         );
                                       } catch (e) {
-                                        if (Navigator.of(context).canPop()) {
-                                          Navigator.of(context).pop();
+                                        if (!mounted) return;
+                                        if (navigator.canPop()) {
+                                          navigator.pop();
                                         }
+
                                         showDialog(
                                           context: context,
                                           builder:

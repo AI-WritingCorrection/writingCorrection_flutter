@@ -55,6 +55,9 @@ android/app/build/
 # IDE folders
 .vscode/
 
+# ----------------------------
+GEMINI.md
+
 # Android 스크린샷·심볼·맵
 app.*.symbols
 app.*.map.json

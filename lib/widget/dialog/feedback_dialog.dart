@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aiwriting_collection/widget/pill_section.dart';
+import 'package:aiwriting_collection/widget/home/pill_section.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 /// AI 피드백 결과를 보여주는 모달 다이얼로그 (총점 + 요약만)
@@ -73,7 +73,7 @@ class FeedbackDialog extends StatelessWidget {
                 scale: scale,
                 child: Text(
                   (avgScore != null)
-                      ? '${avgScore!} ${appLocalizations.points}'
+                      ? '${avgScore!.toStringAsFixed(1)} ${appLocalizations.points}'
                       : '- ${appLocalizations.points}',
                   style: TextStyle(
                     fontSize: 25 * scale,

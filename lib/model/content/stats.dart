@@ -1,4 +1,4 @@
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 
 class Stats {
   final int missionId;

@@ -531,5 +531,5 @@ class AppLocalizationsEn extends AppLocalizations {
   
   @override
   // TODO: implement feedbackFormDescription
-  String get feedbackFormDescription => "The feedback form varies depending on the user type (child, adult, foreigner).\nThe explanations become easier or change to English.";
+  String get feedbackFormDescription => throw UnimplementedError();
 }

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:aiwriting_collection/model/mission_record.dart';
-import 'package:aiwriting_collection/model/practice.dart';
-import 'package:aiwriting_collection/model/stats.dart';
-import 'package:aiwriting_collection/model/steps.dart';
-import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:aiwriting_collection/model/content/mission_record.dart';
+import 'package:aiwriting_collection/model/content/practice.dart';
+import 'package:aiwriting_collection/model/content/stats.dart';
+import 'package:aiwriting_collection/model/content/steps.dart';
+import 'package:aiwriting_collection/model/content/user_profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'dart:io';
