@@ -528,4 +528,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aiwritingMission => '밑의 문제를 풀어보세요!';
+  
+  @override
+  // TODO: implement feedbackFormDescription
+  String get feedbackFormDescription => throw UnimplementedError();
 }

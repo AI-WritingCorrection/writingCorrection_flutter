@@ -1,7 +1,7 @@
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/data_provider.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/model/user_profile.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
+import 'package:aiwriting_collection/model/content/user_profile.dart';
+import 'package:aiwriting_collection/model/provider/login_status.dart';
 import 'package:aiwriting_collection/widget/dialog/edit_profile_dialog.dart';
 import 'package:aiwriting_collection/widget/practice/practice_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,9 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:aiwriting_collection/model/login_status.dart';
-import 'package:aiwriting_collection/main.dart';
-import 'package:aiwriting_collection/widget/practice_card.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
