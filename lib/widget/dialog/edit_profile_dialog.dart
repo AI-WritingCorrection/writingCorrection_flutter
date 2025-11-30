@@ -186,7 +186,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(
             appLocalizations.cancel,
             style: TextStyle(color: Colors.black87, fontSize: 20 * scale),

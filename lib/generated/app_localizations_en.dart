@@ -528,8 +528,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiwritingMission => 'Write the text below!';
-  
-  @override
-
-  String get feedbackFormDescription => "The feedback form varies depending on the user type (child, adult, foreigner).\nThe explanations become easier or change to English.";
 }
