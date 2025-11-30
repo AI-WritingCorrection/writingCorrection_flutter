@@ -1,9 +1,9 @@
-import 'package:aiwriting_collection/model/login_status.dart';
-import 'package:aiwriting_collection/model/steps.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/provider/login_status.dart';
+import 'package:aiwriting_collection/model/content/steps.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 import 'package:aiwriting_collection/screen/home/writing_page.dart';
-import 'package:aiwriting_collection/widget/back_button.dart';
-import 'package:aiwriting_collection/widget/speech_bubble.dart';
+import 'package:aiwriting_collection/widget/common/back_button.dart';
+import 'package:aiwriting_collection/widget/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +62,7 @@ class DetailStudyPage extends StatelessWidget {
                     SpeechBubble(
                       text:
                           usertype == UserType.FOREIGN
-                              ? "Write the text within the time limit."
+                              ? "Write the text\nwithin the time limit."
                               : step.stepMission,
                       imageAsset: step.stepCharacter,
                       scale: scale,

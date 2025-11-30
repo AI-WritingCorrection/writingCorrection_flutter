@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class PillSection extends StatelessWidget {
-  String? label;
-  final String trailingImage; // asset 경로
+class PillSection extends StatefulWidget {
+  final String? label;
+  final String trailingImage;
   final Widget child;
   final double scale;
   final double? minHeight;
   final EdgeInsetsGeometry? contentPadding;
   final Color backgroundColor;
 
-  PillSection({
+  const PillSection({
     super.key,
     this.label,
     required this.trailingImage,
@@ -17,14 +17,33 @@ class PillSection extends StatelessWidget {
     required this.scale,
     this.minHeight,
     this.contentPadding,
-    this.backgroundColor = const Color(0xFFCEEF91), // 기존 초록색
+    this.backgroundColor = const Color(0xFFCEEF91),
   });
 
   @override
+  PillSectionState createState() => PillSectionState();
+}
+
+class PillSectionState extends State<PillSection> {
+  String? label;
+
+  @override
+  void initState() {
+    super.initState();
+    label = widget.label;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final double scale = widget.scale;
+    final double minHeight = widget.minHeight ?? 0.0;
+    final EdgeInsetsGeometry contentPadding =
+        widget.contentPadding ?? EdgeInsets.all(16 * scale);
+    final Color backgroundColor = widget.backgroundColor;
+
     return Container(
-      constraints: BoxConstraints(minHeight: (minHeight ?? 0)),
-      padding: contentPadding ?? EdgeInsets.all(16 * scale),
+      constraints: BoxConstraints(minHeight: minHeight),
+      padding: contentPadding,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(18 * scale),
@@ -45,12 +64,12 @@ class PillSection extends StatelessWidget {
                     ),
                   ),
                 SizedBox(height: 8 * scale),
-                child,
+                widget.child,
               ],
             ),
           ),
           SizedBox(width: 8 * scale),
-          //Image.asset(trailingImage, width: 48 * scale, height: 48 * scale),
+          //Image.asset(widget.trailingImage, width: 48 * scale, height: 48 * scale),
         ],
       ),
     );
