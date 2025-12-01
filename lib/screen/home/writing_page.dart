@@ -48,6 +48,7 @@ class _WritingPageState extends State<WritingPage> {
   // 결과 저장 & 열람 가능 상태(mutable!)
   List<Map<String, dynamic>> _letterResults = [];
   bool _feedbackReady = false;
+  List<int?> _textIndexToResult = [];
 
   final api = Api();
   //GlobalKey를 이용해 GridHandwritingCanvas의 내부 상태에 직접 접근할 수 있도록
@@ -212,7 +213,25 @@ class _WritingPageState extends State<WritingPage> {
     return true;
   }
 
-  /// 작성 데이터를 제출하고 결과화면을 가져옵니다
+  /// 화면상의 글자 인덱스를 결과 인덱스로 매핑(공백은 제외)
+  List<int?> _buildTextIndexToResultMap(
+    String text,
+    List<Map<String, dynamic>> results,
+  ) {
+    final chars = text.characters.toList();
+    final mapping = <int?>[];
+    int resultIdx = 0;
+    for (final ch in chars) {
+      if (ch.trim().isEmpty) {
+        mapping.add(null);
+      } else {
+        mapping.add(resultIdx < results.length ? resultIdx : null);
+        resultIdx++;
+      }
+    }
+    return mapping;
+  }
+
   Future<void> _submitWritingData(
     Map<int, List<Uint8List>> rawImages,
     Map<int, List<String>> encodedImages,
@@ -270,12 +289,20 @@ class _WritingPageState extends State<WritingPage> {
       final decoded = utf8.decode(res.bodyBytes);
       print('평가결과 : $decoded');
       final Map<String, dynamic> data = jsonDecode(decoded);
+      final List<Map<String, dynamic>> resultsList =
+          ((data['results'] as List?) ?? const [])
+              .map<Map<String, dynamic>>(
+                (e) => Map<String, dynamic>.from(e as Map),
+              )
+              .toList();
 
       // 제출 성공 후 결과 저장 + 열람 가능 플래그 켜기
       setState(() {
-        _letterResults =
-            ((data['results'] as List?) ?? const [])
-                .cast<Map<String, dynamic>>();
+        _letterResults = resultsList;
+        _textIndexToResult = _buildTextIndexToResultMap(
+          widget.nowStep.stepText,
+          resultsList,
+        );
         _feedbackReady = true;
       });
 
@@ -285,23 +312,28 @@ class _WritingPageState extends State<WritingPage> {
       // If avgScore is over 60, refresh mission records
       if (avgScore != null && avgScore > 60) {
         if (mounted) {
-          Provider.of<DataProvider>(context, listen: false)
-              .refreshMissionRecords(context.read<LoginStatus>().userId!);
+          Provider.of<DataProvider>(
+            context,
+            listen: false,
+          ).refreshMissionRecords(context.read<LoginStatus>().userId!);
         }
       }
 
-      // 2) 글자별 stage 목록 만들기
-      final List<dynamic> results = (data['results'] as List?) ?? const [];
-      // results 길이가 과제 글자 수와 다를 수 있으니 안전하게 패딩/자르기
-      final int targetLen = widget.nowStep.stepText.characters.length;
-
-      final List<String> stages = List.generate(targetLen, (i) {
-        if (i < results.length) {
-          final item = results[i] as Map<String, dynamic>? ?? const {};
-          return (item['stage'] as String?) ?? '0000';
+      // 2) 글자별 stage 목록 만들기 (공백은 0000, 결과는 글자 순서대로 매핑)
+      final List<String> stages = [];
+      int resultIdx = 0;
+      for (final ch in widget.nowStep.stepText.characters) {
+        if (ch.trim().isEmpty) {
+          stages.add('0000');
+          continue;
         }
-        return '0000';
-      });
+        final String stage =
+            (resultIdx < resultsList.length)
+                ? (resultsList[resultIdx]['stage'] as String?) ?? '0000'
+                : '0000';
+        stages.add(stage);
+        resultIdx++;
+      }
 
       if (!mounted) return;
       if (_isLoadingDialogShown) {
@@ -593,7 +625,16 @@ class _WritingPageState extends State<WritingPage> {
 
                                   int index = row * 10 + col;
                                   if (index >= totalChars) return; // 빈 칸은 무시
-                                  _showLetterFeedback(index);
+                                  if (_textIndexToResult.isEmpty ||
+                                      index >= _textIndexToResult.length) {
+                                    return;
+                                  }
+                                  final mapped = _textIndexToResult[index];
+                                  if (mapped == null ||
+                                      mapped >= _letterResults.length) {
+                                    return;
+                                  }
+                                  _showLetterFeedback(mapped);
                                 },
                               ),
                             ),

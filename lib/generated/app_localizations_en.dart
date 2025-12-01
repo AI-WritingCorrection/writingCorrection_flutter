@@ -27,7 +27,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginAsGuest => 'Continue as Guest';
 
   @override
-  String get termsAndConditions => 'By logging in, you agree to the Terms of Service and Privacy Policy.';
+  String get termsAndConditions =>
+      'By logging in, you agree to the Terms of Service and Privacy Policy.';
 
   @override
   String get termsOfService => 'Terms of Service';
@@ -39,61 +40,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studyTitle => 'Handwriting Practice';
 
   @override
-  String get studyDescription => 'Learn how to correctly write consonants, vowels, and sentences step by step.';
+  String get studyDescription =>
+      'Learn how to correctly write consonants, vowels, and sentences step by step.';
 
   @override
   String get handwritingPostureTitle => 'Handwriting Posture';
 
   @override
-  String get handwritingPostureSubtitle => 'Basic posture and tools for good handwriting';
+  String get handwritingPostureSubtitle =>
+      'Basic posture and tools for good handwriting';
 
   @override
   String get consonantsAndVowelsTitle => 'Writing Consonants and Vowels';
 
   @override
-  String get consonantsAndVowelsSubtitle => 'Practice writing basic letters such as consonants and vowels correctly';
+  String get consonantsAndVowelsSubtitle =>
+      'Practice writing basic letters such as consonants and vowels correctly';
 
   @override
   String get wordWritingTitle => 'Word Writing';
 
   @override
-  String get wordWritingSubtitle => 'Practice writing more complex letters such as double consonants and double final consonants';
+  String get wordWritingSubtitle =>
+      'Practice writing more complex letters such as double consonants and double final consonants';
 
   @override
   String get sentenceWritingTitle => 'Sentence Writing';
 
   @override
-  String get sentenceWritingSubtitle => 'Practice writing letters clearly in sentence units';
+  String get sentenceWritingSubtitle =>
+      'Practice writing letters clearly in sentence units';
 
   @override
   String get calligraphyPracticeTitle => 'Calligraphy Practice';
 
   @override
-  String get calligraphyPracticeSubtitle => 'Let\'s improve our handwriting through simple calligraphy practice';
+  String get calligraphyPracticeSubtitle =>
+      'Let\'s improve our handwriting through simple calligraphy practice';
 
   @override
   String get infiniteWritingPracticeTitle => 'Infinite Writing Practice';
 
   @override
-  String get infiniteWritingPracticeSubtitle => 'Write as much as you want on the manuscript paper';
+  String get infiniteWritingPracticeSubtitle =>
+      'Write as much as you want on the manuscript paper';
 
   @override
   String get dialogTitleTooSmall => 'Too Small!';
 
   @override
-  String get dialogContentTabletOnly => 'Studying is only possible on a tablet!';
+  String get dialogContentTabletOnly =>
+      'Studying is only possible on a tablet!';
 
   @override
   String get dialogTitleInProgress => 'Under Development';
 
   @override
-  String get dialogContentInProgress => 'This feature is under development, please wait a little longer!';
+  String get dialogContentInProgress =>
+      'This feature is under development, please wait a little longer!';
 
   @override
   String get handwritingBasicsTitle => 'Handwriting Basics';
 
   @override
-  String get handwritingBasicsSubtitle => 'Basic posture and concepts for good handwriting';
+  String get handwritingBasicsSubtitle =>
+      'Basic posture and concepts for good handwriting';
 
   @override
   String get myPageTitle => 'My Page';
@@ -135,7 +146,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get characterIntroductionTitle => 'Character Introduction';
 
   @override
-  String get characterIntroductionSubtitle => 'Let me introduce you to the cute animal friends who will help you practice handwriting.';
+  String get characterIntroductionSubtitle =>
+      'Let me introduce you to the cute animal friends who will help you practice handwriting.';
 
   @override
   String get gomgomTitle => 'Gomgom';
@@ -147,13 +159,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totoTitle => 'Toto';
 
   @override
-  String get totoSubtitle => 'Toto enjoys practicing writing with a cheerful, hopping rhythm.';
+  String get totoSubtitle =>
+      'Toto enjoys practicing writing with a cheerful, hopping rhythm.';
 
   @override
   String get daramTitle => 'Daram';
 
   @override
-  String get daramSubtitle => 'Daram meticulously completes the writing as if collecting acorns with a small hand.';
+  String get daramSubtitle =>
+      'Daram meticulously completes the writing as if collecting acorns with a small hand.';
 
   @override
   String get editProfileTitle => 'Edit Profile';
@@ -240,25 +254,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myRecordTitle => 'My Records';
 
   @override
-  String get myRecordDescription => 'Check out my practice records in various ways!';
+  String get myRecordDescription =>
+      'Check out my practice records in various ways!';
 
   @override
   String get writingScoreStatsTitle => 'Writing Score Statistics';
 
   @override
-  String get writingScoreStatsSubtitle => 'Shall we check the writing score I practiced as statistics?';
+  String get writingScoreStatsSubtitle =>
+      'Shall we check the writing score I practiced as statistics?';
 
   @override
   String get myWritingCalendarCardTitle => 'My Own Writing Calendar';
 
   @override
-  String get myWritingCalendarCardSubtitle => 'Check the letters you practiced every day on the calendar';
+  String get myWritingCalendarCardSubtitle =>
+      'Check the letters you practiced every day on the calendar';
 
   @override
   String get createPhotocardTitle => 'Create a Writing Photocard';
 
   @override
-  String get createPhotocardSubtitle => 'Leave a sentence with a photo to commemorate today';
+  String get createPhotocardSubtitle =>
+      'Leave a sentence with a photo to commemorate today';
 
   @override
   String get chapter1 => '~Easy Letter Practice without Batchim~';
@@ -300,7 +318,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stepActivationRule => 'Step Activation Rule';
 
   @override
-  String get stepActivationRuleDescription => 'You must successfully complete the previous step to activate the next step.\nBuild your skills step by step!';
+  String get stepActivationRuleDescription =>
+      'You must successfully complete the previous step to activate the next step.\nBuild your skills step by step!';
 
   @override
   String get colorGuide => 'Color Guide';
@@ -309,13 +328,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get colorGuideActive => 'This is the step you can currently learn.';
 
   @override
-  String get colorGuideInactive => 'This step is still locked. Please complete the previous step first.';
+  String get colorGuideInactive =>
+      'This step is still locked. Please complete the previous step first.';
 
   @override
   String get imageButtonFunction => 'Image Button Function';
 
   @override
-  String get imageButtonFunctionDescription => 'Press the animal teacher button at the end of each chapter to solve a special AI-recommended problem.';
+  String get imageButtonFunctionDescription =>
+      'Press the animal teacher button at the end of each chapter to solve a special AI-recommended problem.';
 
   @override
   String get close => 'Close';
@@ -324,10 +345,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingError => 'Error: ';
 
   @override
-  String get helpButtonText => 'Press the help button to\ncheck the learning method!';
+  String get helpButtonText =>
+      'Press the help button to\ncheck the learning method!';
 
   @override
-  String get helpButtonTextLandscape => 'Let me show you how to practice\nwith MyPen!';
+  String get helpButtonTextLandscape =>
+      'Let me show you how to practice\nwith MyPen!';
 
   @override
   String get notification => 'Notification';
@@ -345,7 +368,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error => 'Error';
 
   @override
-  String get aiError => 'An error occurred while generating AI-recommended problems: ';
+  String get aiError =>
+      'An error occurred while generating AI-recommended problems: ';
 
   @override
   String get ok => 'OK';
@@ -360,13 +384,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failure => 'Failure😢';
 
   @override
-  String get timeExpired => 'Time is over!\nTry to write a little faster next time~';
+  String get timeExpired =>
+      'Time is over!\nTry to write a little faster next time~';
 
   @override
-  String get tooManyStrokes => 'Too many strokes!\nTry to practice with the correct number of strokes.';
+  String get tooManyStrokes =>
+      'Too many strokes!\nTry to practice with the correct number of strokes.';
 
   @override
-  String get notEnoughStrokes => 'Not enough strokes!\nTry to practice with the correct number of strokes.';
+  String get notEnoughStrokes =>
+      'Not enough strokes!\nTry to practice with the correct number of strokes.';
 
   @override
   String evaluationServerConnectionError(int statusCode) {
@@ -374,7 +401,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get evaluationSubmissionError => 'An error occurred while submitting for evaluation: ';
+  String get evaluationSubmissionError =>
+      'An error occurred while submitting for evaluation: ';
 
   @override
   String get penThickness => 'Pen thickness: ';
@@ -419,7 +447,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get correctPencilGripTitle => 'How to Hold a Pencil Correctly';
 
   @override
-  String get correctPencilGripContent => '1. Gently hold the pencil with your thumb and index finger, and support it with your middle finger.\n2. Tilt the opposite end of the pencil slightly towards your shoulder.\n3. Keep your wrist relaxed and write as if drawing with your entire arm.\n4. Sitting up straight will prevent arm pain and help you write more beautifully.';
+  String get correctPencilGripContent =>
+      '1. Gently hold the pencil with your thumb and index finger, and support it with your middle finger.\n2. Tilt the opposite end of the pencil slightly towards your shoulder.\n3. Keep your wrist relaxed and write as if drawing with your entire arm.\n4. Sitting up straight will prevent arm pain and help you write more beautifully.';
 
   @override
   String get learnWithVideo => 'Learn with Video';
@@ -428,7 +457,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get howAreLettersMadeTitle => 'How are Letters Made?';
 
   @override
-  String get howAreLettersMadeContent => 'Hangul letters are formed by combining consonant friends and vowel friends, just like cool robots! When consonants and vowels meet, the letters we know appear with a \'짠!\'';
+  String get howAreLettersMadeContent =>
+      'Hangul letters are formed by combining consonant friends and vowel friends, just like cool robots! When consonants and vowels meet, the letters we know appear with a \'짠!\'';
 
   @override
   String get consonantFriends => 'Consonant Friends';
@@ -443,28 +473,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vowelList => 'ㅏ, ㅑ, ㅓ, ㅕ, ㅗ, ㅛ, ㅜ, ㅠ, ㅡ, ㅣ';
 
   @override
-  String get firstStepOfWritingTitle => 'First Step of Writing: Drawing Lines (Strokes)';
+  String get firstStepOfWritingTitle =>
+      'First Step of Writing: Drawing Lines (Strokes)';
 
   @override
-  String get firstStepOfWritingContentPortrait => 'All writing begins with drawing lines. From now on, we\'ll call these lines \'strokes\'. If you can draw neat and pretty lines, you can write any letter well. Shall we play a game of writing by drawing various lines?';
+  String get firstStepOfWritingContentPortrait =>
+      'All writing begins with drawing lines. From now on, we\'ll call these lines \'strokes\'. If you can draw neat and pretty lines, you can write any letter well. Shall we play a game of writing by drawing various lines?';
 
   @override
-  String get firstStepOfWritingContentLandscape => 'All writing begins with drawing lines. From now on, we\'ll call these lines \'strokes\'. If you can draw neat and pretty lines, you can write any letter well. Shall we play a game of writing by drawing various lines?';
+  String get firstStepOfWritingContentLandscape =>
+      'All writing begins with drawing lines. From now on, we\'ll call these lines \'strokes\'. If you can draw neat and pretty lines, you can write any letter well. Shall we play a game of writing by drawing various lines?';
 
   @override
   String get drawingVariousLines => 'Drawing Various Lines';
 
   @override
-  String get drawingVariousLinesContentPortrait => '1. Horizontal line (-): Straight from left to right! Like riding a slide.\n2. Vertical line (|): Straight from top to bottom! Like a waterfall.\n3. Diagonal line (ㅅ): Wobbly! Making interesting shapes.\n4. Circle (○): Round and round! Let\'s draw a pretty sun.';
+  String get drawingVariousLinesContentPortrait =>
+      '1. Horizontal line (-): Straight from left to right! Like riding a slide.\n2. Vertical line (|): Straight from top to bottom! Like a waterfall.\n3. Diagonal line (ㅅ): Wobbly! Making interesting shapes.\n4. Circle (○): Round and round! Let\'s draw a pretty sun.';
 
   @override
-  String get drawingVariousLinesContentLandscape => '1. Horizontal line (-): Straight from left to right! Like riding a slide.\n2. Vertical line (ㅣ): Straight from top to bottom! Like a waterfall.\n3. Diagonal line (ㅅ): Wobbly! Making interesting shapes.\n4. Circle (ㅇ): Round and round! Let\'s draw a pretty sun.';
+  String get drawingVariousLinesContentLandscape =>
+      '1. Horizontal line (-): Straight from left to right! Like riding a slide.\n2. Vertical line (ㅣ): Straight from top to bottom! Like a waterfall.\n3. Diagonal line (ㅅ): Wobbly! Making interesting shapes.\n4. Circle (ㅇ): Round and round! Let\'s draw a pretty sun.';
 
   @override
   String get takeYourTime => 'Take your time practicing!';
 
   @override
-  String get consonantsAndVowelsDescription => 'Hold the shapes of consonants and vowels correctly,\nchoose the consonant or vowel you want to practice, and try writing the letters.';
+  String get consonantsAndVowelsDescription =>
+      'Hold the shapes of consonants and vowels correctly,\nchoose the consonant or vowel you want to practice, and try writing the letters.';
 
   @override
   String get consonantsPractice => 'Consonant Practice';
@@ -476,7 +512,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDataAvailable => 'No data available';
 
   @override
-  String get sentenceWritingDescription => 'Hold the shapes of consonants and vowels correctly, and maintain consistent size and spacing while writing a sentence you like.';
+  String get sentenceWritingDescription =>
+      'Hold the shapes of consonants and vowels correctly, and maintain consistent size and spacing while writing a sentence you like.';
 
   @override
   String get shortSentencePractice => 'Short Sentence Practice:';
@@ -488,7 +525,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get characterWords => 'Character Words';
 
   @override
-  String get wordWritingDescription => 'Hold the shapes of consonants and vowels correctly,\nchoose the words you want to practice, and try writing the letters.';
+  String get wordWritingDescription =>
+      'Hold the shapes of consonants and vowels correctly,\nchoose the words you want to practice, and try writing the letters.';
 
   @override
   String get wordPractice => 'Word Practice:';
@@ -503,7 +541,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userTypeForeign => 'Foreigner';
 
   @override
-  String get feedbackDialogInstruction => 'Tap on a character to see detailed feedback for each character.';
+  String get feedbackDialogInstruction =>
+      'Tap on a character to see detailed feedback for each character.';
 
   @override
   String get feedbackDialogTotalScore => 'Total Score';
@@ -515,20 +554,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedbackDialogSummary => 'Summary';
 
   @override
-  String get feedbackDialogSummaryStage1 => 'Characters with poor AI recognition: ';
+  String get feedbackDialogSummaryStage1 =>
+      'Characters with poor AI recognition: ';
 
   @override
-  String get feedbackDialogSummaryStage2 => 'Characters with inappropriate size: ';
+  String get feedbackDialogSummaryStage2 =>
+      'Characters with inappropriate size: ';
 
   @override
-  String get feedbackDialogSummaryStage3 => 'Characters with inappropriate stroke order: ';
+  String get feedbackDialogSummaryStage3 =>
+      'Characters with inappropriate stroke order: ';
 
   @override
-  String get feedbackDialogSummaryStage4 => 'Characters with inappropriate consonants or vowels: ';
+  String get feedbackDialogSummaryStage4 =>
+      'Characters with inappropriate consonants or vowels: ';
 
   @override
   String get aiwritingMission => 'Write the text below!';
-  
+
   @override
   // TODO: implement feedbackFormDescription
   String get feedbackFormDescription => throw UnimplementedError();
