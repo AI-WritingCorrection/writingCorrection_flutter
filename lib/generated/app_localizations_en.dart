@@ -571,8 +571,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiwritingMission => 'Write the text below!';
-
+  
+  //'사용자 유형(어린이, 성인, 외국인)에 따라 피드백 양식이 달라집니다.\n어린이는 쉽게, 외국인은 영어로 된 피드백을 받을 수 있도록 설계되었습니다.'
   @override
-  // TODO: implement feedbackFormDescription
-  String get feedbackFormDescription => throw UnimplementedError();
+  String get feedbackFormDescription => 'The feedback format varies depending on the user type (child, adult, foreigner).\nIt is designed so that children can receive easy feedback and foreigners can receive feedback in English.';
 }

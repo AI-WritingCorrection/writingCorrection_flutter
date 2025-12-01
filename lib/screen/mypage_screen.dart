@@ -448,8 +448,7 @@ class _MypageScreenState extends State<MypageScreen> {
                       SizedBox(width: 16 * scale),
                       Expanded(
                         child: GestureDetector(
-                          onTap:
-                              _loadingProfile ? null : _showEditProfileDialog,
+                          onTap: _showEditProfileDialog,
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12 * scale),
                             decoration: BoxDecoration(
@@ -458,23 +457,14 @@ class _MypageScreenState extends State<MypageScreen> {
                               borderRadius: BorderRadius.circular(45 * scale),
                             ),
                             child: Center(
-                              child:
-                                  _loadingProfile
-                                      ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                      : Text(
-                                        appLocalizations.editProfile,
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 16 * scale,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
+                              child: Text(
+                                appLocalizations.editProfile,
+                                style: TextStyle(
+                                  fontSize: 16 * scale,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.blueAccent, // 수정은 정보 표시 색상
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -817,23 +807,14 @@ class _MypageScreenState extends State<MypageScreen> {
                       borderRadius: BorderRadius.circular(45 * scale),
                     ),
                     child: Center(
-                      child:
-                          _loadingProfile
-                              ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                              : Text(
-                                appLocalizations.editProfile,
-                                style: TextStyle(
-                                  fontSize: 16 * scale,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blueAccent, // 수정은 정보 표시 색상
-                                ),
-                              ),
+                      child: Text(
+                        appLocalizations.editProfile,
+                        style: TextStyle(
+                          fontSize: 16 * scale,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blueAccent, // 수정은 정보 표시 색상
+                        ),
+                      ),
                     ),
                   ),
                 ),
