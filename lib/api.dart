@@ -14,7 +14,7 @@ const int maxProfileImageSize = 10 * 1024 * 1024; // 2MB
 
 //싱글톤 패턴 적용
 class Api {
-  static const _baseUrl = 'http://52.78.166.204/api';
+  static const _baseUrl = 'https://52.78.166.204/api';
   static Api? _instance;
   final http.Client _client;
   String? _jwt;

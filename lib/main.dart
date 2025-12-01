@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:aiwriting_collection/api.dart';
 import 'package:aiwriting_collection/model/provider/data_provider.dart';
 import 'package:aiwriting_collection/model/provider/language_provider.dart';
@@ -21,8 +22,21 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart'; // kDebugMode
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
+// 1. 인증서 검사를 무시하는 클래스 정의
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // 2. 앱 시작 전에 전역 설정으로 등록
+  HttpOverrides.global = MyHttpOverrides();
+
   await dotenv.load(fileName: ".env"); // Load environment variables
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '',
@@ -83,6 +97,7 @@ Future<void> main() async {
       DeviceOrientation.landscapeRight,
     ]);
   }
+
   runApp(
     MultiProvider(
       providers: [
