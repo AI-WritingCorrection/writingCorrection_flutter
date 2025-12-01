@@ -1,4 +1,4 @@
-import 'package:aiwriting_collection/widget/practice_card.dart';
+import 'package:aiwriting_collection/widget/practice/practice_card.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';

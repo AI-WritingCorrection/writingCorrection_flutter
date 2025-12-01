@@ -171,7 +171,7 @@ class _MyWritingCalendarScreenState extends State<MyWritingCalendarScreen> {
     final days = _daysInMonth(_focusedMonth);
     final lead = _leadingBlankCount(_focusedMonth);
     final rows = ((lead + days) / 7).ceil();
-    final trailing = rows * 7 - (lead + days);
+    //final trailing = rows * 7 - (lead + days);
     final agg = _aggregateByDay(_focusedMonth);
     final summary = _monthSummary(_focusedMonth);
     final appLocalizations = AppLocalizations.of(context)!;

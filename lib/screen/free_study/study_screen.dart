@@ -3,7 +3,7 @@ import 'package:aiwriting_collection/screen/free_study/letter_writing_screen.dar
 import 'package:aiwriting_collection/screen/free_study/sentence_writing_screen.dart';
 import 'package:aiwriting_collection/screen/free_study/word_writing_screen.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
-import 'package:aiwriting_collection/widget/practice_card.dart';
+import 'package:aiwriting_collection/widget/practice/practice_card.dart';
 import 'package:flutter/material.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 

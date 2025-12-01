@@ -1,4 +1,4 @@
-import 'package:aiwriting_collection/model/stroke.dart';
+import 'package:aiwriting_collection/model/content/stroke/stroke.dart';
 import 'package:flutter/material.dart';
 
 //터치/펜 입력으로 그려진 스트로크를 렌더링하는 CustomPainter 정의

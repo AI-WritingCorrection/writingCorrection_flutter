@@ -300,7 +300,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get stepActivationRule => '스텝 활성화 규칙';
 
   @override
-  String get stepActivationRuleDescription => '이전 단계를 성공적으로 완료해야 다음 단계가 활성화됩니다.\n차근차근 단계를 밟아가며 실력을 키워보세요!';
+  String get stepActivationRuleDescription =>
+      '이전 단계를 성공적으로 완료해야 다음 단계가 활성화됩니다.\n차근차근 단계를 밟아가며 실력을 키워보세요!';
 
   @override
   String get colorGuide => '색상 안내';
@@ -315,7 +316,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get imageButtonFunction => '이미지 버튼 기능';
 
   @override
-  String get imageButtonFunctionDescription => '각 챕터의 마지막에 있는 동물 선생님 버튼을 누르면, 특별한 AI 추천 문제를 풀어볼 수 있습니다.';
+  String get imageButtonFunctionDescription =>
+      '각 챕터의 마지막에 있는 동물 선생님 버튼을 누르면, 특별한 AI 추천 문제를 풀어볼 수 있습니다.';
 
   @override
   String get close => '닫기';
@@ -419,7 +421,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get correctPencilGripTitle => '연필 바르게 잡는 법';
 
   @override
-  String get correctPencilGripContent => '1. 엄지와 검지 손가락으로 연필을 살짝 잡고, 가운데 손가락으로 연필을 받쳐보세요.\n2. 연필의 뾰족한 반대쪽 끝이 어깨를 향하게 살짝 눕혀주세요.\n3. 손목은 편안하게 두고, 팔 전체로 그림을 그리듯 글씨를 써봐요.\n4. 허리를 꼿꼿하게 펴고 앉으면 팔이 아프지 않고 글씨를 더 예쁘게 쓸 수 있어요.';
+  String get correctPencilGripContent =>
+      '1. 엄지와 검지 손가락으로 연필을 살짝 잡고, 가운데 손가락으로 연필을 받쳐보세요.\n2. 연필의 뾰족한 반대쪽 끝이 어깨를 향하게 살짝 눕혀주세요.\n3. 손목은 편안하게 두고, 팔 전체로 그림을 그리듯 글씨를 써봐요.\n4. 허리를 꼿꼿하게 펴고 앉으면 팔이 아프지 않고 글씨를 더 예쁘게 쓸 수 있어요.';
 
   @override
   String get learnWithVideo => '영상으로 배우기';
@@ -428,7 +431,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get howAreLettersMadeTitle => '글자는 어떻게 만들어질까?';
 
   @override
-  String get howAreLettersMadeContent => '한글은 멋진 로봇처럼 자음 친구와 모음 친구가 합체해서 만들어져요! 자음과 모음이 만나면 우리가 아는 글자가 짠! 하고 나타난답니다.';
+  String get howAreLettersMadeContent =>
+      '한글은 멋진 로봇처럼 자음 친구와 모음 친구가 합체해서 만들어져요! 자음과 모음이 만나면 우리가 아는 글자가 짠! 하고 나타난답니다.';
 
   @override
   String get consonantFriends => '자음 친구들';
@@ -446,25 +450,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String get firstStepOfWritingTitle => '글씨의 첫걸음: 선 긋기(획)';
 
   @override
-  String get firstStepOfWritingContentPortrait => '모든 글씨는 선을 그리는 것에서 시작해요. 앞으로는 이 선을 \'획\'이라고 부를거예요.반듯반듯 예쁜 선을 그릴 수 있으면 어떤 글씨든 잘 쓸 수 있답니다. 여러 가지 선을 그리면서 글씨 쓰기 놀이를 해볼까요?';
+  String get firstStepOfWritingContentPortrait =>
+      '모든 글씨는 선을 그리는 것에서 시작해요. 앞으로는 이 선을 \'획\'이라고 부를거예요.반듯반듯 예쁜 선을 그릴 수 있으면 어떤 글씨든 잘 쓸 수 있답니다. 여러 가지 선을 그리면서 글씨 쓰기 놀이를 해볼까요?';
 
   @override
-  String get firstStepOfWritingContentLandscape => '모든 글씨는 선을 그리는 것에서 시작해요. 앞으로는 이 선을 \'획\'이라고 부를거예요. 반듯반듯 예쁜 선을 그릴 수 있으면 어떤 글씨든 잘 쓸 수 있답니다. 여러 가지 선을 그리면서 글씨 쓰기 놀이를 해볼까요?';
+  String get firstStepOfWritingContentLandscape =>
+      '모든 글씨는 선을 그리는 것에서 시작해요. 앞으로는 이 선을 \'획\'이라고 부를거예요. 반듯반듯 예쁜 선을 그릴 수 있으면 어떤 글씨든 잘 쓸 수 있답니다. 여러 가지 선을 그리면서 글씨 쓰기 놀이를 해볼까요?';
 
   @override
   String get drawingVariousLines => '여러 가지 선 그리기';
 
   @override
-  String get drawingVariousLinesContentPortrait => '1. 가로선(-): 왼쪽에서 오른쪽으로 쭉! 미끄럼틀을 타요.\n2. 세로선(|): 위에서 아래로 쭉! 폭포수가 떨어져요.\n3. 대각선(ㅅ): 삐뚤빼뚤! 재미있는 모양을 만들어요.\n4. 동그라미(○): 동글동글! 예쁜 해님을 그려봐요.';
+  String get drawingVariousLinesContentPortrait =>
+      '1. 가로선(-): 왼쪽에서 오른쪽으로 쭉! 미끄럼틀을 타요.\n2. 세로선(|): 위에서 아래로 쭉! 폭포수가 떨어져요.\n3. 대각선(ㅅ): 삐뚤빼뚤! 재미있는 모양을 만들어요.\n4. 동그라미(○): 동글동글! 예쁜 해님을 그려봐요.';
 
   @override
-  String get drawingVariousLinesContentLandscape => '1. 가로선(-): 왼쪽에서 오른쪽으로 쭉! 미끄럼틀을 타요.\n2. 세로선(ㅣ): 위에서 아래로 쭉! 폭포수가 떨어져요.\n3. 대각선(ㅅ): 삐뚤빼뚤! 재미있는 모양을 만들어요.\n4. 동그라미(ㅇ): 동글동글! 예쁜 해님을 그려봐요.';
+  String get drawingVariousLinesContentLandscape =>
+      '1. 가로선(-): 왼쪽에서 오른쪽으로 쭉! 미끄럼틀을 타요.\n2. 세로선(ㅣ): 위에서 아래로 쭉! 폭포수가 떨어져요.\n3. 대각선(ㅅ): 삐뚤빼뚤! 재미있는 모양을 만들어요.\n4. 동그라미(ㅇ): 동글동글! 예쁜 해님을 그려봐요.';
 
   @override
   String get takeYourTime => '천천히 연습해보세요';
 
   @override
-  String get consonantsAndVowelsDescription => '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 자음 또는 모음을 골라 글자를 써보세요.';
+  String get consonantsAndVowelsDescription =>
+      '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 자음 또는 모음을 골라 글자를 써보세요.';
 
   @override
   String get consonantsPractice => '자음 연습';
@@ -476,7 +485,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noDataAvailable => '사용 가능한 데이터가 없습니다.';
 
   @override
-  String get sentenceWritingDescription => '자음과 모음의 모양을 올바르게 잡고 글씨의 크기와 간격을 일정하게 맞춰\n내 마음에 드는 글을 써보세요.';
+  String get sentenceWritingDescription =>
+      '자음과 모음의 모양을 올바르게 잡고 글씨의 크기와 간격을 일정하게 맞춰\n내 마음에 드는 글을 써보세요.';
 
   @override
   String get shortSentencePractice => '짧은 문장 연습:';
@@ -488,7 +498,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get characterWords => '글자 단어';
 
   @override
-  String get wordWritingDescription => '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 단어를 골라 글자를 써보세요.';
+  String get wordWritingDescription =>
+      '자음과 모음의 모양을 올바르게 잡고,\n내가 연습하고 싶은 단어를 골라 글자를 써보세요.';
 
   @override
   String get wordPractice => '단어 연습:';
@@ -528,8 +539,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aiwritingMission => '밑의 문제를 풀어보세요!';
-  
+
   @override
   // TODO: implement feedbackFormDescription
-  String get feedbackFormDescription => "사용자 유형(어린이, 성인, 외국인)에 따라 피드백 양식이 달라져요.\n설명이 쉬워지거나, 영어로 바뀐답니다.";
+  String get feedbackFormDescription => throw UnimplementedError();
 }

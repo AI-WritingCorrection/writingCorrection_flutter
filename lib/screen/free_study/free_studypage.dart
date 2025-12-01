@@ -1,12 +1,12 @@
-import 'package:aiwriting_collection/model/practice.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
-import 'package:aiwriting_collection/widget/back_button.dart';
+import 'package:aiwriting_collection/model/content/practice.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
+import 'package:aiwriting_collection/widget/common/back_button.dart';
 import 'package:aiwriting_collection/widget/dialog/mini_dialog.dart';
-import 'package:aiwriting_collection/widget/speech_bubble.dart';
+import 'package:aiwriting_collection/widget/common/speech_bubble.dart';
 import 'package:aiwriting_collection/widget/writing/grid_handwriting_canvas.dart';
 import 'package:flutter/material.dart';
-import 'package:aiwriting_collection/model/stroke_guide_model.dart';
-import 'package:aiwriting_collection/model/stroke_guide_repository.dart';
+import 'package:aiwriting_collection/model/content/stroke/stroke_guide_model.dart';
+import 'package:aiwriting_collection/model/content/stroke/stroke_guide_repository.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class FreeStudyPage extends StatefulWidget {

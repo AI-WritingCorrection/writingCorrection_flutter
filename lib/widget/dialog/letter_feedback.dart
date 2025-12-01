@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aiwriting_collection/widget/pill_section.dart';
+import 'package:aiwriting_collection/widget/home/pill_section.dart';
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
 class LetterFeedbackSheet extends StatelessWidget {

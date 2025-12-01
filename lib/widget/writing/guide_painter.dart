@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:aiwriting_collection/model/stroke_guide_model.dart';
+import 'package:aiwriting_collection/model/content/stroke/stroke_guide_model.dart';
 
 /// 왼쪽 아래에 배치할 기호 목록
 const Set<String> _punctuationSet = {'.', ','};
