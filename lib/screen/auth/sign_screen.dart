@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../../../model/login_status.dart';
-import '../../../api.dart';
+import '../../model/provider/login_status.dart';
+import '../../api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
@@ -256,18 +256,17 @@ class _SignScreenState extends State<SignScreen> {
                             await Future.delayed(
                               const Duration(milliseconds: 300),
                             );
+                            if (!mounted) return;
                             debugPrint(
                               '[DEBUG PREVIEW] signup payload (mock) -> '
                               'email=${_emailController.text}, provider=$_provider',
                             );
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('디버그 프리뷰: 회원가입 성공(모의)'),
-                                ),
-                              );
-                              Navigator.pushReplacementNamed(context, '/home');
-                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('디버그 프리뷰: 회원가입 성공(모의)'),
+                              ),
+                            );
+                            Navigator.pushReplacementNamed(context, '/home');
                             return;
                           }
 
@@ -284,6 +283,7 @@ class _SignScreenState extends State<SignScreen> {
                           await FirebaseAuth.instance.currentUser!.getIdToken(
                             true,
                           );
+                          if (!mounted) return;
                           final idToken =
                               context.read<LoginStatus>().firebaseIdToken;
                           _provider =
@@ -302,18 +302,16 @@ class _SignScreenState extends State<SignScreen> {
                           };
 
                           await api.signup(payload);
+                          if (!mounted) return;
                           debugPrint('회원 가입 성공: $payload');
-                          if (mounted) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          }
+                          Navigator.pushReplacementNamed(context, '/home');
                         } catch (e) {
                           await FirebaseAuth.instance.signOut();
+                          if (!mounted) return;
                           context.read<LoginStatus>().logout();
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('회원가입에 실패했습니다: $e')),
-                            );
-                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('회원가입에 실패했습니다: $e')),
+                          );
                         } finally {
                           if (mounted) setState(() => _isLoading = false);
                         }
