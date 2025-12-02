@@ -542,5 +542,5 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   // TODO: implement feedbackFormDescription
-  String get feedbackFormDescription => throw UnimplementedError();
+  String get feedbackFormDescription => "사용자 유형(어린이, 성인, 외국인)에 따라 피드백 양식이 달라져요.\n설명이 쉬워지거나, 영어로 바뀐답니다.";
 }
