@@ -1,28 +1,42 @@
+import 'dart:io';
 import 'package:aiwriting_collection/api.dart';
-import 'package:aiwriting_collection/model/data_provider.dart';
-import 'package:aiwriting_collection/model/language_provider.dart';
-import 'package:aiwriting_collection/model/typeEnum.dart';
+import 'package:aiwriting_collection/model/provider/data_provider.dart';
+import 'package:aiwriting_collection/model/provider/language_provider.dart';
+import 'package:aiwriting_collection/model/common/type_enum.dart';
 import 'package:aiwriting_collection/screen/home/home_screen.dart';
-import 'package:aiwriting_collection/screen/login/sign/login_screen.dart';
-import 'package:aiwriting_collection/screen/login/sign/sign_screen.dart';
+import 'package:aiwriting_collection/screen/auth/login_screen.dart';
+import 'package:aiwriting_collection/screen/auth/sign_screen.dart';
 import 'package:aiwriting_collection/screen/record_screen.dart';
 import 'package:aiwriting_collection/screen/free_study/study_screen.dart';
 import 'package:aiwriting_collection/screen/mypage_screen.dart';
-import 'package:aiwriting_collection/widget/bottom_bar.dart';
+import 'package:aiwriting_collection/widget/common/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'model/login_status.dart';
+import 'model/provider/login_status.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart'; // kDebugMode
 import 'package:aiwriting_collection/generated/app_localizations.dart';
 
+// 1. 인증서 검사를 무시하는 클래스 정의
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // 2. 앱 시작 전에 전역 설정으로 등록
+  HttpOverrides.global = MyHttpOverrides();
+
   await dotenv.load(fileName: ".env"); // Load environment variables
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '',
@@ -83,6 +97,7 @@ Future<void> main() async {
       DeviceOrientation.landscapeRight,
     ]);
   }
+
   runApp(
     MultiProvider(
       providers: [
@@ -112,7 +127,7 @@ Future<void> main() async {
               // User is logged out, clear their specific data
               dataProvider!.clearUserRecords();
             }
-            return dataProvider!;
+            return dataProvider;
           },
         ),
       ],
