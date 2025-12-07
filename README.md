@@ -98,7 +98,7 @@
 
 ## 🏗 시스템 아키텍처
 
-![alt text](image.png)
+<img width="865" height="603" alt="image" src="https://github.com/user-attachments/assets/0ffa0c25-86fb-4e9a-9e06-64f2d18b928a" />
 
 ## 🔍 핵심 알고리즘 요약
 
