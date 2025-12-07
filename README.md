@@ -235,3 +235,7 @@ AI-WritingCorrection의 평가 모델은 **가독성 → 형태 → 획순 → �
 </div>
 
 ---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
